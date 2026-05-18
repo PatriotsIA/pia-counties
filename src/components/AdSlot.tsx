@@ -66,7 +66,14 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
   }, [trackingPayload]);
 
   return (
-    <a className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}`} href={ad.href} onClick={() => trackAdClick(trackingPayload)} ref={cardRef}>
+    <a
+      className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}`}
+      href={ad.href}
+      onClick={() => trackAdClick(trackingPayload)}
+      ref={cardRef}
+      rel="noreferrer"
+      target="_blank"
+    >
       <picture>
         {ad.image.mobile ? <source media="(max-width: 780px)" srcSet={ad.image.mobile} /> : null}
         <img src={ad.image.desktop} alt={ad.image.alt} />

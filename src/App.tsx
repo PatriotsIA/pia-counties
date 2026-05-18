@@ -953,6 +953,12 @@ function CountyPartners({ county }: { county: CountySite }) {
           <p>Connect with Patriots in Action partners, events, and stores that help keep local action moving.</p>
           <ul className="partner-list">
             <li>
+              <a href={site.links.cbtRealEstate} target="_blank" rel="noreferrer">
+                <strong>CBT Real Estate Services</strong>
+                <span>Connect with CBT Real Estate Services on Facebook.</span>
+              </a>
+            </li>
+            <li>
               <a href={site.links.piaEvents}>
                 <strong>piaevents.com</strong>
                 <span>Find upcoming Patriots in Action events and places to show up.</span>

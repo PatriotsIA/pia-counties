@@ -43,6 +43,27 @@ export type AdCreative = {
 
 export const ads: AdCreative[] = [
   {
+    id: "cbt-real-estate-services-2026",
+    campaignId: "cbt-real-estate-services",
+    sponsor: "CBT Real Estate Services",
+    title: "CBT Real Estate Services",
+    body: "Connect with CBT Real Estate Services for local real estate support.",
+    cta: "Visit CBT Real Estate Services",
+    href: "https://www.facebook.com/CBTRealEstateServices/",
+    placement: "compact",
+    display: "image-only",
+    image: {
+      desktop: "/sponsors/pia-ad-cbt.jpg",
+      mobile: "/sponsors/pia-ad-cbt.jpg",
+      alt: "CBT Real Estate Services",
+    },
+    priority: 100,
+    active: true,
+    targeting: {
+      slots: ["county-home-inline", "county-news-inline", "county-page-footer", "site-footer"],
+    },
+  },
+  {
     id: "patriot-dispatch-2026",
     campaignId: "pia-house-dispatch",
     sponsor: "Patriot Dispatch",
