@@ -959,13 +959,31 @@ function CountyPartners({ county }: { county: CountySite }) {
               </a>
             </li>
             <li>
-              <a href={site.links.piaEvents}>
+              <a href={site.links.patriotDispatch} target="_blank" rel="noreferrer">
+                <strong>Patriot Dispatch</strong>
+                <span>Get Patriots in Action updates and messaging resources.</span>
+              </a>
+            </li>
+            <li>
+              <a href={site.links.community} target="_blank" rel="noreferrer">
+                <strong>Patriot Rewards</strong>
+                <span>Discover community connections, preferred partners, and member benefits.</span>
+              </a>
+            </li>
+            <li>
+              <a href={site.links.vimeoTv} target="_blank" rel="noreferrer">
+                <strong>Patriots in Action TV</strong>
+                <span>Watch candidate interviews, updates, and community stories.</span>
+              </a>
+            </li>
+            <li>
+              <a href={site.links.piaEvents} target="_blank" rel="noreferrer">
                 <strong>piaevents.com</strong>
                 <span>Find upcoming Patriots in Action events and places to show up.</span>
               </a>
             </li>
             <li>
-              <a href={site.links.piaEvents}>
+              <a href={site.links.piaEvents} target="_blank" rel="noreferrer">
                 <strong>The Patriots in Action Trailer Store</strong>
                 <span>Shop and connect with Patriots in Action at live events.</span>
               </a>

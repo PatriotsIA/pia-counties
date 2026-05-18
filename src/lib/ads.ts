@@ -32,7 +32,7 @@ export function isAdEligible(ad: AdCreative, slot: AdSlotId, context: AdContext)
   const countyKey = county ? `${county.state.slug}/${county.slug}` : undefined;
 
   if (ad.targeting.routes?.length && !ad.targeting.routes.includes(route)) return false;
-  if (ad.targeting.pages?.length && (!page || !ad.targeting.pages.includes(page))) return false;
+  if (route === "county" && ad.targeting.pages?.length && (!page || !ad.targeting.pages.includes(page))) return false;
   if (ad.targeting.stateSlugs?.length && (!county || !ad.targeting.stateSlugs.includes(county.state.slug))) return false;
   if (ad.targeting.countyKeys?.length && (!countyKey || !ad.targeting.countyKeys.includes(countyKey))) return false;
 
