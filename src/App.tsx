@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
+import { TopTicker } from "./components/TopTicker";
 import { getCandidateById, getCandidatesForCounty, getCandidatesForState, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { site } from "./data/site";
@@ -1447,6 +1448,7 @@ function Shell({ county, children, page, route }: { county?: CountySite; childre
 
   return (
     <>
+      <TopTicker county={county} />
       <header className="topbar">
         <div className="container topbar-inner">
           <span>Meet Your Neighbors!</span>

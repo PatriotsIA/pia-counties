@@ -44,6 +44,69 @@ img {
   border: 0;
 }
 
+.market-weather-bar {
+  display: grid;
+  align-items: center;
+  min-height: 42px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+
+.market-weather-bar-with-weather {
+  grid-template-areas: "weather ticker";
+  grid-template-columns: minmax(260px, 0.35fr) minmax(0, 1fr);
+}
+
+.market-weather-bar-ticker-only {
+  grid-template-areas: "ticker";
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.market-weather-weather {
+  grid-area: weather;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0.35rem 0.7rem;
+}
+
+.weather-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.weather-pill span,
+.weather-pill strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.weather-pill span:first-child {
+  flex: 0 0 auto;
+  color: var(--red);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.market-ticker-widget {
+  grid-area: ticker;
+  min-width: 0;
+  height: 42px;
+  overflow: hidden;
+}
+
+.market-ticker-widget iframe {
+  display: block;
+}
+
 .topbar {
   background: var(--navy);
   color: white;
@@ -1229,6 +1292,43 @@ nav a {
     justify-content: center;
     gap: 0.35rem 0.8rem;
     text-align: center;
+  }
+
+  .market-weather-bar {
+    grid-template-columns: 1fr;
+    min-height: 32px;
+  }
+
+  .market-weather-bar-with-weather {
+    grid-template-areas:
+      "ticker"
+      "weather";
+  }
+
+  .market-weather-bar-ticker-only {
+    grid-template-areas: "ticker";
+  }
+
+  .market-ticker-widget {
+    height: 32px;
+  }
+
+  .market-ticker-widget iframe {
+    width: 125% !important;
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+
+  .market-weather-weather {
+    justify-content: center;
+    min-height: 30px;
+    padding: 0.25rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .weather-pill {
+    max-width: 100%;
+    font-size: 0.72rem;
   }
 
   .header-inner {
