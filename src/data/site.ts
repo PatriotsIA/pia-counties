@@ -29,6 +29,7 @@ export const site = {
     footerLogo: "/brand/PIAFooterLogo.png",
     textLogo: "/brand/PIAFullTextLogoRedWhite.png",
     icon: "/brand/SocialIcon.png",
+    americanHeader: "/brand/AmericanHeader-600x601.jpg",
     operationShowUp: "/brand/operation-show-up-cover.png",
   },
 } as const;

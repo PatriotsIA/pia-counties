@@ -127,7 +127,7 @@ nav a {
 .page-hero,
 .county-hero,
 .section {
-  margin: 3rem 0;
+  margin: 2.4rem 0;
 }
 
 .hero,
@@ -136,7 +136,7 @@ nav a {
   grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
   gap: 2rem;
   align-items: center;
-  padding: 3rem;
+  padding: 2.4rem;
   border: 1px solid var(--border);
   border-radius: 28px;
   background:
@@ -146,14 +146,42 @@ nav a {
 }
 
 .hero h1,
-.county-hero h1,
-.page-hero h1 {
+.county-hero h1 {
   margin: 0.2rem 0 1rem;
-  font-size: clamp(2.4rem, 8vw, 5.4rem);
+  font-size: clamp(1.9rem, 5.5vw, 3.6rem);
   line-height: 0.95;
   color: var(--navy);
   text-transform: uppercase;
   letter-spacing: -0.05em;
+}
+
+.page-hero h1 {
+  margin: 0.2rem 0 1rem;
+  color: var(--navy);
+  font-size: clamp(1.65rem, 5.2vw, 3.35rem);
+  line-height: 0.96;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+}
+
+.hero-media {
+  justify-self: center;
+  width: min(100%, 420px);
+}
+
+.hero-main-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 16px 42px rgba(17, 27, 71, 0.12);
+}
+
+.hero-patriot-mark {
+  display: block;
+  width: clamp(64px, 15vw, 96px);
+  margin: 1rem auto 0;
 }
 
 .page-hero {
@@ -163,8 +191,18 @@ nav a {
 .page-hero p,
 .hero p,
 .county-hero p {
-  font-size: 1.08rem;
+  font-size: 0.95rem;
   line-height: 1.7;
+}
+
+.hero .eyebrow,
+.county-hero .eyebrow {
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle-eyebrow {
+  margin-top: -0.25rem;
 }
 
 .hero-tagline {
@@ -386,7 +424,7 @@ nav a {
 
 .compact-about h2 {
   color: var(--navy);
-  font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+  font-size: clamp(1rem, 2.1vw, 1.45rem);
   line-height: 1.05;
 }
 
@@ -434,7 +472,7 @@ nav a {
 .panel h2 {
   margin: 0.2rem 0 0.8rem;
   color: var(--navy);
-  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-size: clamp(1.35rem, 3.2vw, 2.1rem);
   line-height: 1.05;
 }
 
@@ -586,7 +624,7 @@ nav a {
 .candidate-profile-header h1 {
   margin: 0.2rem 0 0.45rem;
   color: var(--navy);
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
   line-height: 0.95;
   text-transform: uppercase;
 }
@@ -1002,7 +1040,7 @@ nav a {
 
 .candidate-directory-notice h2 {
   color: var(--navy);
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
 }
 
 .candidate-directory-notice p {
@@ -1244,20 +1282,23 @@ nav a {
 
   .hero,
   .county-hero {
-    padding: 1.2rem;
+    padding: 1rem;
     gap: 1rem;
   }
 
   .hero h1,
-  .county-hero h1,
+  .county-hero h1 {
+    font-size: clamp(1.55rem, 9vw, 2.35rem);
+  }
+
   .page-hero h1 {
-    font-size: clamp(2rem, 13vw, 3.4rem);
+    font-size: clamp(1.45rem, 8.8vw, 2.35rem);
   }
 
   .page-hero p,
   .hero p,
   .county-hero p {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .actions {

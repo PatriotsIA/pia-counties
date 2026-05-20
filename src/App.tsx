@@ -27,7 +27,8 @@ const candidateProjectUrl = "https://secure.anedot.com/patriots-for-action/donat
 const candidateProjectDisclaimer =
   "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
 const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
-const heroTitle = "Patriots in Action: A Nationwide & Local Civic Hub";
+const heroHeadline = "Patriots in Action";
+const heroKicker = "A Nationwide & Local Civic Hub";
 const heroDescription =
   "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
 
@@ -364,7 +365,8 @@ function HomePage() {
       <section className="hero hero-home">
         <div>
           <p className="eyebrow">Join Our Interactive Community</p>
-          <h1>{heroTitle}</h1>
+          <h1>{heroHeadline}</h1>
+          <p className="eyebrow hero-subtitle-eyebrow">{heroKicker}</p>
           <p>{heroDescription}</p>
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
@@ -373,8 +375,9 @@ function HomePage() {
             <a className="button" href={site.links.community}>Join Our Community</a>
             <a className="button red" href={site.links.merch} target="_blank" rel="noreferrer">Shop Merchandise</a>
           </div>
+          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
-        <img src={site.brand.patriot} alt="Patriots in Action patriot mark" />
+        <HeroMedia />
       </section>
       <section className="section">
         <div className="section-heading">
@@ -692,16 +695,7 @@ function StateCandidatesPage() {
         onSearchChange={setCandidateSearch}
         onSortChange={setCandidateSort}
       />
-      {runOffCandidates.length && !hasJurisdictionFilter ? (
-        <section className="section">
-          <div className="section-heading">
-            <p className="eyebrow">Run Off Races</p>
-            <h2>Help these candidates reach Texas voters in Their Run Off Races</h2>
-            <p>Support voter education, candidate interviews, and election outreach across Texas.</p>
-          </div>
-          <CandidateGrid candidates={runOffCandidates} emptyText="No run off race candidates are available yet." />
-        </section>
-      ) : null}
+      {runOffCandidates.length && !hasJurisdictionFilter ? <RunoffInterviewsSection candidates={runOffCandidates} /> : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local and District Races</p>
@@ -794,7 +788,8 @@ function CountyHome({ county }: { county: CountySite }) {
             <StateFlag state={county.state} size="md" />
             <p className="eyebrow">Presented by {county.displayName} Patriots</p>
           </div>
-          <h1>{heroTitle}</h1>
+          <h1>{heroHeadline}</h1>
+          <p className="eyebrow hero-subtitle-eyebrow">{heroKicker}</p>
           <p>{heroDescription}</p>
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
@@ -803,8 +798,9 @@ function CountyHome({ county }: { county: CountySite }) {
             <Link className="button" to={`${countyPath(county)}/events`}>Community Calendar</Link>
             <Link className="button" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
           </div>
+          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
-        <img src={site.brand.operationShowUp} alt="Operation Show Up cover" />
+        <HeroMedia />
       </section>
       <CountyAboutCompact county={county} />
       <AdSlot county={county} page="home" route="county" slot="county-home-inline" />
@@ -885,10 +881,12 @@ function stateConstitutionUrl(stateName: string) {
 
 function CountyCandidates({ county }: { county: CountySite }) {
   const countyCandidates = getCandidatesForCounty(county);
+  const runoffCandidates = getCandidatesForState(county.state.slug).filter((candidate) => candidateProjectCandidateIds.has(candidate.id));
 
   return (
     <>
       <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
+      {runoffCandidates.length ? <RunoffInterviewsSection candidates={runoffCandidates} /> : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local Ballot Watch</p>
@@ -905,6 +903,19 @@ function CountyCandidates({ county }: { county: CountySite }) {
         </div>
       </section>
     </>
+  );
+}
+
+function RunoffInterviewsSection({ candidates }: { candidates: Candidate[] }) {
+  return (
+    <section className="section">
+      <div className="section-heading">
+        <p className="eyebrow">Runoff Interviews</p>
+        <h2>Texas Statewide runoff interviews</h2>
+        <p>We reached out to all and these are the ones who showed up and spoke to Patriots In Action.</p>
+      </div>
+      <CandidateGrid candidates={candidates} emptyText="No statewide runoff interviews are available yet." />
+    </section>
   );
 }
 
@@ -1508,6 +1519,14 @@ function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function HeroMedia() {
+  return (
+    <div className="hero-media">
+      <img className="hero-main-image" src={site.brand.americanHeader} alt="American flag and civic action artwork" />
+    </div>
   );
 }
 
