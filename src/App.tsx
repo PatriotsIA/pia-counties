@@ -1047,6 +1047,7 @@ type RssFeedWidgetProps = {
   description: string;
   feedUrl: string;
   emptyText: string;
+  filterItem?: (item: NewsFeedItem) => boolean;
 };
 
 function CountyNewsSection({ county, page }: { county: CountySite; page: CountyPageKey }) {
@@ -1065,6 +1066,14 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
             feedUrl={county.feeds.localNewsUrl}
             emptyText="No local article results are available yet."
+          />
+          <RssFeedWidget
+            eyebrow="Sports"
+            title="Local Sports News"
+            description={`High school, college, and professional sports coverage mentioning ${county.displayName} and nearby communities.`}
+            feedUrl={county.feeds.sportsNewsUrl}
+            emptyText="No sports results are available yet."
+            filterItem={isSportsNewsItem}
           />
           <RssFeedWidget
             eyebrow="Obituaries"
@@ -1093,7 +1102,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
   );
 }
 
-function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssFeedWidgetProps) {
+function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, filterItem }: RssFeedWidgetProps) {
   const [items, setItems] = useState<NewsFeedItem[]>([]);
   const [visibleCount, setVisibleCount] = useState(5);
   const [status, setStatus] = useState("Loading feed...");
@@ -1104,9 +1113,10 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
     fetchRssFeedItems(feedUrl)
       .then((parsed) => {
         if (!active) return;
-        setItems(parsed);
+        const nextItems = keepRecentFeedItems(sortFeedItemsByNewest(filterFeedItems(parsed, filterItem)), 14);
+        setItems(nextItems);
         setVisibleCount(5);
-        setStatus(parsed.length ? "" : emptyText);
+        setStatus(nextItems.length ? "" : emptyText);
       })
       .catch(() => {
         if (!active) return;
@@ -1118,10 +1128,11 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
     return () => {
       active = false;
     };
-  }, [emptyText, feedUrl]);
+  }, [emptyText, feedUrl, filterItem]);
 
   const visibleItems = items.slice(0, visibleCount);
   const hasMore = visibleCount < items.length;
+  const sourceUrl = rssSourceLandingPageUrl(feedUrl);
 
   return (
     <article className="feed-widget">
@@ -1133,7 +1144,13 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 5))}>
         {visibleItems.map((item) => (
-          <a className={item.imageUrl ? "feed-item" : "feed-item no-image"} href={item.link} key={item.id}>
+          <a
+            className={item.imageUrl ? "feed-item" : "feed-item no-image"}
+            href={item.link}
+            key={item.id}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {item.imageUrl ? <img src={item.imageUrl} alt="" /> : null}
             <div>
               <strong>{item.title}</strong>
@@ -1144,9 +1161,79 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
         ))}
         {hasMore ? <p className="feed-more">Scroll for more</p> : null}
       </div>
-      <a className="feed-source" href={feedUrl}>Open RSS feed</a>
+      <a className="feed-source" href={sourceUrl} target="_blank" rel="noopener noreferrer">
+        View on Google News
+      </a>
     </article>
   );
+}
+
+function rssSourceLandingPageUrl(feedUrl: string) {
+  try {
+    const url = new URL(feedUrl);
+    if (url.hostname === "news.google.com" && url.pathname.startsWith("/rss/")) {
+      url.pathname = url.pathname.replace(/^\/rss\//, "/");
+      return googleNewsLastWeekUrl(url);
+    }
+    if (url.hostname === "news.google.com") return googleNewsLastWeekUrl(url);
+    return url.toString();
+  } catch {
+    return feedUrl;
+  }
+}
+
+function googleNewsLastWeekUrl(url: URL) {
+  const query = url.searchParams.get("q") || "";
+  if (query) url.searchParams.set("q", withGoogleRecency(query, 7));
+  return url.toString();
+}
+
+function withGoogleRecency(query: string, days: number) {
+  const normalized = query.replace(/\bwhen:\d+[dwmy]\b/gi, "").replace(/\s+/g, " ").trim();
+  return `${normalized} when:${days}d`.trim();
+}
+
+function filterFeedItems(items: NewsFeedItem[], filterItem?: (item: NewsFeedItem) => boolean) {
+  if (!filterItem) return items;
+  return items.filter(filterItem);
+}
+
+function keepRecentFeedItems(items: NewsFeedItem[], days: number) {
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return items.filter((item) => {
+    const time = itemPublishedTimestamp(item);
+    return time !== 0 && time >= cutoff;
+  });
+}
+
+function sortFeedItemsByNewest(items: NewsFeedItem[]) {
+  return [...items].sort((first, second) => itemPublishedTimestamp(second) - itemPublishedTimestamp(first));
+}
+
+function itemPublishedTimestamp(item: NewsFeedItem) {
+  if (!item.publishedAt) return 0;
+  const normalized = normalizePublishedAt(item.publishedAt);
+  const time = new Date(normalized).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function normalizePublishedAt(value: string) {
+  // Some RSS-to-JSON providers return a non-ISO string like "2026-05-21 14:03:00".
+  // Convert to ISO-ish so Date parsing is consistent across browsers.
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value)) return `${value.replace(" ", "T")}Z`;
+  return value;
+}
+
+function isSportsNewsItem(item: NewsFeedItem) {
+  const text = `${item.title || ""} ${item.description || ""} ${item.source || ""}`.toLowerCase();
+
+  const sportsRequired =
+    /\b(sports?|athletics?|football|basketball|baseball|softball|soccer|volleyball|wrestling|track|tennis|golf|ncaa|nfl|nba|mlb|nhl|mls|wnba|playoffs?|tournament|championship|season|coach|team|score|scored|wins?|losses?|signs?|signed|commit(s|ted)?|recruit(s|ed|ing)?)\b/;
+
+  const crimeExclude =
+    /\b(crime|arrest(s|ed)?|charged|charges|police|sheriff|deputy|shooting|murder|homicide|assault|robbery|burglary|court|trial|sentenc(ed|ing)?|indict(ed|ment)?|warrant|jail|prison|inmate|narcotics?|drug(s)?|meth|fentanyl|overdose|sexual|pornography)\b/;
+
+  return sportsRequired.test(text) && !crimeExclude.test(text);
 }
 
 function handleScrollLoadMore(event: UIEvent<HTMLElement>, hasMore: boolean, loadMore: () => void) {
@@ -1217,9 +1304,10 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
     fetchRssFeedItems(site.links.vimeoTvRss)
       .then((items) => {
         if (!active) return;
-        setVideos(items);
+        const nextVideos = keepRecentFeedItems(sortFeedItemsByNewest(items), 14);
+        setVideos(nextVideos);
         setVisibleCount(compact ? 8 : 12);
-        setStatus(items.length ? "" : "No videos found in this Vimeo feed.");
+        setStatus(nextVideos.length ? "" : "No videos found in this Vimeo feed.");
       })
       .catch(() => {
         if (!active) return;
@@ -1242,14 +1330,26 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
         <div className="panel-heading">
           <p className="eyebrow">Patriots in Action TV</p>
           <h3>PIA Video Feed</h3>
-          <p>Latest videos from <a href={site.links.vimeoTv}>Patriots in Action TV on Vimeo</a>.</p>
+          <p>
+            Latest videos from{" "}
+            <a href={site.links.vimeoTv} target="_blank" rel="noopener noreferrer">
+              Patriots in Action TV on Vimeo
+            </a>
+            .
+          </p>
         </div>
       ) : null}
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list video-feed scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + (compact ? 8 : 12)))}>
         {visibleVideos.map((video) => {
           return (
-            <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || site.links.vimeoTv} key={video.id}>
+            <a
+              className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"}
+              href={video.link || site.links.vimeoTv}
+              key={video.id}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {video.imageUrl ? <img src={video.imageUrl} alt="" /> : null}
               <div>
                 <strong>{video.title || "Patriots in Action TV"}</strong>
@@ -1266,7 +1366,11 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
           Load more videos
         </button>
       ) : null}
-      {compact ? <a className="feed-source" href={site.links.vimeoTv}>Open Vimeo channel</a> : null}
+      {compact ? (
+        <a className="feed-source" href={site.links.vimeoTv} target="_blank" rel="noopener noreferrer">
+          Open Vimeo channel
+        </a>
+      ) : null}
     </section>
   );
 }

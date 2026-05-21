@@ -51,6 +51,7 @@ export type CountySite = {
   feeds: {
     localNewsUrl: string;
     localVideoUrl: string;
+    sportsNewsUrl: string;
     nationalNewsUrl: string;
     obituariesUrl: string;
   };
@@ -138,15 +139,81 @@ export function slugify(value: string) {
 }
 
 function newsSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} local news OR ${county.name} ${state.abbr} community news`);
+  return googleNewsRssUrl(
+    withGoogleRecency(`${county.name} County ${state.name} local news OR ${county.name} ${state.abbr} community news`, 14),
+  );
 }
 
 function videoSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} local news video OR ${county.name} ${state.abbr} news video`);
+  return googleNewsRssUrl(
+    withGoogleRecency(`${county.name} County ${state.name} local news video OR ${county.name} ${state.abbr} news video`, 14),
+  );
+}
+
+function sportsSearchUrl(county: UsCounty, state: StateSite) {
+  const locationTerms = [
+    `"${county.name} County ${state.name}"`,
+    `"${county.name} County" "${state.name}"`,
+    `"${county.name} ${state.abbr}"`,
+    `"${county.name}" "${state.name}"`,
+  ].join(" OR ");
+
+  const sportsTerms = [
+    "sports",
+    "athletics",
+    '"high school sports"',
+    '"high school football"',
+    '"high school basketball"',
+    '"college sports"',
+    '"college football"',
+    '"college basketball"',
+    "NCAA",
+    "NFL",
+    "NBA",
+    "MLB",
+    "NHL",
+    "MLS",
+    "WNBA",
+    "football",
+    "basketball",
+    "baseball",
+    "softball",
+    "soccer",
+    "volleyball",
+    "wrestling",
+  ].join(" OR ");
+
+  const excludeTerms = [
+    "crime",
+    "arrest",
+    "arrested",
+    "police",
+    "sheriff",
+    "shooting",
+    "murder",
+    "homicide",
+    "assault",
+    "robbery",
+    "burglary",
+    "court",
+    "trial",
+    "sentenced",
+    "charges",
+    "charged",
+    "indictment",
+    "jail",
+    "prison",
+  ]
+    .map((term) => `-${term}`)
+    .join(" ");
+
+  return googleNewsRssUrl(withGoogleRecency(`(${locationTerms}) (${sportsTerms}) ${excludeTerms}`.trim(), 14));
 }
 
 function obituariesSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} obituaries OR ${county.name} ${state.abbr} obituary`);
+  return googleNewsRssUrl(
+    withGoogleRecency(`${county.name} County ${state.name} obituaries OR ${county.name} ${state.abbr} obituary`, 14),
+  );
 }
 
 const civicResourceLinks = {
@@ -168,6 +235,11 @@ function googleNewsRssUrl(query: string) {
   return url.toString();
 }
 
+function withGoogleRecency(query: string, days: number) {
+  const normalized = query.replace(/\bwhen:\d+[dwmy]\b/gi, "").replace(/\s+/g, " ").trim();
+  return `${normalized} when:${days}d`.trim();
+}
+
 function createCountySite(county: UsCounty, state: StateSite): CountySite {
   const slug = slugify(county.name);
   const displayName = `${county.name} County`;
@@ -187,6 +259,7 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
     feeds: {
       localNewsUrl: newsSearchUrl(county, state),
       localVideoUrl: videoSearchUrl(county, state),
+      sportsNewsUrl: sportsSearchUrl(county, state),
       nationalNewsUrl: site.links.nationalNews,
       obituariesUrl: obituariesSearchUrl(county, state),
     },

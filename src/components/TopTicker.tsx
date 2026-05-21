@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
 
 type WeatherStatus = {
@@ -89,34 +89,33 @@ function TradingViewTicker() {
   return <div className="tradingview-widget-container market-ticker-widget" ref={containerRef} />;
 }
 
-function CountyWeather({ county }: { county?: CountySite }) {
-  const [weather, setWeather] = useState<WeatherStatus>(() => ({
-    label: county ? weatherLocationName(county) : "Local weather",
-    loading: Boolean(county),
-  }));
-  const locationName = useMemo(() => (county ? weatherLocationName(county) : ""), [county]);
+type CountyWeatherState = {
+  countyKey: string;
+  weather: WeatherStatus;
+};
+
+function CountyWeather({ county }: { county: CountySite }) {
+  const countyKey = `${county.state.slug}/${county.slug}`;
+  const locationName = weatherLocationName(county);
+  const [weatherState, setWeatherState] = useState<CountyWeatherState | null>(null);
+  const loading = !weatherState || weatherState.countyKey !== countyKey;
+  const weather: WeatherStatus = loading ? { label: locationName, loading: true } : weatherState.weather;
 
   useEffect(() => {
     let active = true;
 
-    if (!county) {
-      setWeather({ label: "Choose a county for local weather", loading: false });
-      return;
-    }
-
-    setWeather({ label: locationName, loading: true });
     fetchCountyWeather(county)
       .then((nextWeather) => {
-        if (active) setWeather(nextWeather);
+        if (active) setWeatherState({ countyKey, weather: nextWeather });
       })
       .catch(() => {
-        if (active) setWeather({ label: locationName, condition: "Weather unavailable", loading: false });
+        if (active) setWeatherState({ countyKey, weather: { label: locationName, condition: "Weather unavailable", loading: false } });
       });
 
     return () => {
       active = false;
     };
-  }, [county, locationName]);
+  }, [county, countyKey, locationName]);
 
   if (weather.loading) {
     return (

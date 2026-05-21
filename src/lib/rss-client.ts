@@ -33,7 +33,7 @@ type CachedFeed = {
 
 const DEFAULT_PROVIDER_URL = "https://api.rss2json.com/v1/api.json";
 const DEFAULT_RAW_PROXY_URL = "https://api.allorigins.win/raw";
-const MAX_ITEMS = 40;
+const MAX_ITEMS = 120;
 const CACHE_TTL_MS = minutesEnv("VITE_RSS_CACHE_TTL_MINUTES", 60) * 60 * 1000;
 
 export async function fetchRssFeedItems(feedUrl: string) {
@@ -83,10 +83,10 @@ async function fetchRawRssItems(feedUrl: string) {
 function providerRequestUrl(feedUrl: string) {
   const url = new URL(import.meta.env.VITE_RSS_PROVIDER_URL || DEFAULT_PROVIDER_URL);
   url.searchParams.set("rss_url", feedUrl);
+  url.searchParams.set("count", String(MAX_ITEMS));
 
   if (import.meta.env.VITE_RSS2JSON_API_KEY) {
     url.searchParams.set("api_key", import.meta.env.VITE_RSS2JSON_API_KEY);
-    url.searchParams.set("count", String(MAX_ITEMS));
   }
 
   return url.toString();
