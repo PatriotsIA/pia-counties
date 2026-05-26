@@ -18,6 +18,19 @@ type GeocodingResult = {
   country_code?: string;
 };
 
+type TigerWebCountyResponse = {
+  features?: Array<{
+    attributes?: {
+      BASENAME?: string;
+      CENTLAT?: string;
+      CENTLON?: string;
+      INTPTLAT?: string;
+      INTPTLON?: string;
+      GEOID?: string;
+    };
+  }>;
+};
+
 type WeatherResponse = {
   current?: {
     time?: string;
@@ -177,33 +190,70 @@ async function geocodeCounty(county: CountySite): Promise<GeocodingResult> {
   const cached = readCachedLocation(county);
   if (cached) return cached;
 
-  const searchNames = [county.primaryCity, `${county.name} County`, county.name].filter(Boolean) as string[];
-  for (const name of searchNames) {
-    const params = new URLSearchParams({
-      name,
-      count: "10",
-      language: "en",
-      format: "json",
-      countryCode: "US",
-    });
-    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${params.toString()}`);
-    if (!response.ok) continue;
-    const data = (await response.json()) as { results?: GeocodingResult[] };
-    const match = data.results?.find((result) => result.admin1 === county.state.name) || data.results?.[0];
-    if (match) {
-      const location = {
-        latitude: match.latitude,
-        longitude: match.longitude,
-        name: county.primaryCity || match.name || weatherLocationName(county),
-        admin1: match.admin1,
-        country_code: match.country_code,
-      };
-      cacheLocation(county, location);
-      return location;
+  if (county.primaryCity) {
+    const primaryCityLocation = await geocodePrimaryCity(county);
+    if (primaryCityLocation) {
+      cacheLocation(county, primaryCityLocation);
+      return primaryCityLocation;
     }
   }
 
-  throw new Error("No weather location found");
+  const countyLocation = await fetchCountyCentroid(county);
+  cacheLocation(county, countyLocation);
+  return countyLocation;
+}
+
+async function geocodePrimaryCity(county: CountySite): Promise<GeocodingResult | undefined> {
+  if (!county.primaryCity) return undefined;
+
+  const params = new URLSearchParams({
+    name: county.primaryCity,
+    count: "10",
+    language: "en",
+    format: "json",
+    countryCode: "US",
+  });
+  const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${params.toString()}`);
+  if (!response.ok) return undefined;
+  const data = (await response.json()) as { results?: GeocodingResult[] };
+  const match = data.results?.find((result) => result.admin1 === county.state.name && result.country_code === "US");
+  if (!match) return undefined;
+
+  return {
+    latitude: match.latitude,
+    longitude: match.longitude,
+    name: county.primaryCity,
+    admin1: match.admin1,
+    country_code: match.country_code,
+  };
+}
+
+async function fetchCountyCentroid(county: CountySite): Promise<GeocodingResult> {
+  const stateFips = county.fips.slice(0, 2);
+  const countyFips = county.fips.slice(2);
+  const params = new URLSearchParams({
+    where: `STATE='${stateFips}' AND COUNTY='${countyFips}'`,
+    outFields: "BASENAME,CENTLAT,CENTLON,INTPTLAT,INTPTLON,GEOID",
+    returnGeometry: "false",
+    f: "json",
+  });
+  const response = await fetch(`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?${params.toString()}`);
+  if (!response.ok) throw new Error("County coordinate request failed");
+  const data = (await response.json()) as TigerWebCountyResponse;
+  const attributes = data.features?.[0]?.attributes;
+  const latitude = Number(attributes?.INTPTLAT || attributes?.CENTLAT);
+  const longitude = Number(attributes?.INTPTLON || attributes?.CENTLON);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    throw new Error("No county coordinates found");
+  }
+
+  return {
+    latitude,
+    longitude,
+    name: county.displayName,
+    admin1: county.state.name,
+    country_code: "US",
+  };
 }
 
 function weatherLocationName(county: CountySite) {
@@ -211,7 +261,7 @@ function weatherLocationName(county: CountySite) {
 }
 
 function locationCacheKey(county: CountySite) {
-  return `pia-weather-location:${county.state.slug}/${county.slug}`;
+  return `pia-weather-location:v2:${county.state.slug}/${county.slug}`;
 }
 
 function readCachedLocation(county: CountySite) {
