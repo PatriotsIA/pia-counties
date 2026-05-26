@@ -1492,7 +1492,85 @@ function Shell({ county, children, page, route }: { county?: CountySite; childre
         </div>
       ) : null}
       <Footer />
+      {county ? <CountyBookmarkToast county={county} /> : null}
     </>
+  );
+}
+
+function CountyBookmarkToast({ county }: { county: CountySite }) {
+  const [visible, setVisible] = useState(false);
+  const [status, setStatus] = useState("");
+  const storageKey = `pia-bookmark-toast-dismissed:${county.state.slug}/${county.slug}`;
+  const countyUrl = typeof window === "undefined" ? countyPath(county) : new URL(countyPath(county), window.location.origin).toString();
+  const bookmarkTitle = `${county.displayName}, ${county.state.name} | ${site.name}`;
+
+  useEffect(() => {
+    setStatus("");
+    try {
+      setVisible(window.sessionStorage.getItem(storageKey) !== "true");
+    } catch {
+      setVisible(true);
+    }
+  }, [storageKey]);
+
+  if (!visible) return null;
+
+  function dismiss() {
+    try {
+      window.sessionStorage.setItem(storageKey, "true");
+    } catch {
+      // Ignore storage failures; the toast can still close for this render.
+    }
+    setVisible(false);
+  }
+
+  async function handleBookmark() {
+    const legacyWindow = window as Window & {
+      external?: { AddFavorite?: (url: string, title: string) => void };
+      sidebar?: { addPanel?: (title: string, url: string, content?: string) => void };
+    };
+
+    try {
+      if (legacyWindow.external?.AddFavorite) {
+        legacyWindow.external.AddFavorite(countyUrl, bookmarkTitle);
+        setStatus("Bookmark prompt opened.");
+        return;
+      }
+      if (legacyWindow.sidebar?.addPanel) {
+        legacyWindow.sidebar.addPanel(bookmarkTitle, countyUrl, "");
+        setStatus("Bookmark prompt opened.");
+        return;
+      }
+    } catch {
+      // Modern browsers may expose but block legacy bookmark APIs.
+    }
+
+    try {
+      await navigator.clipboard.writeText(countyUrl);
+      setStatus("Link copied.");
+    } catch {
+      setStatus("Use the instructions below to save this county.");
+    }
+  }
+
+  return (
+    <aside className="bookmark-toast" role="status" aria-live="polite">
+      <button className="bookmark-toast-close" type="button" onClick={dismiss} aria-label="Dismiss bookmark reminder">x</button>
+      <p className="eyebrow">Save Your County</p>
+      <h2>Bookmark {county.displayName}</h2>
+      <p>Keep your home county or counties handy so you can get back to local updates, weather, candidates, and events quickly.</p>
+      <div className="bookmark-toast-actions">
+        <button className="button primary" type="button" onClick={handleBookmark}>Bookmark this county</button>
+        <button className="button" type="button" onClick={dismiss}>Not now</button>
+      </div>
+      {status ? (
+        <div className="bookmark-toast-instructions">
+          <p className="bookmark-toast-status">{status}</p>
+          <p><strong>Desktop:</strong> Press Ctrl+D on Windows/Linux or Cmd+D on Mac.</p>
+          <p><strong>Mobile:</strong> iPhone/iPad: tap Share, then Add Bookmark or Add to Home Screen. Android: tap the browser menu, then Star or Add to Home screen.</p>
+        </div>
+      ) : null}
+    </aside>
   );
 }
 

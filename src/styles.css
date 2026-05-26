@@ -526,6 +526,86 @@ nav a {
   cursor: wait;
 }
 
+.bookmark-toast {
+  position: fixed;
+  right: max(1rem, calc((100vw - 1180px) / 2));
+  bottom: 1rem;
+  z-index: 20;
+  width: min(380px, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid rgba(21, 56, 111, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 250, 240, 0.98);
+  box-shadow: 0 18px 50px rgba(17, 27, 71, 0.2);
+}
+
+.bookmark-toast h2,
+.bookmark-toast p {
+  margin: 0;
+}
+
+.bookmark-toast h2 {
+  margin-bottom: 0.45rem;
+  color: var(--navy);
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.bookmark-toast > p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.bookmark-toast-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(21, 56, 111, 0.08);
+  color: var(--navy);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bookmark-toast-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+}
+
+.bookmark-toast-actions .button {
+  min-height: 38px;
+  padding: 0.55rem 0.8rem;
+}
+
+.bookmark-toast-instructions {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.bookmark-toast-instructions p {
+  margin: 0;
+}
+
+.bookmark-toast-instructions strong {
+  color: var(--navy);
+}
+
+.bookmark-toast-status {
+  color: var(--blue);
+  font-weight: 800;
+}
+
 .section-heading {
   max-width: 760px;
   margin-bottom: 1.5rem;
@@ -1329,6 +1409,21 @@ nav a {
   .weather-pill {
     max-width: 100%;
     font-size: 0.72rem;
+  }
+
+  .bookmark-toast {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .bookmark-toast-actions {
+    flex-direction: column;
+  }
+
+  .bookmark-toast-actions .button {
+    width: 100%;
   }
 
   .header-inner {
