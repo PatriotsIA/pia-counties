@@ -2,7 +2,7 @@ import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { getCountyCalendarFeed } from "./src/data/counties";
 import { combineIcsFeeds, normalizeCalendarFeedUrl } from "./src/lib/calendar";
-import { buildNewsFeedItems } from "./src/lib/rss-feed";
+import { buildNewsFeedItemsFromXmls } from "./src/lib/rss-feed";
 
 const defaultVimeoUser = "patriotsinactiontv";
 const allowedVimeoUsers = new Set([defaultVimeoUser]);
@@ -165,21 +165,7 @@ function rssApiDevMiddleware(): Plugin {
         }
 
         try {
-          const feedResponse = await fetch(feedUrl, {
-            headers: {
-              Accept: "application/rss+xml, application/xml, text/xml",
-              "User-Agent": "PatriotsInActionFeeds/1.0",
-            },
-          });
-
-          if (!feedResponse.ok) {
-            response.statusCode = feedResponse.status === 429 ? 429 : 502;
-            response.setHeader("Content-Type", "application/json; charset=utf-8");
-            response.end(JSON.stringify({ error: `Upstream RSS status: ${feedResponse.status}.` }));
-            return;
-          }
-
-          const items = await buildNewsFeedItems(await feedResponse.text());
+          const items = await buildNewsFeedItemsFromXmls(await fetchFeedXmls(feedUrl));
 
           response.statusCode = 200;
           response.setHeader("Access-Control-Allow-Origin", "*");
@@ -194,6 +180,39 @@ function rssApiDevMiddleware(): Plugin {
       });
     },
   };
+}
+
+async function fetchFeedXmls(feedUrl: string) {
+  const results = await Promise.allSettled(feedVariantUrls(feedUrl).map(fetchFeedXml));
+  const xmls = results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
+  if (!xmls.length) throw new Error("RSS feed could not be loaded.");
+  return xmls;
+}
+
+async function fetchFeedXml(feedUrl: string) {
+  const feedResponse = await fetch(feedUrl, {
+    headers: {
+      Accept: "application/rss+xml, application/xml, text/xml",
+      "User-Agent": "PatriotsInActionFeeds/1.0",
+    },
+  });
+
+  if (!feedResponse.ok) throw new Error(`Upstream RSS status: ${feedResponse.status}.`);
+  return feedResponse.text();
+}
+
+function feedVariantUrls(feedUrl: string) {
+  const url = new URL(feedUrl);
+  if (url.hostname !== "news.google.com" || !url.pathname.startsWith("/rss/search")) return [feedUrl];
+
+  const query = url.searchParams.get("q") || "";
+  if (/\bwhen:\S+/i.test(query)) return [feedUrl];
+
+  return ["7d", "30d"].map((dateWindow) => {
+    const next = new URL(url);
+    next.searchParams.set("q", `${query} when:${dateWindow}`);
+    return next.toString();
+  }).concat(feedUrl);
 }
 
 export default defineConfig(({ mode }) => {

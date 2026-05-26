@@ -13,7 +13,24 @@ const MAX_ITEMS = 40;
 const ARTICLE_IMAGE_LOOKUP_LIMIT = 12;
 
 export async function buildNewsFeedItems(xml: string) {
-  const items = parseRssItems(xml).sort(byNewestPublished).slice(0, MAX_ITEMS);
+  return enrichNewsFeedItems(parseRssItems(xml));
+}
+
+export async function buildNewsFeedItemsFromXmls(xmls: string[]) {
+  const deduped = new Map<string, NewsFeedItem>();
+  xmls.flatMap(parseRssItems).forEach((item) => {
+    const key = item.link || item.id;
+    const existing = deduped.get(key);
+    if (!existing || timestamp(item.publishedAt) > timestamp(existing.publishedAt)) {
+      deduped.set(key, item);
+    }
+  });
+
+  return enrichNewsFeedItems([...deduped.values()]);
+}
+
+async function enrichNewsFeedItems(feedItems: NewsFeedItem[]) {
+  const items = feedItems.sort(byNewestPublished).slice(0, MAX_ITEMS);
 
   return Promise.all(
     items.map(async (item, index) => {
@@ -27,7 +44,7 @@ export async function buildNewsFeedItems(xml: string) {
         imageUrl: articleImageUrl || feedImageUrl || fallbackImage(item.source || "News"),
       };
     }),
-  );
+  ).then((enriched) => enriched.sort(byNewestPublished));
 }
 
 function parseRssItems(xml: string): NewsFeedItem[] {

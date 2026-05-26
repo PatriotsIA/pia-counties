@@ -26,6 +26,10 @@ type Rss2JsonResponse = {
   items?: Rss2JsonItem[];
 };
 
+type LocalFeedResponse = {
+  items?: NewsFeedItem[];
+};
+
 type CachedFeed = {
   fetchedAt: number;
   items: NewsFeedItem[];
@@ -52,10 +56,30 @@ export async function fetchRssFeedItems(feedUrl: string) {
 
 async function fetchProviderItems(feedUrl: string) {
   try {
-    return await fetchRss2JsonItems(feedUrl);
+    return await fetchLocalApiItems(feedUrl);
   } catch {
-    return fetchRawRssItems(feedUrl);
+    try {
+      return await fetchMergedRss2JsonItems(feedUrl);
+    } catch {
+      return fetchMergedRawRssItems(feedUrl);
+    }
   }
+}
+
+async function fetchLocalApiItems(feedUrl: string) {
+  const url = new URL("/api/rss-feed", window.location.origin);
+  url.searchParams.set("url", feedUrl);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Local RSS API failed with ${response.status}`);
+  const json = (await response.json()) as LocalFeedResponse;
+  return newestItems(json.items || []);
+}
+
+async function fetchMergedRss2JsonItems(feedUrl: string) {
+  const results = await Promise.allSettled(feedVariantUrls(feedUrl).map(fetchRss2JsonItems));
+  const items = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  if (!items.length) throw new Error("RSS provider returned no items.");
+  return newestItems(dedupeItems(items));
 }
 
 async function fetchRss2JsonItems(feedUrl: string) {
@@ -71,6 +95,13 @@ async function fetchRss2JsonItems(feedUrl: string) {
     .slice(0, MAX_ITEMS);
 }
 
+async function fetchMergedRawRssItems(feedUrl: string) {
+  const results = await Promise.allSettled(feedVariantUrls(feedUrl).map(fetchRawRssItems));
+  const items = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+  if (!items.length) throw new Error("RSS raw proxy returned no items.");
+  return newestItems(dedupeItems(items));
+}
+
 async function fetchRawRssItems(feedUrl: string) {
   const response = await fetch(rawProxyRequestUrl(feedUrl));
   if (!response.ok) throw new Error(`RSS raw proxy failed with ${response.status}`);
@@ -78,6 +109,40 @@ async function fetchRawRssItems(feedUrl: string) {
   return parseRssXml(await response.text())
     .sort((first, second) => publishedTimestamp(second) - publishedTimestamp(first))
     .slice(0, MAX_ITEMS);
+}
+
+function feedVariantUrls(feedUrl: string) {
+  try {
+    const url = new URL(feedUrl);
+    if (url.hostname !== "news.google.com" || !url.pathname.startsWith("/rss/search")) return [feedUrl];
+
+    const query = url.searchParams.get("q") || "";
+    if (/\bwhen:\S+/i.test(query)) return [feedUrl];
+
+    return ["7d", "30d"].map((dateWindow) => {
+      const next = new URL(url);
+      next.searchParams.set("q", `${query} when:${dateWindow}`);
+      return next.toString();
+    }).concat(feedUrl);
+  } catch {
+    return [feedUrl];
+  }
+}
+
+function dedupeItems(items: NewsFeedItem[]) {
+  const deduped = new Map<string, NewsFeedItem>();
+  items.forEach((item) => {
+    const key = item.link || item.id;
+    const existing = deduped.get(key);
+    if (!existing || publishedTimestamp(item) > publishedTimestamp(existing)) {
+      deduped.set(key, item);
+    }
+  });
+  return [...deduped.values()];
+}
+
+function newestItems(items: NewsFeedItem[]) {
+  return [...items].sort((first, second) => publishedTimestamp(second) - publishedTimestamp(first)).slice(0, MAX_ITEMS);
 }
 
 function providerRequestUrl(feedUrl: string) {
@@ -185,7 +250,7 @@ function cacheKey(feedUrl: string) {
   for (let index = 0; index < feedUrl.length; index += 1) {
     hash = (hash * 31 + feedUrl.charCodeAt(index)) >>> 0;
   }
-  return `pia:rss:${hash.toString(16)}`;
+  return `pia:rss:v2:${hash.toString(16)}`;
 }
 
 function readCachedFeed(feedUrl: string): CachedFeed | undefined {

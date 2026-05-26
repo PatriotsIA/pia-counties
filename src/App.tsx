@@ -1120,8 +1120,10 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
     };
   }, [emptyText, feedUrl]);
 
-  const visibleItems = items.slice(0, visibleCount);
+  const orderedItems = [...items].sort((first, second) => feedItemTimestamp(second) - feedItemTimestamp(first));
+  const visibleItems = orderedItems.slice(0, visibleCount);
   const hasMore = visibleCount < items.length;
+  const feedSource = readableFeedSource(feedUrl);
 
   return (
     <article className="feed-widget">
@@ -1144,9 +1146,33 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
         ))}
         {hasMore ? <p className="feed-more">Scroll for more</p> : null}
       </div>
-      <a className="feed-source" href={feedUrl}>Open RSS feed</a>
+      <a className="feed-source" href={feedSource.href} target="_blank" rel="noreferrer">{feedSource.label}</a>
     </article>
   );
+}
+
+function readableFeedSource(feedUrl: string) {
+  try {
+    const url = new URL(feedUrl);
+    if (url.hostname === "news.google.com" && url.pathname.startsWith("/rss/search")) {
+      const sourceUrl = new URL("https://news.google.com/search");
+      const query = url.searchParams.get("q");
+      if (query) sourceUrl.searchParams.set("q", query);
+      sourceUrl.searchParams.set("hl", url.searchParams.get("hl") || "en-US");
+      sourceUrl.searchParams.set("gl", url.searchParams.get("gl") || "US");
+      sourceUrl.searchParams.set("ceid", url.searchParams.get("ceid") || "US:en");
+      return { href: sourceUrl.toString(), label: "Open Google News results" };
+    }
+
+    if (url.hostname === "news.google.com" && url.pathname.startsWith("/rss")) {
+      url.pathname = url.pathname.replace(/^\/rss/, "") || "/";
+      return { href: url.toString(), label: "Open news source" };
+    }
+  } catch {
+    return { href: feedUrl, label: "Open source" };
+  }
+
+  return { href: feedUrl, label: "Open source" };
 }
 
 function handleScrollLoadMore(event: UIEvent<HTMLElement>, hasMore: boolean, loadMore: () => void) {
@@ -1154,6 +1180,11 @@ function handleScrollLoadMore(event: UIEvent<HTMLElement>, hasMore: boolean, loa
   const element = event.currentTarget;
   const isNearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 80;
   if (isNearBottom) loadMore();
+}
+
+function feedItemTimestamp(item: NewsFeedItem) {
+  const timestamp = item.publishedAt ? new Date(item.publishedAt).getTime() : 0;
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
 function EventCalendar({ county, compact = false }: { county: CountySite; compact?: boolean }) {
