@@ -1,7 +1,7 @@
 import { ads, type AdCreative, type AdSlotId } from "../data/ads";
 import type { CountyPageKey, CountySite } from "../data/counties";
 
-export type AdRouteType = "home" | "directory" | "state" | "county" | "static";
+export type AdRouteType = "home" | "directory" | "state" | "county" | "tv" | "rewards" | "partners" | "contact" | "static";
 
 export type AdContext = {
   route: AdRouteType;
@@ -16,7 +16,11 @@ export type ResolveAdsOptions = AdContext & {
   catalog?: AdCreative[];
 };
 
+export const SPONSOR_ADS_ENABLED = true;
+
 export function resolveAdsForSlot({ slot, limit = 1, catalog = ads, ...context }: ResolveAdsOptions) {
+  if (!SPONSOR_ADS_ENABLED) return [];
+
   return catalog
     .filter((ad) => isAdEligible(ad, slot, context))
     .sort((first, second) => second.priority - first.priority || first.id.localeCompare(second.id))

@@ -32,6 +32,52 @@ const heroHeadline = "Patriots in Action";
 const heroKicker = "A Nationwide & Local Civic Hub";
 const heroDescription =
   "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
+const preferredPartners = [
+  {
+    name: "CBT Real Estate Services",
+    description: "Connect with CBT Real Estate Services on Facebook.",
+    href: site.links.cbtRealEstate,
+    presentsCountyPages: true,
+  },
+  {
+    name: "Patriot Dispatch",
+    description: "Get Patriots in Action updates and messaging resources.",
+    href: site.links.patriotDispatch,
+  },
+  {
+    name: "LEMC Realty",
+    description: "Find Amarillo and Canyon area rental homes, apartments, and property management services.",
+    href: site.links.lemcRealty,
+  },
+  {
+    name: "Patriot Rewards",
+    description: "Discover community connections, preferred partners, and member benefits.",
+    href: site.links.community,
+  },
+  {
+    name: "Patriots in Action TV",
+    description: "Watch candidate interviews, updates, and community stories.",
+    href: "/tv",
+  },
+  {
+    name: "piaevents.com",
+    description: "Find upcoming Patriots in Action events and places to show up.",
+    href: site.links.piaEvents,
+  },
+  {
+    name: "The Patriots in Action Trailer Store",
+    description: "Shop and connect with Patriots in Action at live events.",
+    href: site.links.piaEvents,
+  },
+  {
+    name: "The Patriot Merch Store",
+    description: "Shop patriotic merchandise and gear from the Patriots in Action merch store.",
+    href: site.links.merch,
+  },
+];
+function preferredPartner(name: string) {
+  return preferredPartners.find((partner) => partner.name === name);
+}
 
 function candidateProfilePath(candidate: Candidate) {
   return `/candidates/${candidate.id}`;
@@ -199,6 +245,7 @@ function seoDataForPath(pathname: string): SeoData {
 
   if (pathname === "/tv") return { title: "PIA TV", description: "Watch Patriots in Action TV videos, candidate interviews, civic updates, and community stories.", canonicalPath: "/tv" };
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
+  if (pathname === "/partners") return { title: "Preferred Partners", description: "Discover Patriots in Action preferred partners, sponsorship opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
@@ -343,6 +390,7 @@ function App() {
         <Route path="/counties" element={<DirectoryPage />} />
         <Route path="/tv" element={<MainTvPage />} />
       <Route path="/rewards" element={<RewardsPage />} />
+        <Route path="/partners" element={<MainPartnersPage />} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
@@ -408,7 +456,7 @@ function MainTvPage() {
   usePageTitle("PIA TV");
 
   return (
-    <Shell route="static">
+    <Shell route="tv">
       <PageHero eyebrow="Patriots in Action TV" title="PIA TV" subtitle="Latest videos, interviews, candidate conversations, and updates from Patriots in Action." />
       <VimeoFeed />
     </Shell>
@@ -419,7 +467,7 @@ function RewardsPage() {
   usePageTitle("Patriot Rewards");
 
   return (
-    <Shell route="static">
+    <Shell route="rewards">
       <PageHero
         eyebrow="Patriot Rewards"
         title="Your community connection hub"
@@ -461,11 +509,48 @@ function RewardsPage() {
   );
 }
 
+function MainPartnersPage() {
+  usePageTitle("Preferred Partners");
+
+  return (
+    <Shell route="partners">
+      <PageHero
+        eyebrow="Partners"
+        title="Preferred Partners"
+        subtitle="Connect with Patriots in Action preferred partners, founding sponsors, events, rewards, media, and merchandise."
+      />
+      <section className="section split top-align">
+        <div className="panel">
+          <p className="eyebrow">Sitewide Partners</p>
+          <h2>Partners supporting Patriots in Action</h2>
+          <p>
+            These are current Patriots in Action preferred partners. State and county pages can also feature their own local founding
+            sponsors as those relationships are added.
+          </p>
+          <PartnerList />
+        </div>
+        <div className="panel">
+          <p className="eyebrow">Sponsorships</p>
+          <h2>Become a founding sponsor</h2>
+          <p>
+            We are selecting founding businesses in counties and states to help support local civic information, events, election resources,
+            weather, news, and community engagement.
+          </p>
+          <div className="actions">
+            <Link className="button primary" to="/contact">Sponsor a County</Link>
+            <Link className="button" to="/counties">Find Your County</Link>
+          </div>
+        </div>
+      </section>
+    </Shell>
+  );
+}
+
 function SiteContactPage() {
   usePageTitle("Contact");
 
   return (
-    <Shell route="static">
+    <Shell route="contact">
       <PageHero eyebrow="Contact" title="Contact Patriots in Action" subtitle="Reach out about candidate profiles, interviews, voter outreach, events, partnerships, or county-level action." />
       <section className="section split top-align">
         <div className="panel">
@@ -591,7 +676,7 @@ function StatePage() {
   if (stateSlug?.toLowerCase() !== state.abbr.toLowerCase()) return <Navigate to={statePath(state)} replace />;
 
   return (
-    <Shell route="state">
+    <Shell route="state" suppressAdRails>
       <PageHero eyebrow={state.abbr} title={`${state.name} Patriot Networks`} subtitle="Select a county to open its local Patriots in Action site." />
       <section className="section split top-align">
         <div className="panel">
@@ -733,7 +818,7 @@ function CandidateProfilePage() {
       : "/counties";
 
   return (
-    <Shell route="static">
+    <Shell route="static" suppressAdRails>
       <section className="section">
         <CandidateProfile candidate={candidate} backPath={backPath} />
       </section>
@@ -963,53 +1048,25 @@ function CountyPartners({ county }: { county: CountySite }) {
           <p className="eyebrow">Preferred Partners</p>
           <h2>Preferred Partners</h2>
           <p>Connect with Patriots in Action partners, events, and stores that help keep local action moving.</p>
-          <ul className="partner-list">
-            <li>
-              <a href={site.links.cbtRealEstate} target="_blank" rel="noreferrer">
-                <strong>CBT Real Estate Services</strong>
-                <span>Connect with CBT Real Estate Services on Facebook.</span>
-              </a>
-            </li>
-            <li>
-              <a href={site.links.patriotDispatch} target="_blank" rel="noreferrer">
-                <strong>Patriot Dispatch</strong>
-                <span>Get Patriots in Action updates and messaging resources.</span>
-              </a>
-            </li>
-            <li>
-              <a href={site.links.community} target="_blank" rel="noreferrer">
-                <strong>Patriot Rewards</strong>
-                <span>Discover community connections, preferred partners, and member benefits.</span>
-              </a>
-            </li>
-            <li>
-              <a href={site.links.vimeoTv} target="_blank" rel="noreferrer">
-                <strong>Patriots in Action TV</strong>
-                <span>Watch candidate interviews, updates, and community stories.</span>
-              </a>
-            </li>
-            <li>
-              <a href={site.links.piaEvents} target="_blank" rel="noreferrer">
-                <strong>piaevents.com</strong>
-                <span>Find upcoming Patriots in Action events and places to show up.</span>
-              </a>
-            </li>
-            <li>
-              <a href={site.links.piaEvents} target="_blank" rel="noreferrer">
-                <strong>The Patriots in Action Trailer Store</strong>
-                <span>Shop and connect with Patriots in Action at live events.</span>
-              </a>
-            </li>
-            <li>
-              <a href={county.links.merch} target="_blank" rel="noreferrer">
-                <strong>Merch Store</strong>
-                <span>Shop patriotic merchandise and gear from the Patriots in Action merch store.</span>
-              </a>
-            </li>
-          </ul>
+          <PartnerList county={county} />
         </div>
       </section>
     </>
+  );
+}
+
+function PartnerList({ county }: { county?: CountySite }) {
+  return (
+    <ul className="partner-list">
+      {preferredPartners.map((partner) => (
+        <li key={partner.name}>
+                <a href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
+            <strong>{partner.name}</strong>
+            <span>{partner.description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -1047,6 +1104,8 @@ type RssFeedWidgetProps = {
   description: string;
   feedUrl: string;
   emptyText: string;
+  presentedBy?: (typeof preferredPartners)[number];
+  topic?: "general" | "obituaries" | "sports";
 };
 
 function CountyNewsSection({ county, page }: { county: CountySite; page: CountyPageKey }) {
@@ -1055,7 +1114,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
       <div className="section-heading">
         <p className="eyebrow">County Newsroom</p>
         <h2>Ultra-local feeds for {county.displayName}</h2>
-        <p>Follow local articles, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
+        <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
       </div>
       <div className="feed-grid">
         <div className="feed-column">
@@ -1065,6 +1124,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
             feedUrl={county.feeds.localNewsUrl}
             emptyText="No local article results are available yet."
+            presentedBy={preferredPartner("CBT Real Estate Services")}
           />
           <RssFeedWidget
             eyebrow="Obituaries"
@@ -1072,6 +1132,8 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Recent obituary notices and memorial news for ${county.displayName}.`}
             feedUrl={county.feeds.obituariesUrl}
             emptyText="No local obituary results are available yet."
+            presentedBy={preferredPartner("Patriot Rewards")}
+            topic="obituaries"
           />
         </div>
         <div className="feed-column">
@@ -1081,19 +1143,31 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
             feedUrl={county.feeds.localVideoUrl}
             emptyText="No local video results are available yet."
+            presentedBy={preferredPartner("Patriots in Action TV")}
           />
           <VimeoFeed compact />
         </div>
       </div>
+      <div className="feed-feature-row">
+        <RssFeedWidget
+          eyebrow="Local Sports"
+          title="High School & College Sports"
+          description={`Local high school, college, and athletics coverage connected to ${county.displayName}.`}
+          feedUrl={county.feeds.localSportsUrl}
+          emptyText="No local sports results are available yet."
+          presentedBy={preferredPartner("piaevents.com")}
+          topic="sports"
+        />
+      </div>
       <div className="news-sponsor-row">
-        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={2} />
+        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={3} />
         <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
       </div>
     </section>
   );
 }
 
-function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssFeedWidgetProps) {
+function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presentedBy, topic = "general" }: RssFeedWidgetProps) {
   const [items, setItems] = useState<NewsFeedItem[]>([]);
   const [visibleCount, setVisibleCount] = useState(5);
   const [status, setStatus] = useState("Loading feed...");
@@ -1104,9 +1178,10 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
     fetchRssFeedItems(feedUrl)
       .then((parsed) => {
         if (!active) return;
-        setItems(parsed);
+        const topicItems = filterFeedItemsByTopic(parsed, topic);
+        setItems(topicItems);
         setVisibleCount(5);
-        setStatus(parsed.length ? "" : emptyText);
+        setStatus(topicItems.length ? "" : emptyText);
       })
       .catch(() => {
         if (!active) return;
@@ -1118,11 +1193,11 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
     return () => {
       active = false;
     };
-  }, [emptyText, feedUrl]);
+  }, [emptyText, feedUrl, topic]);
 
   const orderedItems = [...items].sort((first, second) => feedItemTimestamp(second) - feedItemTimestamp(first));
   const visibleItems = orderedItems.slice(0, visibleCount);
-  const hasMore = visibleCount < items.length;
+  const hasMore = visibleCount < orderedItems.length;
   const feedSource = readableFeedSource(feedUrl);
 
   return (
@@ -1131,6 +1206,12 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText }: RssF
         <p className="eyebrow">{eyebrow}</p>
         <h3>{title}</h3>
         <p>{description}</p>
+        {presentedBy ? (
+          <a className="feed-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
+            <span>Presented by</span>
+            <strong>{presentedBy.name}</strong>
+          </a>
+        ) : null}
       </div>
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 5))}>
@@ -1185,6 +1266,87 @@ function handleScrollLoadMore(event: UIEvent<HTMLElement>, hasMore: boolean, loa
 function feedItemTimestamp(item: NewsFeedItem) {
   const timestamp = item.publishedAt ? new Date(item.publishedAt).getTime() : 0;
   return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function filterFeedItemsByTopic(items: NewsFeedItem[], topic: RssFeedWidgetProps["topic"]) {
+  if (topic === "obituaries") return items.filter(isObituaryFeedItem);
+  if (topic === "sports") return items.filter(isSportsFeedItem);
+  return items;
+}
+
+function feedSearchText(item: NewsFeedItem) {
+  return [item.title, item.description, item.source].filter(Boolean).join(" ").toLowerCase();
+}
+
+function isObituaryFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  return [
+    "obituary",
+    "obituaries",
+    "death notice",
+    "funeral",
+    "memorial service",
+    "celebration of life",
+    "passed away",
+    "in memory",
+    "legacy.com",
+    "tributes",
+  ].some((keyword) => text.includes(keyword));
+}
+
+function isSportsFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  if ([
+    "arrest",
+    "arrested",
+    "charged",
+    "crash",
+    "dead",
+    "death",
+    "deputies",
+    "dies",
+    "fire",
+    "funeral",
+    "killed",
+    "murder",
+    "obituary",
+    "police",
+    "shooting",
+    "victim",
+    "wanted",
+  ].some((keyword) => text.includes(keyword))) {
+    return false;
+  }
+
+  return [
+    "sports",
+    "athletic",
+    "athletics",
+    "football",
+    "basketball",
+    "baseball",
+    "softball",
+    "volleyball",
+    "soccer",
+    "track",
+    "track & field",
+    "track and field",
+    "cross country",
+    "wrestling",
+    "tennis",
+    "golf",
+    "swimming",
+    "cheer",
+    "coach",
+    "athlete",
+    "playoff",
+    "tournament",
+    "scoreboard",
+    "uil",
+    "ncaa",
+    "regional meet",
+    "state meet",
+  ].some((keyword) => text.includes(keyword));
 }
 
 function EventCalendar({ county, compact = false }: { county: CountySite; compact?: boolean }) {
@@ -1273,14 +1435,20 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
         <div className="panel-heading">
           <p className="eyebrow">Patriots in Action TV</p>
           <h3>PIA Video Feed</h3>
-          <p>Latest videos from <a href={site.links.vimeoTv}>Patriots in Action TV on Vimeo</a>.</p>
+          <p>Latest videos from <Link to="/tv">Patriots in Action TV</Link>.</p>
+          {preferredPartner("Patriots in Action TV") ? (
+            <Link className="feed-presented-by" to="/tv">
+              <span>Presented by</span>
+              <strong>{preferredPartner("Patriots in Action TV")?.name}</strong>
+            </Link>
+          ) : null}
         </div>
       ) : null}
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list video-feed scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + (compact ? 8 : 12)))}>
         {visibleVideos.map((video) => {
           return (
-            <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || site.links.vimeoTv} key={video.id}>
+            <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || "/tv"} key={video.id}>
               {video.imageUrl ? <img src={video.imageUrl} alt="" /> : null}
               <div>
                 <strong>{video.title || "Patriots in Action TV"}</strong>
@@ -1297,7 +1465,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
           Load more videos
         </button>
       ) : null}
-      {compact ? <a className="feed-source" href={site.links.vimeoTv}>Open Vimeo channel</a> : null}
+      {compact ? <Link className="feed-source" to="/tv">Open PIA TV</Link> : null}
     </section>
   );
 }
@@ -1474,8 +1642,21 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
   );
 }
 
-function Shell({ county, children, page, route }: { county?: CountySite; children: ReactNode; page?: CountyPageKey; route: AdRouteType }) {
+function Shell({
+  county,
+  children,
+  page,
+  route,
+  suppressAdRails = false,
+}: {
+  county?: CountySite;
+  children: ReactNode;
+  page?: CountyPageKey;
+  route: AdRouteType;
+  suppressAdRails?: boolean;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const showAdRails = false;
 
   return (
     <>
@@ -1508,6 +1689,7 @@ function Shell({ county, children, page, route }: { county?: CountySite; childre
           <nav id="site-navigation" className={menuOpen ? "site-nav open" : "site-nav"} onClick={() => setMenuOpen(false)}>
             <Link to="/counties">Counties</Link>
             <Link to="/rewards">Rewards</Link>
+            <Link to="/partners">Partners</Link>
             <a href={site.links.community}>Community</a>
             <Link to="/tx/candidates">Candidates</Link>
             <Link to="/tv">PIA TV</Link>
@@ -1516,8 +1698,12 @@ function Shell({ county, children, page, route }: { county?: CountySite; childre
           </nav>
         </div>
       </header>
-      <main className="container">{children}</main>
-      {route !== "county" ? (
+      <main className={showAdRails ? "shell-content-frame" : "container"}>
+        {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
+        <div className={showAdRails ? "container shell-main-content" : undefined}>{children}</div>
+        {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-right-rail" /> : null}
+      </main>
+      {route !== "county" && !suppressAdRails ? (
         <div className="container">
           <AdSlot county={county} page={page} route={route} slot="site-footer" />
         </div>
@@ -1618,6 +1804,7 @@ function Footer() {
           <h3>Stay informed</h3>
           <Link to="/counties">County Directory</Link>
           <Link to="/rewards">Patriot Rewards</Link>
+          <Link to="/partners">Preferred Partners</Link>
           <a href={site.links.community}>Join Our Interactive Community</a>
           <a href={site.links.merch} target="_blank" rel="noreferrer">Merch Store</a>
         </div>

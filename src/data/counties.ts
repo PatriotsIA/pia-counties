@@ -50,6 +50,7 @@ export type CountySite = {
   };
   feeds: {
     localNewsUrl: string;
+    localSportsUrl: string;
     localVideoUrl: string;
     nationalNewsUrl: string;
     obituariesUrl: string;
@@ -145,8 +146,14 @@ function videoSearchUrl(county: UsCounty, state: StateSite) {
   return googleNewsRssUrl(`${county.name} County ${state.name} local news video OR ${county.name} ${state.abbr} news video`);
 }
 
+function sportsSearchUrl(county: UsCounty, state: StateSite) {
+  return googleNewsRssUrl(
+    `${county.name} County ${state.name} high school sports OR ${county.name} ${state.abbr} college sports OR ${county.name} ${state.abbr} football OR ${county.name} ${state.abbr} basketball OR ${county.name} ${state.abbr} baseball OR ${county.name} ${state.abbr} softball`,
+  );
+}
+
 function obituariesSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} obituaries OR ${county.name} ${state.abbr} obituary`);
+  return googleNewsRssUrl(`${county.name} County ${state.name} obituaries OR ${county.name} ${state.abbr} obituary OR ${county.name} ${state.abbr} funeral home OR ${county.name} ${state.abbr} death notice`);
 }
 
 const civicResourceLinks = {
@@ -186,6 +193,7 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
     calendar: {},
     feeds: {
       localNewsUrl: newsSearchUrl(county, state),
+      localSportsUrl: sportsSearchUrl(county, state),
       localVideoUrl: videoSearchUrl(county, state),
       nationalNewsUrl: site.links.nationalNews,
       obituariesUrl: obituariesSearchUrl(county, state),

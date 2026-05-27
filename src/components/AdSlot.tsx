@@ -34,6 +34,7 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
   const cardRef = useRef<HTMLAnchorElement | null>(null);
   const trackedRef = useRef(false);
   const trackingPayload = useMemo(() => adTrackingPayload(ad, slot, county, page), [ad, county, page, slot]);
+  const opensNewWindow = /^https?:\/\//i.test(ad.href);
 
   useEffect(() => {
     const element = cardRef.current;
@@ -71,8 +72,8 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
       href={ad.href}
       onClick={() => trackAdClick(trackingPayload)}
       ref={cardRef}
-      rel="noreferrer"
-      target="_blank"
+      rel={opensNewWindow ? "noreferrer" : undefined}
+      target={opensNewWindow ? "_blank" : undefined}
     >
       <picture>
         {ad.image.mobile ? <source media="(max-width: 780px)" srcSet={ad.image.mobile} /> : null}
