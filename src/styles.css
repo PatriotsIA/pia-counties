@@ -52,7 +52,12 @@ img {
   border: 0;
 }
 
-.market-weather-bar {
+.market-weather-stack {
+  background: #fff;
+}
+
+.market-weather-bar,
+.market-weather-weather-bar {
   display: grid;
   align-items: center;
   min-height: 42px;
@@ -78,6 +83,12 @@ img {
   padding: 0.35rem 0.7rem;
 }
 
+.market-weather-weather-bar {
+  justify-items: center;
+  min-height: 36px;
+  padding: 0.25rem 0.7rem;
+}
+
 .weather-pill {
   display: inline-flex;
   align-items: center;
@@ -88,6 +99,17 @@ img {
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
+}
+
+.weather-presented-by {
+  padding-left: 0.35rem;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.weather-presented-by a {
+  color: var(--blue);
+  font-weight: 900;
 }
 
 .weather-pill span,
@@ -292,6 +314,44 @@ nav a {
   margin: 0;
 }
 
+.county-hero-sponsor {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 0.1rem 0.65rem;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.county-hero-sponsor img {
+  grid-row: span 2;
+  width: 82px;
+  aspect-ratio: 6 / 5;
+  border-radius: 10px;
+  object-fit: contain;
+  background: white;
+}
+
+.county-hero-sponsor span {
+  color: var(--red);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.county-hero-sponsor strong {
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+
 .state-flag {
   display: inline-flex;
   flex: 0 0 auto;
@@ -350,9 +410,136 @@ nav a {
 }
 
 .sponsor-slot-county-news-inline {
-  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
   justify-items: center;
   align-items: center;
+}
+
+.sponsor-carousel {
+  gap: 0.85rem;
+  margin: 1.6rem 0 2rem;
+}
+
+.sponsor-carousel-heading {
+  text-align: center;
+}
+
+.sponsor-carousel-heading .eyebrow {
+  margin: 0;
+  color: var(--navy);
+  letter-spacing: 0.12em;
+}
+
+.sponsor-carousel-shell {
+  position: relative;
+  display: grid;
+  width: min(100%, 1030px);
+  margin-inline: auto;
+}
+
+.sponsor-carousel-track {
+  display: grid;
+  grid-auto-columns: 300px;
+  grid-auto-flow: column;
+  gap: 1rem;
+  overflow-x: auto;
+  justify-self: center;
+  width: min(100%, 932px);
+  padding: 0.35rem 0;
+  scroll-padding-inline: 0;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.sponsor-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.sponsor-carousel-item {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.sponsor-carousel .sponsor-card {
+  width: 100%;
+}
+
+.sponsor-carousel .sponsor-card-image-only img {
+  width: 100%;
+  aspect-ratio: 6 / 5;
+  object-fit: contain;
+}
+
+.sponsor-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--navy);
+  font-size: 1.1rem;
+  font-weight: 900;
+  box-shadow: 0 10px 24px rgba(17, 27, 71, 0.14);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.sponsor-carousel-arrow-prev {
+  left: 0;
+}
+
+.sponsor-carousel-arrow-next {
+  right: 0;
+}
+
+.sponsor-banner-carousel {
+  margin-top: 3rem;
+}
+
+.sponsor-banner-carousel-shell {
+  position: relative;
+  display: grid;
+  width: min(100%, 1080px);
+  margin-inline: auto;
+  padding-inline: 52px;
+}
+
+.sponsor-banner-carousel-track {
+  display: grid;
+  grid-auto-columns: 100%;
+  grid-auto-flow: column;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.sponsor-banner-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.sponsor-banner-carousel-item {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.sponsor-banner-carousel .sponsor-card {
+  width: 100%;
+}
+
+.sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only {
+  width: 100%;
+}
+
+.sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
 }
 
 .sponsor-slot-site-left-rail,
@@ -1067,6 +1254,42 @@ nav a {
   align-items: start;
 }
 
+.partner-sponsor-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  margin: 2.4rem 0;
+  padding: 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(179, 33, 44, 0.12), transparent 35%),
+    rgba(255, 255, 255, 0.84);
+  box-shadow: 0 12px 36px rgba(17, 27, 71, 0.08);
+}
+
+.partner-sponsor-banner h2,
+.partner-sponsor-banner p {
+  margin: 0;
+}
+
+.partner-sponsor-banner h2 {
+  color: var(--navy);
+  font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+  line-height: 1.05;
+}
+
+.partner-sponsor-banner p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.partner-sections {
+  display: grid;
+  gap: 1.25rem;
+}
+
 .narrow {
   max-width: 760px;
   margin-inline: auto;
@@ -1119,16 +1342,28 @@ nav a {
 }
 
 .feed-presented-by {
-  display: inline-grid;
-  gap: 0.05rem;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 0.1rem 0.55rem;
+  align-items: center;
   width: fit-content;
-  margin-top: 0.7rem;
+  max-width: 100%;
+  margin-top: 0.55rem;
   padding: 0.5rem 0.65rem;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.78);
   color: var(--navy);
   text-decoration: none;
+}
+
+.feed-presented-by img {
+  grid-row: span 2;
+  width: 76px;
+  aspect-ratio: 6 / 5;
+  border-radius: 9px;
+  object-fit: contain;
+  background: white;
 }
 
 .feed-presented-by span {
@@ -1329,29 +1564,82 @@ nav a {
 
 .partner-list {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 0.85rem;
   margin: 1.25rem 0 0;
   padding: 0;
   list-style: none;
 }
 
-.partner-list a {
+.partner-card {
   display: grid;
   gap: 0.35rem;
+  grid-template-columns: 96px minmax(0, 1fr);
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: #f8fafc;
+}
+
+.partner-card-copy {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+}
+
+.partner-card-title {
+  color: var(--navy);
+  font-weight: 900;
   text-decoration: none;
 }
 
-.partner-list strong {
-  color: var(--navy);
+.partner-card-title:hover,
+.partner-county-link:hover {
+  text-decoration: underline;
 }
 
-.partner-list span {
+.partner-list img {
+  width: 96px;
+  aspect-ratio: 6 / 5;
+  border-radius: 12px;
+  object-fit: contain;
+  background: white;
+}
+
+.partner-list p,
+.partner-county-scope {
+  margin: 0;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.partner-county-scope {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.partner-county-scope > span {
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.partner-county-links {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.partner-county-link {
+  display: inline-flex;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: white;
+  color: var(--blue);
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: none;
 }
 
 .checkbox {
@@ -1510,12 +1798,6 @@ nav a {
     min-height: 32px;
   }
 
-  .market-weather-bar-with-weather {
-    grid-template-areas:
-      "ticker"
-      "weather";
-  }
-
   .market-weather-bar-ticker-only {
     grid-template-areas: "ticker";
   }
@@ -1530,7 +1812,7 @@ nav a {
     transform-origin: top left;
   }
 
-  .market-weather-weather {
+  .market-weather-weather-bar {
     justify-content: center;
     min-height: 30px;
     padding: 0.25rem 0.6rem;
@@ -1540,6 +1822,8 @@ nav a {
   .weather-pill {
     max-width: 100%;
     font-size: 0.72rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .bookmark-toast {
@@ -1600,6 +1884,7 @@ nav a {
   .hero,
   .county-hero,
   .compact-about,
+  .partner-sponsor-banner,
   .split,
   .candidate-profile-grid,
   .footer-grid {
@@ -1662,6 +1947,29 @@ nav a {
   .sponsor-card-compact,
   .sponsor-slot-county-news-inline {
     grid-template-columns: 1fr;
+  }
+
+  .sponsor-carousel-track {
+    grid-auto-columns: 300px;
+    width: min(100%, 300px);
+  }
+
+  .sponsor-carousel-shell {
+    width: min(100%, 390px);
+    padding-inline: 44px;
+  }
+
+  .sponsor-carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sponsor-banner-carousel-shell {
+    padding-inline: 42px;
+  }
+
+  .sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img {
+    max-height: 190px;
   }
 
   .sponsor-card-content {

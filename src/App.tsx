@@ -11,6 +11,17 @@ import { fetchCalendarFeed, parseIcsEvents, type CalendarEvent } from "./lib/cal
 import { sendCountyFormEmail, sendSiteContactEmail } from "./lib/email";
 import { fetchRssFeedItems } from "./lib/rss-client";
 import type { NewsFeedItem } from "./lib/rss-feed";
+import cbtPartnerImage from "../NewAds/CBT4.jpg";
+import dyersPartnerImage from "../NewAds/Dyers250.jpg";
+import lemcPartnerImage from "../NewAds/LEMC250.jpg";
+import mattressPartnerImage from "../NewAds/matress-ad.jpg";
+import merchPartnerImage from "../NewAds/Merch.jpg";
+import panhandleGreenhouseImage from "../NewAds/PanhandleGreenhouse250.jpg";
+import pastureExchangePartnerImage from "../NewAds/PastureEXCHANGELogo.jpg";
+import patriotMessagingPartnerImage from "../NewAds/PatriotMessaging 2.jpg";
+import patriotTrailerPartnerImage from "../NewAds/PatriotTrailerStore.jpg";
+import piaTvPartnerImage from "../NewAds/PIATV2.jpg";
+import plainsBankPartnerImage from "../NewAds/PlainsBank250.jpg";
 
 const countyPages: { key: CountyPageKey; label: string }[] = [
   { key: "home", label: "Home" },
@@ -29,54 +40,135 @@ const candidateProjectDisclaimer =
   "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
 const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
 const heroHeadline = "Patriots in Action";
-const heroKicker = "A Nationwide & Local Civic Hub";
+const heroKicker = "A Nationwide and Ultra Local Hub for Action";
 const heroDescription =
   "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
-const preferredPartners = [
-  {
-    name: "CBT Real Estate Services",
-    description: "Connect with CBT Real Estate Services on Facebook.",
-    href: site.links.cbtRealEstate,
-    presentsCountyPages: true,
-  },
+type Partner = {
+  name: string;
+  description: string;
+  href: string;
+  image?: string;
+  countyKeys?: string[];
+  presentsCountyPages?: boolean;
+};
+
+const panhandleCountySponsorKeys = ["texas/potter", "texas/randall"];
+
+const nationwidePartners: Partner[] = [
   {
     name: "Patriot Dispatch",
     description: "Get Patriots in Action updates and messaging resources.",
     href: site.links.patriotDispatch,
-  },
-  {
-    name: "LEMC Realty",
-    description: "Find Amarillo and Canyon area rental homes, apartments, and property management services.",
-    href: site.links.lemcRealty,
+    image: patriotMessagingPartnerImage,
   },
   {
     name: "Patriot Rewards",
     description: "Discover community connections, preferred partners, and member benefits.",
     href: site.links.community,
+    image: "/ads/PATRIOTREWARDS.jpg",
   },
   {
     name: "Patriots in Action TV",
     description: "Watch candidate interviews, updates, and community stories.",
     href: "/tv",
+    image: piaTvPartnerImage,
   },
   {
     name: "piaevents.com",
     description: "Find upcoming Patriots in Action events and places to show up.",
     href: site.links.piaEvents,
+    image: patriotTrailerPartnerImage,
   },
   {
     name: "The Patriots in Action Trailer Store",
     description: "Shop and connect with Patriots in Action at live events.",
     href: site.links.piaEvents,
+    image: patriotTrailerPartnerImage,
   },
   {
     name: "The Patriot Merch Store",
     description: "Shop patriotic merchandise and gear from the Patriots in Action merch store.",
     href: site.links.merch,
+    image: merchPartnerImage,
   },
 ];
+
+const countySpecificPartners: Partner[] = [
+  {
+    name: "CBT Real Estate Services",
+    description: "Connect with CBT Real Estate Services on Facebook.",
+    href: site.links.cbtRealEstate,
+    image: cbtPartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+    presentsCountyPages: true,
+  },
+  {
+    name: "LEMC Realty",
+    description: "Find Amarillo and Canyon area rental homes, apartments, and property management services.",
+    href: site.links.lemcRealty,
+    image: lemcPartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+  {
+    name: "Mattress By Appointment",
+    description: "Shop local mattress deals by appointment.",
+    href: "/partners",
+    image: mattressPartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+  {
+    name: "Panhandle Greenhouse",
+    description: "Connect with Panhandle Greenhouse.",
+    href: "/partners",
+    image: panhandleGreenhouseImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+  {
+    name: "Plains Bank",
+    description: "Connect with Plains Bank.",
+    href: "/partners",
+    image: plainsBankPartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+  {
+    name: "Dyer's Bar-B-Que",
+    description: "Connect with Dyer's Bar-B-Que.",
+    href: "/partners",
+    image: dyersPartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+  {
+    name: "Pasture Exchange",
+    description: "Pasture sharing made easy.",
+    href: "/partners",
+    image: pastureExchangePartnerImage,
+    countyKeys: panhandleCountySponsorKeys,
+  },
+];
+
+const preferredPartners = [...nationwidePartners, ...countySpecificPartners];
+
 function preferredPartner(name: string) {
   return preferredPartners.find((partner) => partner.name === name);
+}
+
+function countyKey(county: CountySite) {
+  return `${county.state.slug}/${county.slug}`;
+}
+
+function countyPartners(county: CountySite) {
+  const key = countyKey(county);
+  return countySpecificPartners.filter((partner) => partner.countyKeys?.includes(key));
+}
+
+function countyPartner(county: CountySite, name: string) {
+  return countyPartners(county).find((partner) => partner.name === name);
+}
+
+function countyWeatherSponsor(county: CountySite) {
+  const partners = [...countyPartners(county), ...nationwidePartners].filter((partner) => partner.href);
+  const index = Number.parseInt(county.fips, 10) % partners.length;
+  return partners[index];
 }
 
 function candidateProfilePath(candidate: Candidate) {
@@ -245,7 +337,7 @@ function seoDataForPath(pathname: string): SeoData {
 
   if (pathname === "/tv") return { title: "PIA TV", description: "Watch Patriots in Action TV videos, candidate interviews, civic updates, and community stories.", canonicalPath: "/tv" };
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
-  if (pathname === "/partners") return { title: "Preferred Partners", description: "Discover Patriots in Action preferred partners, sponsorship opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
+  if (pathname === "/partners") return { title: "Patriot Partners and Sponsors", description: "Discover Patriots in Action partners, sponsors, sponsorship opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
@@ -440,6 +532,7 @@ function HomePage() {
           <InfoCard title="Move Patriots To Action" body="Follow local news, submit events, watch PIA TV, join the community, discover partners, and turn civic concern into practical action in your county." />
         </div>
       </section>
+      <AdSlot route="home" slot="county-home-inline" limit={6} />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
@@ -510,36 +603,45 @@ function RewardsPage() {
 }
 
 function MainPartnersPage() {
-  usePageTitle("Preferred Partners");
+  usePageTitle("Patriot Partners and Sponsors");
 
   return (
     <Shell route="partners">
       <PageHero
         eyebrow="Partners"
-        title="Preferred Partners"
-        subtitle="Connect with Patriots in Action preferred partners, founding sponsors, events, rewards, media, and merchandise."
+        title="Patriot Partners and Sponsors"
+        subtitle="Connect with Patriots in Action partners, founding sponsors, events, rewards, media, and merchandise."
       />
-      <section className="section split top-align">
-        <div className="panel">
-          <p className="eyebrow">Sitewide Partners</p>
-          <h2>Partners supporting Patriots in Action</h2>
-          <p>
-            These are current Patriots in Action preferred partners. State and county pages can also feature their own local founding
-            sponsors as those relationships are added.
-          </p>
-          <PartnerList />
-        </div>
-        <div className="panel">
+      <section className="partner-sponsor-banner">
+        <div>
           <p className="eyebrow">Sponsorships</p>
           <h2>Become a founding sponsor</h2>
           <p>
             We are selecting founding businesses in counties and states to help support local civic information, events, election resources,
             weather, news, and community engagement.
           </p>
-          <div className="actions">
-            <Link className="button primary" to="/contact">Sponsor a County</Link>
-            <Link className="button" to="/counties">Find Your County</Link>
-          </div>
+        </div>
+        <div className="actions">
+          <Link className="button primary" to="/contact">Sponsor a County</Link>
+          <Link className="button" to="/counties">Find Your County</Link>
+        </div>
+      </section>
+      <section className="section partner-sections">
+        <div className="panel">
+          <p className="eyebrow">Sitewide Partners</p>
+          <h2>Nationwide partners supporting Patriots in Action</h2>
+          <p>
+            These partners support the broader Patriots in Action network across counties, states, events, media, rewards, and merchandise.
+          </p>
+          <PartnerList partners={nationwidePartners} />
+        </div>
+        <div className="panel">
+          <p className="eyebrow">County Sponsors</p>
+          <h2>County-specific sponsors</h2>
+          <p>
+            These sponsors currently support specific local county pages. More state and county sponsors can be added as those relationships grow.
+          </p>
+          <PartnerList partners={countySpecificPartners} showCountyScope />
         </div>
       </section>
     </Shell>
@@ -866,16 +968,25 @@ function CountyPage({ county, page }: { county: CountySite; page: CountyPageKey 
 }
 
 function CountyHome({ county }: { county: CountySite }) {
+  const presentingSponsor = countyPartners(county).find((partner) => partner.presentsCountyPages);
+
   return (
     <>
       <section className="county-hero">
         <div>
           <div className="county-hero-flag">
             <StateFlag state={county.state} size="md" />
-            <p className="eyebrow">Presented by {county.displayName} Patriots</p>
+            <p className="eyebrow">Powered by Patriots In Action</p>
           </div>
-          <h1>{heroHeadline}</h1>
-          <p className="eyebrow hero-subtitle-eyebrow">{heroKicker}</p>
+          <h1>{county.displayName} Patriots</h1>
+          <p className="eyebrow hero-subtitle-eyebrow">{county.displayName} Hub For Action</p>
+          {presentingSponsor ? (
+            <a className="county-hero-sponsor" href={presentingSponsor.href} target="_blank" rel="noreferrer">
+              {presentingSponsor.image ? <img src={presentingSponsor.image} alt="" loading="lazy" /> : null}
+              <span>Presented by</span>
+              <strong>{presentingSponsor.name}</strong>
+            </a>
+          ) : null}
           <p>{heroDescription}</p>
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
@@ -889,7 +1000,7 @@ function CountyHome({ county }: { county: CountySite }) {
         <HeroMedia />
       </section>
       <CountyAboutCompact county={county} />
-      <AdSlot county={county} page="home" route="county" slot="county-home-inline" />
+      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6} />
       <section className="section split">
         <div>
           <p className="eyebrow">Know Your Leaders. Become Empowered.</p>
@@ -1040,34 +1151,73 @@ function CountyTv() {
 }
 
 function CountyPartners({ county }: { county: CountySite }) {
+  const partners = countyPartners(county);
+
   return (
     <>
       <PageHero eyebrow="Partners" title="Partner with Patriots in Action" subtitle="Preferred partners, sponsorships, merchandise, and Patriot Rewards." />
       <section className="section">
         <div className="panel">
-          <p className="eyebrow">Preferred Partners</p>
-          <h2>Preferred Partners</h2>
-          <p>Connect with Patriots in Action partners, events, and stores that help keep local action moving.</p>
-          <PartnerList county={county} />
+          <p className="eyebrow">{county.displayName} Partners</p>
+          <h2>{county.displayName} sponsors and partners</h2>
+          <p>
+            These are the sponsors and partners currently connected to {county.displayName}. Nationwide Patriots in Action partners are listed
+            separately on the main partners page.
+          </p>
+          {partners.length ? <PartnerList county={county} partners={partners} /> : <p className="status">No county-specific sponsors have been added for {county.displayName} yet.</p>}
+          <div className="actions">
+            <Link className="button primary" to="/partners">See All Partners</Link>
+            <Link className="button" to="/contact">Sponsor This County</Link>
+          </div>
         </div>
       </section>
     </>
   );
 }
 
-function PartnerList({ county }: { county?: CountySite }) {
+function PartnerList({ county, partners, showCountyScope = false }: { county?: CountySite; partners: Partner[]; showCountyScope?: boolean }) {
   return (
     <ul className="partner-list">
-      {preferredPartners.map((partner) => (
+      {partners.map((partner) => (
         <li key={partner.name}>
-                <a href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
-            <strong>{partner.name}</strong>
-            <span>{partner.description}</span>
-          </a>
+          <article className="partner-card">
+            {partner.image ? <img src={partner.image} alt="" loading="lazy" /> : null}
+            <div className="partner-card-copy">
+              <a className="partner-card-title" href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
+                {partner.name}
+              </a>
+              <p>{partner.description}</p>
+              {showCountyScope && partner.countyKeys?.length ? (
+                <div className="partner-county-scope">
+                  <span>County sponsors:</span>
+                  <div className="partner-county-links">
+                    {partner.countyKeys.map((key) => {
+                      const countyScope = countyScopeForKey(key);
+                      return (
+                        <Link className="partner-county-link" key={key} to={countyScope.path}>
+                          {countyScope.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </article>
         </li>
       ))}
     </ul>
   );
+}
+
+function countyScopeForKey(key: string) {
+  const [stateSlug, countySlug] = key.split("/");
+  const state = getStateBySlug(stateSlug);
+  const county = getCounty(stateSlug, countySlug);
+  return {
+    label: county && state ? `${county.displayName}, ${state.name}` : key,
+    path: county && state ? countyPath(county) : "/counties",
+  };
 }
 
 function CountyContact({ county }: { county: CountySite }) {
@@ -1124,7 +1274,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
             feedUrl={county.feeds.localNewsUrl}
             emptyText="No local article results are available yet."
-            presentedBy={preferredPartner("CBT Real Estate Services")}
+            presentedBy={countyPartner(county, "CBT Real Estate Services")}
           />
           <RssFeedWidget
             eyebrow="Obituaries"
@@ -1143,7 +1293,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
             feedUrl={county.feeds.localVideoUrl}
             emptyText="No local video results are available yet."
-            presentedBy={preferredPartner("Patriots in Action TV")}
+            presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
           />
           <VimeoFeed compact />
         </div>
@@ -1160,7 +1310,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
         />
       </div>
       <div className="news-sponsor-row">
-        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={3} />
+        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={5} />
         <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
       </div>
     </section>
@@ -1205,13 +1355,14 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
       <div className="panel-heading">
         <p className="eyebrow">{eyebrow}</p>
         <h3>{title}</h3>
-        <p>{description}</p>
         {presentedBy ? (
           <a className="feed-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
+            {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
             <span>Presented by</span>
             <strong>{presentedBy.name}</strong>
           </a>
         ) : null}
+        <p>{description}</p>
       </div>
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 5))}>
@@ -1428,6 +1579,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
 
   const visibleVideos = videos.slice(0, visibleCount);
   const hasMore = visibleCount < videos.length;
+  const piaTvPartner = preferredPartner("Patriots in Action TV");
 
   return (
     <section className={compact ? "feed-widget" : "section"}>
@@ -1436,10 +1588,11 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
           <p className="eyebrow">Patriots in Action TV</p>
           <h3>PIA Video Feed</h3>
           <p>Latest videos from <Link to="/tv">Patriots in Action TV</Link>.</p>
-          {preferredPartner("Patriots in Action TV") ? (
+          {piaTvPartner ? (
             <Link className="feed-presented-by" to="/tv">
+              {piaTvPartner.image ? <img src={piaTvPartner.image} alt="" loading="lazy" /> : null}
               <span>Presented by</span>
-              <strong>{preferredPartner("Patriots in Action TV")?.name}</strong>
+              <strong>{piaTvPartner.name}</strong>
             </Link>
           ) : null}
         </div>
@@ -1489,6 +1642,7 @@ function SiteContactForm() {
         replyTo: values.email,
         values: {
           ...values,
+          sponsorInterest: values.sponsorInterest === "on",
           consent: values.consent === "on",
         },
       });
@@ -1515,6 +1669,7 @@ function SiteContactForm() {
       <FormInput name="phone" label="Phone" />
       <FormInput name="subject" label="Subject" required />
       <FormInput name="message" label="Message" textarea required />
+      <SponsorInterestCheckbox />
       <ConsentCheckbox />
       {status ? <p className={`status form-status-${status.tone}`}>{status.message}</p> : null}
       <button className="button primary" type="submit" disabled={sending}>{sending ? "Sending..." : "Send Message"}</button>
@@ -1543,6 +1698,7 @@ function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "e
         replyTo: values.email || values.submitterEmail,
         values: {
           ...values,
+          sponsorInterest: values.sponsorInterest === "on",
           consent: values.consent === "on",
         },
       });
@@ -1575,6 +1731,7 @@ function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "e
           <FormInput name="phone" label="Phone" />
           <FormInput name="subject" label="Subject" required />
           <FormInput name="message" label="Message" textarea required />
+          <SponsorInterestCheckbox />
           <ConsentCheckbox />
         </>
       ) : (
@@ -1609,6 +1766,15 @@ function FormInput({ name, label, type = "text", required = false, textarea = fa
   );
 }
 
+function SponsorInterestCheckbox() {
+  return (
+    <label className="checkbox sponsor-interest-checkbox">
+      <input name="sponsorInterest" type="checkbox" />
+      <span>I am interested in becoming a sponsor or buying ad space.</span>
+    </label>
+  );
+}
+
 function ConsentCheckbox({ extraText }: { extraText?: string }) {
   return (
     <label className="checkbox consent-checkbox">
@@ -1637,7 +1803,7 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
         ))}
       </nav>
       {children}
-      <AdSlot county={county} page={page} route="county" slot="county-page-footer" />
+      <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
     </Shell>
   );
 }
@@ -1660,7 +1826,7 @@ function Shell({
 
   return (
     <>
-      <TopTicker county={county} />
+      <TopTicker county={county} weatherSponsor={county ? countyWeatherSponsor(county) : undefined} />
       <header className="topbar">
         <div className="container topbar-inner">
           <span>Meet Your Neighbors!</span>
@@ -1705,7 +1871,7 @@ function Shell({
       </main>
       {route !== "county" && !suppressAdRails ? (
         <div className="container">
-          <AdSlot county={county} page={page} route={route} slot="site-footer" />
+          <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />
         </div>
       ) : null}
       <Footer />
@@ -1804,7 +1970,7 @@ function Footer() {
           <h3>Stay informed</h3>
           <Link to="/counties">County Directory</Link>
           <Link to="/rewards">Patriot Rewards</Link>
-          <Link to="/partners">Preferred Partners</Link>
+          <Link to="/partners">Patriot Partners and Sponsors</Link>
           <a href={site.links.community}>Join Our Interactive Community</a>
           <a href={site.links.merch} target="_blank" rel="noreferrer">Merch Store</a>
         </div>

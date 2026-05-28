@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
 
+type WeatherSponsor = {
+  name: string;
+  href: string;
+};
+
 type WeatherStatus = {
   label: string;
   temperature?: number;
@@ -53,16 +58,15 @@ const marketSymbols = [
   { proName: "NASDAQ:TSLA", title: "Tesla" },
 ];
 
-export function TopTicker({ county }: { county?: CountySite }) {
+export function TopTicker({ county, weatherSponsor }: { county?: CountySite; weatherSponsor?: WeatherSponsor }) {
   return (
-    <section
-      className={county ? "market-weather-bar market-weather-bar-with-weather" : "market-weather-bar market-weather-bar-ticker-only"}
-      aria-label="Market ticker and local weather"
-    >
-      <TradingViewTicker />
+    <section className={county ? "market-weather-stack market-weather-stack-with-weather" : "market-weather-stack"} aria-label="Market ticker and local weather">
+      <div className="market-weather-bar market-weather-bar-ticker-only">
+        <TradingViewTicker />
+      </div>
       {county ? (
-        <div className="market-weather-weather">
-          <CountyWeather county={county} />
+        <div className="market-weather-weather-bar">
+          <CountyWeather county={county} weatherSponsor={weatherSponsor} />
         </div>
       ) : null}
     </section>
@@ -102,7 +106,7 @@ function TradingViewTicker() {
   return <div className="tradingview-widget-container market-ticker-widget" ref={containerRef} />;
 }
 
-function CountyWeather({ county }: { county?: CountySite }) {
+function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weatherSponsor?: WeatherSponsor }) {
   const [weather, setWeather] = useState<WeatherStatus>(() => ({
     label: county ? weatherLocationName(county) : "Local weather",
     loading: Boolean(county),
@@ -156,6 +160,11 @@ function CountyWeather({ county }: { county?: CountySite }) {
       <span>{Math.round(weather.temperature)}{"\u00b0F"}</span>
       {weather.condition ? <span>{weather.condition}</span> : null}
       {typeof weather.windSpeed === "number" ? <span>Wind {Math.round(weather.windSpeed)} mph</span> : null}
+      {weatherSponsor ? (
+        <span className="weather-presented-by">
+          Presented by <a href={weatherSponsor.href}>{weatherSponsor.name}</a>
+        </span>
+      ) : null}
     </span>
   );
 }
