@@ -26,7 +26,7 @@ import plainsBankPartnerImage from "../NewAds/PlainsBank250.jpg";
 const countyPages: { key: CountyPageKey; label: string }[] = [
   { key: "home", label: "Home" },
   { key: "about", label: "About" },
-  { key: "elections", label: "Elections & More" },
+  { key: "elections", label: "Elections & Resources" },
   { key: "candidates", label: "Candidates" },
   { key: "news", label: "News & Events" },
   { key: "events", label: "Calendar" },
@@ -337,7 +337,7 @@ function seoDataForPath(pathname: string): SeoData {
 
   if (pathname === "/tv") return { title: "PIA TV", description: "Watch Patriots in Action TV videos, candidate interviews, civic updates, and community stories.", canonicalPath: "/tv" };
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
-  if (pathname === "/partners") return { title: "Patriot Partners and Sponsors", description: "Discover Patriots in Action partners, sponsors, sponsorship opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
+  if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
@@ -403,7 +403,7 @@ function countySeoData(county: CountySite, page: CountyPageKey): SeoData {
   const titleByPage: Record<CountyPageKey, string> = {
     home: `${county.displayName}, ${county.state.name} Patriots`,
     about: `${county.displayName} Civic Action Hub`,
-    elections: `${county.displayName} Elections & Voter Resources`,
+    elections: `${county.displayName} Elections & Resources`,
     candidates: `${county.displayName} Candidates`,
     news: `${county.displayName} Local News & Events`,
     events: `${county.displayName} Community Calendar`,
@@ -502,7 +502,7 @@ function HomePage() {
   usePageTitle("County Patriot Networks");
 
   return (
-    <Shell route="home">
+    <Shell route="home" suppressAdRails>
       <section className="hero hero-home">
         <div>
           <p className="eyebrow">Join Our Interactive Community</p>
@@ -532,7 +532,7 @@ function HomePage() {
           <InfoCard title="Move Patriots To Action" body="Follow local news, submit events, watch PIA TV, join the community, discover partners, and turn civic concern into practical action in your county." />
         </div>
       </section>
-      <AdSlot route="home" slot="county-home-inline" limit={6} />
+      <FoundingPartnerCallout />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
@@ -542,6 +542,39 @@ function HomePage() {
         <VimeoFeed compact />
       </section>
     </Shell>
+  );
+}
+
+function FoundingPartnerCallout({ county }: { county?: CountySite }) {
+  const isCounty = Boolean(county);
+
+  return (
+    <section className="section founding-partner-callout">
+      <div>
+        <p className="eyebrow">{isCounty ? "Become a County Founding Partner" : "Become a Founding Partner"}</p>
+        <PatriotReachNote />
+        <h2>
+          {isCounty
+            ? `Support the ${county!.displayName} page local Patriots use every day`
+            : "Support the county pages local Patriots use every day"}
+        </h2>
+        <p>
+          {isCounty ? `Your ${county!.displayName} page is already live. ` : "Your county page is already live. "}
+          We are selecting founding partners who want to support local civic information, events, weather, election resources, news, and
+          community engagement in their county. Put your business in front of engaged local Patriots on the county pages they use for news,
+          weather, obituaries, events, and civic resources.
+        </p>
+        <p>Get listed as a Patriot Preferred Business so local Patriots can find and support your business.</p>
+      </div>
+      <div className="actions">
+        <Link className="button primary" to="/contact">
+          {isCounty ? "Become a County Founding Partner" : "Become a Founding Partner"}
+        </Link>
+        <Link className="button" to={isCounty ? `${countyPath(county!)}/partners` : "/partners"}>
+          {isCounty ? "See County Partners" : "See Partner Opportunities"}
+        </Link>
+      </div>
+    </section>
   );
 }
 
@@ -603,26 +636,27 @@ function RewardsPage() {
 }
 
 function MainPartnersPage() {
-  usePageTitle("Patriot Partners and Sponsors");
+  usePageTitle("Patriot Partners");
 
   return (
     <Shell route="partners">
       <PageHero
         eyebrow="Partners"
-        title="Patriot Partners and Sponsors"
-        subtitle="Connect with Patriots in Action partners, founding sponsors, events, rewards, media, and merchandise."
+        title="Patriot Partners"
+        subtitle="Connect with Patriots in Action partners, founding partners, events, rewards, media, and merchandise."
       />
       <section className="partner-sponsor-banner">
         <div>
-          <p className="eyebrow">Sponsorships</p>
-          <h2>Become a founding sponsor</h2>
+          <p className="eyebrow">Founding Partners</p>
+          <PatriotReachNote />
+          <h2>Become a Founding Partner</h2>
           <p>
             We are selecting founding businesses in counties and states to help support local civic information, events, election resources,
             weather, news, and community engagement.
           </p>
         </div>
         <div className="actions">
-          <Link className="button primary" to="/contact">Sponsor a County</Link>
+          <Link className="button primary" to="/contact">Become a Founding Partner</Link>
           <Link className="button" to="/counties">Find Your County</Link>
         </div>
       </section>
@@ -636,10 +670,10 @@ function MainPartnersPage() {
           <PartnerList partners={nationwidePartners} />
         </div>
         <div className="panel">
-          <p className="eyebrow">County Sponsors</p>
-          <h2>County-specific sponsors</h2>
+          <p className="eyebrow">County Founding Partners</p>
+          <h2>County founding partners</h2>
           <p>
-            These sponsors currently support specific local county pages. More state and county sponsors can be added as those relationships grow.
+            These founding partners currently support specific local county pages. More state and county founding partners can be added as those relationships grow.
           </p>
           <PartnerList partners={countySpecificPartners} showCountyScope />
         </div>
@@ -706,6 +740,7 @@ function DirectoryPage() {
             placeholder="Search Texas, TX, Potter, Amarillo, FIPS..."
             type="search"
           />
+          <CountyVotingResourcesTooltip stateName={selectedState?.name} />
         </label>
         <label className="field">
           <span>Filter by state</span>
@@ -766,7 +801,6 @@ function StatePage() {
   const { stateSlug } = useParams();
   const state = getStateBySlug(stateSlug);
   const stateCounties = getCountiesForState(stateSlug);
-  const stateCandidates = getCandidatesForState(stateSlug);
   const [countySearch, setCountySearch] = useState("");
   const countyQuery = countySearch.trim().toLowerCase();
   const visibleCounties = stateCounties.filter((county) =>
@@ -780,17 +814,6 @@ function StatePage() {
   return (
     <Shell route="state" suppressAdRails>
       <PageHero eyebrow={state.abbr} title={`${state.name} Patriot Networks`} subtitle="Select a county to open its local Patriots in Action site." />
-      <section className="section split top-align">
-        <div className="panel">
-          <h2>{state.name} candidates</h2>
-          <p>{stateCandidates.length ? `${stateCandidates.length} candidate profiles are available for ${state.name}.` : "Candidate profiles for this state will be added soon."}</p>
-          <Link className="button primary" to={`${statePath(state)}/candidates`}>View State Candidates</Link>
-        </div>
-        <div className="panel">
-          <h2>County candidate pages</h2>
-          <p>Each county site can list candidates running locally, including county, city, court, and precinct races.</p>
-        </div>
-      </section>
       <CountyDirectoryNotice stateName={state.name} />
       <section className="directory-search" aria-label={`Search ${state.name} counties`}>
         <label className="field">
@@ -801,6 +824,7 @@ function StatePage() {
             placeholder="Search by county, city, or FIPS..."
             type="search"
           />
+          <CountyVotingResourcesTooltip stateName={state.name} />
         </label>
         <p>{visibleCounties.length} of {stateCounties.length} counties shown</p>
       </section>
@@ -835,6 +859,40 @@ function CountyDirectoryNotice({ stateName }: { stateName?: string }) {
         </p>
       </div>
       <Link className="button primary" to="/contact">Contact Us</Link>
+    </section>
+  );
+}
+
+function CountyVotingResourcesTooltip({ stateName }: { stateName?: string }) {
+  return (
+    <p className="directory-search-tooltip" role="note">
+      {stateName
+        ? `State and local voting resources are available on your ${stateName} county page.`
+        : "State and local voting resources are available on your county page."}
+    </p>
+  );
+}
+
+function StateVotingResources({ state }: { state: { name: string; abbr: string; slug: string } }) {
+  const stateAbbr = state.abbr.toLowerCase();
+
+  return (
+    <section className="section">
+      <div className="section-heading">
+        <p className="eyebrow">{state.name} Voting Resources</p>
+        <h2>Dates, deadlines, voting resources, and polling places</h2>
+        <p>Use these official and national voter tools to confirm current rules, registration status, deadlines, and where to vote in {state.name}.</p>
+      </div>
+      <div className="card-grid four">
+        <ResourceCard title={`${state.name} Registration`} href={`https://vote.gov/register/${stateAbbr}/`} />
+        <ResourceCard title={`${state.name} Dates and Deadlines`} href={`https://www.vote.org/state/${state.slug}/`} />
+        <ResourceCard title="Polling Place Locator" href="https://www.vote.org/polling-place-locator/" />
+        <ResourceCard title="Check Registration" href="https://www.nass.org/can-i-vote/voter-registration-status" />
+        <ResourceCard title="State Election Office Directory" href="https://www.nass.org/can-i-vote/election-officials-directory" />
+        <ResourceCard title="Absentee and Early Voting" href="https://www.vote.org/absentee-voting-rules/" />
+        <ResourceCard title="Voter ID Rules" href="https://www.vote.org/voter-id-laws/" />
+        <ResourceCard title="Election Protection Hotline" href="https://866ourvote.org/" />
+      </div>
     </section>
   );
 }
@@ -1000,6 +1058,7 @@ function CountyHome({ county }: { county: CountySite }) {
         <HeroMedia />
       </section>
       <CountyAboutCompact county={county} />
+      <FoundingPartnerCallout county={county} />
       <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6} />
       <section className="section split">
         <div>
@@ -1051,8 +1110,20 @@ function CountyAbout({ county }: { county: CountySite }) {
 function CountyElections({ county }: { county: CountySite }) {
   return (
     <>
-      <PageHero eyebrow="Elections & More" title="Important civic information" subtitle="Voting resources and leader lookups for your county, state, and federal districts." />
-      <ActionGrid county={county} />
+      <PageHero
+        eyebrow="Elections & Resources"
+        title="Important civic information"
+        subtitle="County, state, and federal voting resources and leader lookups for your community."
+      />
+      <section className="section">
+        <div className="section-heading">
+          <p className="eyebrow">{county.displayName} Resources</p>
+          <h2>County voting resources and elected officials</h2>
+          <p>Local precinct maps, ballots, registration, and elected-official lookups for {county.displayName}.</p>
+        </div>
+        <ActionGrid county={county} embedded />
+      </section>
+      <StateVotingResources state={county.state} />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Civic References</p>
@@ -1155,19 +1226,24 @@ function CountyPartners({ county }: { county: CountySite }) {
 
   return (
     <>
-      <PageHero eyebrow="Partners" title="Partner with Patriots in Action" subtitle="Preferred partners, sponsorships, merchandise, and Patriot Rewards." />
+      <PageHero
+        eyebrow="Partners"
+        title="Partner with Patriots in Action"
+        subtitle="Preferred partners, founding partners, merchandise, and Patriot Rewards."
+      />
+      <FoundingPartnerCallout county={county} />
       <section className="section">
         <div className="panel">
           <p className="eyebrow">{county.displayName} Partners</p>
-          <h2>{county.displayName} sponsors and partners</h2>
+          <h2>{county.displayName} founding partners</h2>
           <p>
-            These are the sponsors and partners currently connected to {county.displayName}. Nationwide Patriots in Action partners are listed
+            These are the founding partners currently connected to {county.displayName}. Nationwide Patriots in Action partners are listed
             separately on the main partners page.
           </p>
-          {partners.length ? <PartnerList county={county} partners={partners} /> : <p className="status">No county-specific sponsors have been added for {county.displayName} yet.</p>}
+          {partners.length ? <PartnerList county={county} partners={partners} /> : <p className="status">No county founding partners have been added for {county.displayName} yet.</p>}
           <div className="actions">
             <Link className="button primary" to="/partners">See All Partners</Link>
-            <Link className="button" to="/contact">Sponsor This County</Link>
+            <Link className="button" to="/contact">Become a County Founding Partner</Link>
           </div>
         </div>
       </section>
@@ -1189,7 +1265,7 @@ function PartnerList({ county, partners, showCountyScope = false }: { county?: C
               <p>{partner.description}</p>
               {showCountyScope && partner.countyKeys?.length ? (
                 <div className="partner-county-scope">
-                  <span>County sponsors:</span>
+                  <span>County founding partners:</span>
                   <div className="partner-county-links">
                     {partner.countyKeys.map((key) => {
                       const countyScope = countyScopeForKey(key);
@@ -1263,7 +1339,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
     <section className="section news-section">
       <div className="section-heading">
         <p className="eyebrow">County Newsroom</p>
-        <h2>Ultra-local feeds for {county.displayName}</h2>
+        <h2>Local news feeds for {county.displayName}</h2>
         <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
       </div>
       <div className="feed-grid">
@@ -1352,9 +1428,11 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
 
   return (
     <article className="feed-widget">
-      <div className="panel-heading">
-        <p className="eyebrow">{eyebrow}</p>
-        <h3>{title}</h3>
+      <div className="feed-hero">
+        <div className="feed-hero-title">
+          <p className="eyebrow">{eyebrow}</p>
+          <h3>{title}</h3>
+        </div>
         {presentedBy ? (
           <a className="feed-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
             {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
@@ -1362,7 +1440,7 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
             <strong>{presentedBy.name}</strong>
           </a>
         ) : null}
-        <p>{description}</p>
+        <p className="feed-hero-description">{description}</p>
       </div>
       {status ? <p className="status">{status}</p> : null}
       <div className="feed-list scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 5))}>
@@ -1500,10 +1578,11 @@ function isSportsFeedItem(item: NewsFeedItem) {
   ].some((keyword) => text.includes(keyword));
 }
 
-function EventCalendar({ county, compact = false }: { county: CountySite; compact?: boolean }) {
+function EventCalendar({ county, compact = false, page = "events" }: { county: CountySite; compact?: boolean; page?: CountyPageKey }) {
   const feedUrl = county.calendar.icsUrl;
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
+  const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("piaevents.com");
 
   useEffect(() => {
     let active = true;
@@ -1534,6 +1613,13 @@ function EventCalendar({ county, compact = false }: { county: CountySite; compac
       <div className="panel-heading">
         <p className="eyebrow">Community Calendar</p>
         <h2>Upcoming Events</h2>
+        {presentedBy ? (
+          <a className="feed-presented-by calendar-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
+            {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
+            <span>Presented by</span>
+            <strong>{presentedBy.name}</strong>
+          </a>
+        ) : null}
       </div>
       {displayedStatus ? <p>{displayedStatus}</p> : null}
       <div className="event-list">
@@ -1546,6 +1632,7 @@ function EventCalendar({ county, compact = false }: { county: CountySite; compac
           </article>
         ))}
       </div>
+      {!compact ? <AdSlot county={county} page={page} route="county" slot="county-calendar-inline" limit={4} /> : null}
     </div>
   );
 }
@@ -1584,10 +1671,11 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
   return (
     <section className={compact ? "feed-widget" : "section"}>
       {compact ? (
-        <div className="panel-heading">
-          <p className="eyebrow">Patriots in Action TV</p>
-          <h3>PIA Video Feed</h3>
-          <p>Latest videos from <Link to="/tv">Patriots in Action TV</Link>.</p>
+        <div className="feed-hero">
+          <div className="feed-hero-title">
+            <p className="eyebrow">Patriots in Action TV</p>
+            <h3>PIA Video Feed</h3>
+          </div>
           {piaTvPartner ? (
             <Link className="feed-presented-by" to="/tv">
               {piaTvPartner.image ? <img src={piaTvPartner.image} alt="" loading="lazy" /> : null}
@@ -1595,6 +1683,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
               <strong>{piaTvPartner.name}</strong>
             </Link>
           ) : null}
+          <p className="feed-hero-description">Latest videos from <Link to="/tv">Patriots in Action TV</Link>.</p>
         </div>
       ) : null}
       {status ? <p className="status">{status}</p> : null}
@@ -1970,7 +2059,7 @@ function Footer() {
           <h3>Stay informed</h3>
           <Link to="/counties">County Directory</Link>
           <Link to="/rewards">Patriot Rewards</Link>
-          <Link to="/partners">Patriot Partners and Sponsors</Link>
+          <Link to="/partners">Patriot Partners</Link>
           <a href={site.links.community}>Join Our Interactive Community</a>
           <a href={site.links.merch} target="_blank" rel="noreferrer">Merch Store</a>
         </div>
@@ -1994,6 +2083,14 @@ function HeroMedia() {
   );
 }
 
+function PatriotReachNote() {
+  return (
+    <p className="patriot-reach-note">
+      We reach <strong>6 million Patriots</strong> a month.
+    </p>
+  );
+}
+
 function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
   return (
     <section className="page-hero">
@@ -2004,21 +2101,23 @@ function PageHero({ eyebrow, title, subtitle }: { eyebrow: string; title: string
   );
 }
 
-function ActionGrid({ county }: { county: CountySite }) {
-  return (
-    <section className="section">
-      <div className="card-grid four">
-        <ResourceCard title="Precinct Map" href={county.links.precinctMap} />
-        <ResourceCard title="Voting Locations" href={county.links.votingLocations} />
-        <ResourceCard title="Sample Ballot" href={county.links.sampleBallot} />
-        <ResourceCard title="Register to Vote" href={county.links.registerToVote} />
-        <ResourceCard title="Local Elected Officials" href={county.links.localOfficials} />
-        <ResourceCard title="State Elected Officials" href={county.links.stateOfficials} />
-        <ResourceCard title="Federal Elected Officials" href={county.links.federalOfficials} />
-        <ResourceCard title="County Party" href={county.links.countyParty} />
-      </div>
-    </section>
+function ActionGrid({ county, embedded = false }: { county: CountySite; embedded?: boolean }) {
+  const cards = (
+    <div className="card-grid four">
+      <ResourceCard title="Precinct Map" href={county.links.precinctMap} />
+      <ResourceCard title="Voting Locations" href={county.links.votingLocations} />
+      <ResourceCard title="Sample Ballot" href={county.links.sampleBallot} />
+      <ResourceCard title="Register to Vote" href={county.links.registerToVote} />
+      <ResourceCard title="Local Elected Officials" href={county.links.localOfficials} />
+      <ResourceCard title="State Elected Officials" href={county.links.stateOfficials} />
+      <ResourceCard title="Federal Elected Officials" href={county.links.federalOfficials} />
+      <ResourceCard title="County Party" href={county.links.countyParty} />
+    </div>
   );
+
+  if (embedded) return cards;
+
+  return <section className="section">{cards}</section>;
 }
 
 function CustomBlocks({ county, page }: { county: CountySite; page: CountyPageKey }) {

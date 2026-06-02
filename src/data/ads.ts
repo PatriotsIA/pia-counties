@@ -25,6 +25,7 @@ import trailerLargeAdImage from "../../NewAds/TrailerLarge.jpg";
 
 export type AdSlotId =
   | "county-home-inline"
+  | "county-calendar-inline"
   | "county-news-inline"
   | "county-page-footer"
   | "site-footer"
@@ -384,7 +385,7 @@ export const ads: AdCreative[] = [
     priority: 100,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
     },
@@ -407,7 +408,7 @@ export const ads: AdCreative[] = [
     priority: 99,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
     },
@@ -476,7 +477,7 @@ export const ads: AdCreative[] = [
     priority: 97,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
     },
@@ -499,7 +500,7 @@ export const ads: AdCreative[] = [
     priority: 96,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
     },
@@ -752,7 +753,7 @@ export const ads: AdCreative[] = [
     priority: 74,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "partners", "elections"],
     },
@@ -775,7 +776,7 @@ export const ads: AdCreative[] = [
     priority: 98,
     active: true,
     targeting: {
-      slots: ["county-news-inline"],
+      slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
     },
@@ -798,7 +799,7 @@ export const ads: AdCreative[] = [
     priority: 78,
     active: true,
     targeting: {
-      slots: ["county-news-inline", "county-page-footer"],
+      slots: ["county-news-inline", "county-calendar-inline", "county-page-footer"],
       routes: ["county"],
       pages: ["news", "events", "contact"],
     },

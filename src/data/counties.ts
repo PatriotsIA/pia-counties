@@ -206,7 +206,7 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
       precinctMap: civicResourceLinks.precinctLookup,
       votingLocations: civicResourceLinks.votingLocations,
       sampleBallot: civicResourceLinks.sampleBallot,
-      registerToVote: civicResourceLinks.registerToVote,
+      registerToVote: `https://vote.gov/register/${state.abbr.toLowerCase()}/`,
       localOfficials: civicResourceLinks.localOfficials,
       stateOfficials: civicResourceLinks.stateOfficials,
       federalOfficials: civicResourceLinks.federalOfficials,
