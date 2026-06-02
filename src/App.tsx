@@ -1,7 +1,11 @@
 import { useEffect, useState, type FormEvent, type MouseEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
+import { AdPreviewPlaceholder, PresentedByPreview } from "./components/AdPreviewPlaceholder";
+import { PaymentsPricingContent } from "./components/PaymentsPricingContent";
 import { TopTicker } from "./components/TopTicker";
+import { ADVERTISER_PREVIEW_ENABLED } from "./config/advertiser-preview";
+import type { AdPricingKey } from "./data/ad-pricing";
 import { getCandidateById, getCandidatesForCounty, getCandidatesForState, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { site } from "./data/site";
@@ -340,7 +344,13 @@ function seoDataForPath(pathname: string): SeoData {
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
   if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
-  if (pathname === "/payments") return { title: "Patriot Partner Payments", description: "Secure founding partner payments for Patriots in Action county and statewide partnerships.", canonicalPath: "/payments" };
+  if (pathname === "/payments") {
+    return {
+      title: "Patriot Partner Payments",
+      description: "View Patriots in Action partner tiers, placement pricing, discounts, and secure founding partner payments.",
+      canonicalPath: "/payments",
+    };
+  }
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
 
@@ -536,6 +546,11 @@ function HomePage() {
         </div>
       </section>
       <FoundingPartnerCallout />
+      {ADVERTISER_PREVIEW_ENABLED ? (
+        <section className="section">
+          <AdSlot route="home" slot="county-home-inline" limit={6} />
+        </section>
+      ) : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
@@ -740,6 +755,7 @@ function PaymentsPage() {
         </a>
         <PartnerPaymentsDetails />
       </section>
+      <PaymentsPricingContent />
     </Shell>
   );
 }
@@ -1100,7 +1116,9 @@ function CountyHome({ county }: { county: CountySite }) {
           </div>
           <h1>{county.displayName} Patriots</h1>
           <p className="eyebrow hero-subtitle-eyebrow">{county.displayName} Hub For Action</p>
-          {presentingSponsor ? (
+          {ADVERTISER_PREVIEW_ENABLED ? (
+            <PresentedByPreview pricingKey="county-hero-sponsor" className="county-hero-sponsor-preview" />
+          ) : presentingSponsor ? (
             <a className="county-hero-sponsor" href={presentingSponsor.href} target="_blank" rel="noreferrer">
               {presentingSponsor.image ? <img src={presentingSponsor.image} alt="" loading="lazy" /> : null}
               <span>Presented by</span>
@@ -1319,7 +1337,11 @@ function PartnerList({ county, partners, showCountyScope = false }: { county?: C
       {partners.map((partner) => (
         <li key={partner.name}>
           <article className="partner-card">
-            {partner.image ? <img src={partner.image} alt="" loading="lazy" /> : null}
+            {ADVERTISER_PREVIEW_ENABLED ? (
+              <AdPreviewPlaceholder pricingKey="partner-directory" compact className="partner-card-preview" />
+            ) : partner.image ? (
+              <img src={partner.image} alt="" loading="lazy" />
+            ) : null}
             <div className="partner-card-copy">
               <a className="partner-card-title" href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
                 {partner.name}
@@ -1393,6 +1415,7 @@ type RssFeedWidgetProps = {
   feedUrl: string;
   emptyText: string;
   presentedBy?: (typeof preferredPartners)[number];
+  feedPricingKey?: AdPricingKey;
   topic?: "general" | "obituaries" | "sports";
 };
 
@@ -1413,6 +1436,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             feedUrl={county.feeds.localNewsUrl}
             emptyText="No local article results are available yet."
             presentedBy={countyPartner(county, "CBT Real Estate Services")}
+            feedPricingKey="feed-articles"
           />
           <RssFeedWidget
             eyebrow="Obituaries"
@@ -1421,6 +1445,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             feedUrl={county.feeds.obituariesUrl}
             emptyText="No local obituary results are available yet."
             presentedBy={preferredPartner("Patriot Rewards")}
+            feedPricingKey="feed-obituaries"
             topic="obituaries"
           />
         </div>
@@ -1432,6 +1457,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             feedUrl={county.feeds.localVideoUrl}
             emptyText="No local video results are available yet."
             presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
+            feedPricingKey="feed-video"
           />
           <VimeoFeed compact />
         </div>
@@ -1444,6 +1470,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
           feedUrl={county.feeds.localSportsUrl}
           emptyText="No local sports results are available yet."
           presentedBy={preferredPartner("piaevents.com")}
+          feedPricingKey="feed-sports"
           topic="sports"
         />
       </div>
@@ -1455,7 +1482,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
   );
 }
 
-function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presentedBy, topic = "general" }: RssFeedWidgetProps) {
+function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presentedBy, feedPricingKey, topic = "general" }: RssFeedWidgetProps) {
   const [items, setItems] = useState<NewsFeedItem[]>([]);
   const [visibleCount, setVisibleCount] = useState(5);
   const [status, setStatus] = useState("Loading feed...");
@@ -1495,7 +1522,9 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
           <p className="eyebrow">{eyebrow}</p>
           <h3>{title}</h3>
         </div>
-        {presentedBy ? (
+        {ADVERTISER_PREVIEW_ENABLED && feedPricingKey ? (
+          <PresentedByPreview pricingKey={feedPricingKey} className="feed-presented-by-preview" />
+        ) : presentedBy ? (
           <a className="feed-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
             {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
             <span>Presented by</span>
@@ -1675,7 +1704,9 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       <div className="panel-heading">
         <p className="eyebrow">Community Calendar</p>
         <h2>Upcoming Events</h2>
-        {presentedBy ? (
+        {ADVERTISER_PREVIEW_ENABLED ? (
+          <PresentedByPreview pricingKey="calendar-presented-by" className="calendar-presented-by-preview" />
+        ) : presentedBy ? (
           <a className="feed-presented-by calendar-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
             {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
             <span>Presented by</span>
@@ -1738,7 +1769,9 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
             <p className="eyebrow">Patriots in Action TV</p>
             <h3>PIA Video Feed</h3>
           </div>
-          {piaTvPartner ? (
+          {ADVERTISER_PREVIEW_ENABLED ? (
+            <PresentedByPreview pricingKey="feed-pia-video" className="feed-presented-by-preview" />
+          ) : piaTvPartner ? (
             <Link className="feed-presented-by" to="/tv">
               {piaTvPartner.image ? <img src={piaTvPartner.image} alt="" loading="lazy" /> : null}
               <span>Presented by</span>
@@ -2020,7 +2053,7 @@ function Shell({
         <div className={showAdRails ? "container shell-main-content" : undefined}>{children}</div>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-right-rail" /> : null}
       </main>
-      {route !== "county" && !suppressAdRails ? (
+      {route !== "county" && (!suppressAdRails || ADVERTISER_PREVIEW_ENABLED) ? (
         <div className="container">
           <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />
         </div>

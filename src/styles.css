@@ -1579,6 +1579,233 @@ nav a {
   letter-spacing: 0.02em;
 }
 
+.ad-preview-placeholder {
+  display: grid;
+  gap: 0.35rem;
+  align-content: center;
+  justify-items: center;
+  min-height: 180px;
+  min-width: 180px;
+  padding: 0.85rem;
+  border: 2px solid rgba(21, 56, 111, 0.35);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #1a4f9c 0%, #15386f 55%, #0f2c5f 100%);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(17, 27, 71, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.ad-preview-placeholder-compact {
+  min-height: 108px;
+  min-width: 140px;
+  padding: 0.65rem;
+  border-radius: 14px;
+}
+
+.ad-preview-spot {
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.92;
+}
+
+.ad-preview-tier {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.ad-preview-monthly,
+.ad-preview-yearly {
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.ad-preview-monthly {
+  font-size: 1.15rem;
+}
+
+.ad-preview-yearly {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.ad-preview-leaderboard {
+  min-height: 120px;
+  width: min(100%, 980px);
+  min-width: min(100%, 320px);
+}
+
+.presented-by-preview {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+}
+
+.presented-by-preview-label {
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weather-presented-by-preview {
+  margin-left: 0.35rem;
+}
+
+.weather-presented-by-preview .ad-preview-placeholder-compact {
+  min-height: 72px;
+  min-width: 120px;
+}
+
+.feed-presented-by-preview,
+.calendar-presented-by-preview,
+.county-hero-sponsor-preview {
+  justify-self: end;
+}
+
+.ad-preview-carousel-track,
+.ad-preview-banner-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 300px);
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+}
+
+.ad-preview-news-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.ad-preview-banner-item,
+.ad-preview-carousel-item {
+  display: flex;
+}
+
+.partner-card-preview {
+  width: 100%;
+  max-width: 220px;
+}
+
+.payments-pricing-content {
+  display: grid;
+  gap: 2rem;
+  margin: 2rem 0 3rem;
+}
+
+.payments-pricing-block {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.payments-pricing-block h2,
+.payments-pricing-block h3 {
+  margin: 0;
+  color: var(--navy);
+}
+
+.payments-pricing-block p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.payments-tier-grid,
+.payments-package-grid,
+.payments-inventory-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.payments-tier-grid,
+.payments-package-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.payments-inventory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.payments-tier-card {
+  padding: 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    var(--flag-gradient-soft) border-box;
+  box-shadow: 0 10px 28px rgba(17, 27, 71, 0.08);
+}
+
+.payments-tier-card h3 {
+  margin: 0 0 0.5rem;
+  color: var(--navy);
+  font-size: 1.05rem;
+}
+
+.payments-tier-price {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 0.65rem;
+}
+
+.payments-tier-price strong {
+  color: var(--navy);
+  font-size: 1.2rem;
+}
+
+.payments-tier-price span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.payments-tier-card ul,
+.payments-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.payments-table-wrap {
+  overflow-x: auto;
+}
+
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.payments-table th,
+.payments-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid rgba(21, 56, 111, 0.1);
+  text-align: left;
+  vertical-align: top;
+}
+
+.payments-table th {
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.payments-table td {
+  color: var(--muted);
+}
+
+.payments-inventory-card {
+  min-height: 150px;
+}
+
 .narrow {
   max-width: 760px;
   margin-inline: auto;
@@ -2400,6 +2627,11 @@ nav a {
   .sponsor-carousel-track {
     grid-auto-columns: 300px;
     width: min(100%, 300px);
+  }
+
+  .ad-preview-carousel-track,
+  .ad-preview-banner-track {
+    grid-template-columns: 1fr;
   }
 
   .sponsor-carousel-shell {

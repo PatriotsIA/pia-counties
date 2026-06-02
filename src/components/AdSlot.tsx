@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { AdCreative, AdPlacement, AdSlotId } from "../data/ads";
+import { adSlotPricingKey, type AdPricingKey } from "../data/ad-pricing";
 import type { CountyPageKey, CountySite } from "../data/counties";
+import { ADVERTISER_PREVIEW_ENABLED } from "../config/advertiser-preview";
 import { resolveAdsForSlot, type AdRouteType } from "../lib/ads";
 import { trackAdClick, trackAdImpression, type AdTrackingPayload } from "../lib/analytics";
+import { AdPreviewPlaceholder } from "./AdPreviewPlaceholder";
 
 type AdSlotProps = {
   slot: AdSlotId;
@@ -20,6 +23,10 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement }: AdSl
     [county, page, resolveLimit, route, slot],
   );
 
+  if (ADVERTISER_PREVIEW_ENABLED) {
+    return <AdPreviewSlot slot={slot} limit={limit} placement={placement} county={county} />;
+  }
+
   if (!resolvedAds.length) return null;
 
   if (slot === "county-home-inline") {
@@ -36,6 +43,75 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement }: AdSl
     <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label="Sponsored message">
       {resolvedAds.map((ad) => (
         <AdCard ad={ad} county={county} key={ad.id} page={page} placement={placement || ad.placement} slot={slot} />
+      ))}
+    </aside>
+  );
+}
+
+function AdPreviewSlot({
+  slot,
+  limit = 1,
+  placement,
+  county,
+}: {
+  slot: AdSlotId;
+  limit?: number;
+  placement?: AdPlacement;
+  county?: CountySite;
+}) {
+  const pricingKey: AdPricingKey =
+    slot === "county-home-inline" && !county ? "homepage-sponsor-carousel" : adSlotPricingKey(slot);
+  const previewCount = slot === "county-page-footer" || slot === "site-footer" ? Math.max(limit, 1) : limit;
+  const isBanner = slot === "county-page-footer" || slot === "site-footer";
+  const isCarousel = slot === "county-home-inline";
+  const isNewsRow = slot === "county-news-inline";
+
+  if (isCarousel) {
+    const heading = county ? `${county.displayName} Patriots is sponsored by:` : "Patriots In Action is Sponsored By:";
+    return (
+      <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-carousel ad-preview-carousel`} aria-label="Advertiser preview carousel">
+        <div className="sponsor-carousel-heading">
+          <p className="eyebrow">{heading}</p>
+        </div>
+        <div className="ad-preview-carousel-track">
+          {Array.from({ length: previewCount }, (_, index) => (
+            <div className="sponsor-carousel-item ad-preview-carousel-item" key={`${slot}-${index}`}>
+              <AdPreviewPlaceholder pricingKey={pricingKey} />
+            </div>
+          ))}
+        </div>
+      </aside>
+    );
+  }
+
+  if (isBanner) {
+    return (
+      <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel ad-preview-banner`} aria-label="Advertiser preview banners">
+        <div className="ad-preview-banner-track">
+          {Array.from({ length: previewCount }, (_, index) => (
+            <div className="sponsor-banner-carousel-item ad-preview-banner-item" key={`${slot}-${index}`}>
+              <AdPreviewPlaceholder pricingKey={pricingKey} className={placement === "leaderboard" ? "ad-preview-leaderboard" : ""} />
+            </div>
+          ))}
+        </div>
+      </aside>
+    );
+  }
+
+  if (isNewsRow) {
+    return (
+      <aside className={`sponsor-slot sponsor-slot-${slot} ad-preview-news-row`} aria-label="Advertiser preview news row">
+        {Array.from({ length: previewCount }, (_, index) => (
+          <AdPreviewPlaceholder pricingKey={pricingKey} key={`${slot}-${index}`} />
+        ))}
+      </aside>
+    );
+  }
+
+  return (
+    <aside className={`sponsor-slot sponsor-slot-${slot} ad-preview-slot`} aria-label="Advertiser preview placement">
+      {Array.from({ length: previewCount }, (_, index) => (
+        <AdPreviewPlaceholder pricingKey={pricingKey} key={`${slot}-${index}`} />
       ))}
     </aside>
   );

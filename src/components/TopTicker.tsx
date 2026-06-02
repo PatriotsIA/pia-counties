@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
+import { ADVERTISER_PREVIEW_ENABLED } from "../config/advertiser-preview";
+import { PresentedByPreview } from "./AdPreviewPlaceholder";
 
 type WeatherSponsor = {
   name: string;
@@ -160,7 +162,9 @@ function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weathe
       <span>{Math.round(weather.temperature)}{"\u00b0F"}</span>
       {weather.condition ? <span>{weather.condition}</span> : null}
       {typeof weather.windSpeed === "number" ? <span>Wind {Math.round(weather.windSpeed)} mph</span> : null}
-      {weatherSponsor ? (
+      {ADVERTISER_PREVIEW_ENABLED && county ? (
+        <PresentedByPreview pricingKey="weather-sponsor" className="weather-presented-by-preview" />
+      ) : weatherSponsor ? (
         <span className="weather-presented-by">
           Presented by <a href={weatherSponsor.href}>{weatherSponsor.name}</a>
         </span>
