@@ -18,6 +18,7 @@ export const site = {
     partner: "/partners",
     cbtRealEstate: "https://www.facebook.com/CBTRealEstateServices/",
     lemcRealty: "https://www.331-rent.com/",
+    patriotsForAction: "https://patriotsforaction.org/",
     patriotDispatch: "https://patriotsforaction.org/messaging",
     registerToVote: "https://www.vote.gov/register",
     nationalNews: "https://www.theepochtimes.com/rss",

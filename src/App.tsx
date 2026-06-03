@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent, type MouseEvent, type ReactNode, t
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
+import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
 import { getCandidateById, getCandidatesForCounty, getCandidatesForState, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
@@ -57,6 +58,12 @@ type Partner = {
 const panhandleCountySponsorKeys = ["texas/potter", "texas/randall"];
 
 const nationwidePartners: Partner[] = [
+  {
+    name: "Patriots For Action",
+    description: "Connect with the Patriots For Action organization for civic engagement, grassroots action, and community resources.",
+    href: site.links.patriotsForAction,
+    image: site.brand.patriot,
+  },
   {
     name: "Patriot Dispatch",
     description: "Get Patriots in Action updates and messaging resources.",
@@ -152,6 +159,61 @@ const preferredPartners = [...nationwidePartners, ...countySpecificPartners];
 
 function preferredPartner(name: string) {
   return preferredPartners.find((partner) => partner.name === name);
+}
+
+function patriotMerchPresentedBy(county?: CountySite) {
+  const partner = preferredPartner("The Patriot Merch Store");
+  if (!partner) return null;
+
+  return {
+    name: partner.name,
+    href: county?.links.merch ?? partner.href,
+    image: partner.image,
+  };
+}
+
+function patriotsForActionPresentedBy() {
+  const partner = preferredPartner("Patriots For Action");
+  if (!partner) return null;
+
+  return {
+    name: partner.name,
+    href: partner.href,
+    image: partner.image,
+  };
+}
+
+function piaEventsPresentedBy() {
+  const partner = preferredPartner("piaevents.com");
+  if (!partner) return null;
+
+  return {
+    name: partner.name,
+    href: partner.href,
+    image: partner.image,
+  };
+}
+
+function CandidateDirectorySponsors({ county }: { county?: CountySite }) {
+  const merchPresentedBy = patriotMerchPresentedBy(county);
+  const patriotsPresentedBy = patriotsForActionPresentedBy();
+  const eventsPresentedBy = piaEventsPresentedBy();
+
+  if (!merchPresentedBy && !patriotsPresentedBy && !eventsPresentedBy) return null;
+
+  return (
+    <div className="candidate-directory-sponsored">
+      <div className="candidate-directory-sponsored-start">
+        {patriotsPresentedBy ? <PresentedByPartner {...patriotsPresentedBy} /> : null}
+      </div>
+      <div className="candidate-directory-sponsored-center">
+        {eventsPresentedBy ? <PresentedByPartner {...eventsPresentedBy} /> : null}
+      </div>
+      <div className="candidate-directory-sponsored-end">
+        {merchPresentedBy ? <PresentedByPartner {...merchPresentedBy} /> : null}
+      </div>
+    </div>
+  );
 }
 
 function countyKey(county: CountySite) {
@@ -816,6 +878,7 @@ function DirectoryPage() {
         </label>
         <p>{filteredCounties.length} of {counties.length} counties shown</p>
       </section>
+      <PatriotNetworkCommunityBanner className="directory-community-banner" />
       {!query && !selectedState ? (
         <>
           <div className="section-heading compact-heading">
@@ -891,6 +954,7 @@ function StatePage() {
         </label>
         <p>{visibleCounties.length} of {stateCounties.length} counties shown</p>
       </section>
+      <PatriotNetworkCommunityBanner className="directory-community-banner" />
       <div className="directory-grid">
         {visibleCounties.map((county) => (
           <Link key={county.fips} className="directory-card" to={countyPath(county)}>
@@ -904,6 +968,19 @@ function StatePage() {
       </div>
       {!visibleCounties.length ? <p className="status">No counties match your search.</p> : null}
     </Shell>
+  );
+}
+
+function CandidateDirectoryEmptyBanner() {
+  return (
+    <section className="candidate-directory-empty-banner" aria-label="Help build candidate directories">
+      <div>
+        <p className="eyebrow">Candidate Directory</p>
+        <h2>Don&apos;t see your state and local candidates?</h2>
+        <p>Contact us to help us build our candidate directories.</p>
+      </div>
+      <Link className="button primary" to="/contact">Contact Us</Link>
+    </section>
   );
 }
 
@@ -990,6 +1067,7 @@ function StateCandidatesPage() {
   return (
     <Shell route="state">
       <PageHero eyebrow="Candidate Directory" title={`${state.name} candidates running for office`} subtitle="Browse statewide, district, county, city, and precinct candidates connected to Patriots in Action." />
+      <CandidateDirectorySponsors />
       <CandidateFilters
         jurisdictions={jurisdictionOptions}
         jurisdiction={jurisdictionFilter}
@@ -1004,6 +1082,8 @@ function StateCandidatesPage() {
         onSearchChange={setCandidateSearch}
         onSortChange={setCandidateSort}
       />
+      <PatriotNetworkCommunityBanner className="directory-community-banner" />
+      {!allCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       {runOffCandidates.length && !hasJurisdictionFilter ? <RunoffInterviewsSection candidates={runOffCandidates} /> : null}
       <section className="section">
         <div className="section-heading">
@@ -1212,11 +1292,13 @@ function stateConstitutionUrl(stateName: string) {
 function CountyCandidates({ county }: { county: CountySite }) {
   const countyCandidates = getCandidatesForCounty(county);
   const runoffCandidates = getCandidatesForState(county.state.slug).filter((candidate) => candidateProjectCandidateIds.has(candidate.id));
-
   return (
     <>
       <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
+      <CandidateDirectorySponsors county={county} />
+      <PatriotNetworkCommunityBanner className="directory-community-banner" />
       {runoffCandidates.length ? <RunoffInterviewsSection candidates={runoffCandidates} /> : null}
+      {!countyCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local Ballot Watch</p>
@@ -1294,18 +1376,23 @@ function CountyPartners({ county }: { county: CountySite }) {
         subtitle="Preferred partners, founding partners, merchandise, and Patriot Rewards."
       />
       <FoundingPartnerCallout county={county} />
-      <section className="section">
+      <section className="section partner-sections">
         <div className="panel">
           <p className="eyebrow">{county.displayName} Partners</p>
           <h2>{county.displayName} founding partners</h2>
-          <p>
-            These are the founding partners currently connected to {county.displayName}. Nationwide Patriots in Action partners are listed
-            separately on the main partners page.
-          </p>
+          <p>These are the founding partners currently connected to {county.displayName}.</p>
           {partners.length ? <PartnerList county={county} partners={partners} /> : <p className="status">No county founding partners have been added for {county.displayName} yet.</p>}
           <div className="actions">
-            <Link className="button primary" to="/partners">See All Partners</Link>
             <Link className="button" to="/contact">Become a County Founding Partner</Link>
+          </div>
+        </div>
+        <div className="panel">
+          <p className="eyebrow">Sitewide Partners</p>
+          <h2>Nationwide partners supporting Patriots in Action</h2>
+          <p>These partners support the broader Patriots in Action network across counties, states, events, media, rewards, and merchandise.</p>
+          <PartnerList partners={nationwidePartners} />
+          <div className="actions">
+            <Link className="button primary" to="/partners">See All Partners</Link>
           </div>
         </div>
       </section>
@@ -1954,10 +2041,6 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
         ))}
       </nav>
       {children}
-      <div className="shell-pre-footer">
-        <PatriotNetworkCommunityBanner />
-        <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
-      </div>
     </Shell>
   );
 }
@@ -2020,15 +2103,21 @@ function Shell({
       </header>
       <main className={showAdRails ? "shell-content-frame" : "container"}>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
-        <div className={showAdRails ? "container shell-main-content" : undefined}>{children}</div>
+        <div className={showAdRails ? "container shell-main-content" : "shell-page-stack"}>
+          {children}
+          <div className="shell-pre-footer">
+            {route !== "directory" && route !== "state" && !(route === "county" && page === "candidates") ? (
+              <PatriotNetworkCommunityBanner />
+            ) : null}
+            {route === "county" && county ? (
+              <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
+            ) : !suppressAdRails ? (
+              <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />
+            ) : null}
+          </div>
+        </div>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-right-rail" /> : null}
       </main>
-      {route !== "county" ? (
-        <div className="container shell-pre-footer">
-          <PatriotNetworkCommunityBanner />
-          {!suppressAdRails ? <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} /> : null}
-        </div>
-      ) : null}
       <Footer />
       {county ? <CountyBookmarkToast county={county} /> : null}
     </>

@@ -48,6 +48,7 @@
 
 body {
   margin: 0;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 8% 6%, rgba(179, 33, 44, 0.04), transparent 28rem),
     radial-gradient(circle at 92% 12%, rgba(21, 56, 111, 0.14), transparent 32rem),
@@ -73,8 +74,16 @@ img {
   display: block;
 }
 
-.shell-main-content {
+.shell-main-content,
+.shell-page-stack {
+  width: 100%;
   min-width: 0;
+}
+
+.shell-page-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .sr-only {
@@ -458,6 +467,20 @@ nav a {
 .sponsor-slot-county-page-footer,
 .sponsor-slot-site-footer {
   margin: 3rem 0 0;
+  width: 100%;
+  justify-items: stretch;
+}
+
+.shell-pre-footer .sponsor-slot-county-page-footer,
+.shell-pre-footer .sponsor-slot-site-footer {
+  margin-top: 0;
+}
+
+.shell-pre-footer .sponsor-slot-county-page-footer.sponsor-banner-carousel,
+.shell-pre-footer .sponsor-slot-site-footer.sponsor-banner-carousel,
+.sponsor-slot-county-page-footer.sponsor-banner-carousel,
+.sponsor-slot-site-footer.sponsor-banner-carousel {
+  justify-items: stretch;
 }
 
 .sponsor-slot-county-news-inline {
@@ -568,24 +591,38 @@ nav a {
 }
 
 .sponsor-banner-carousel {
+  display: block;
+  width: 100%;
+  max-width: 100%;
   margin-top: 3rem;
   background: transparent;
 }
 
+.shell-pre-footer .sponsor-banner-carousel {
+  margin-top: 0;
+}
+
 .sponsor-banner-carousel-shell {
   position: relative;
-  display: grid;
-  width: min(100%, 1080px);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 980px;
   margin-inline: auto;
-  padding-inline: 52px;
+  padding-inline: 0;
   background: transparent;
+}
+
+.sponsor-banner-carousel-shell:has(.sponsor-carousel-arrow) {
+  padding-inline: 52px;
 }
 
 .sponsor-banner-carousel-track {
   display: grid;
-  grid-auto-columns: 100%;
   grid-auto-flow: column;
-  gap: 1rem;
+  grid-auto-columns: 100%;
+  align-items: center;
+  gap: 0;
+  width: 100%;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -597,13 +634,24 @@ nav a {
 }
 
 .sponsor-banner-carousel-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   min-width: 0;
   background: transparent;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
 }
 
 .sponsor-banner-carousel .sponsor-card {
   width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.sponsor-banner-carousel .sponsor-card-image-only {
+  width: 100%;
+  max-width: 100%;
 }
 
 .sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only {
@@ -611,8 +659,10 @@ nav a {
 }
 
 .sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img {
+  display: block;
   width: 100%;
   max-height: 260px;
+  margin-inline: auto;
   object-fit: contain;
 }
 
@@ -1580,16 +1630,34 @@ nav a {
 }
 
 .shell-pre-footer {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.85rem;
   margin: 1.35rem 0 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.shell-pre-footer > .patriot-network-community-banner,
+.shell-pre-footer > .sponsor-banner-carousel {
+  width: 100%;
+  max-width: 100%;
+}
+
+.directory-community-banner {
+  margin: 0.25rem 0 1.75rem;
 }
 
 .patriot-network-community-banner {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 1rem;
-  align-items: start;
+  align-items: center;
   padding: 0.9rem 1rem;
   border: 1px solid transparent;
   border-radius: 18px;
@@ -1599,18 +1667,22 @@ nav a {
   box-shadow: 0 10px 30px rgba(17, 27, 71, 0.1), 0 0 22px rgba(21, 56, 111, 0.08);
 }
 
-.patriot-network-community-banner-image {
-  display: block;
-  overflow: hidden;
+.patriot-network-community-banner-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: clamp(72px, 10vw, 96px);
+  height: clamp(72px, 10vw, 96px);
+  padding: 0.35rem;
   border-radius: 12px;
   line-height: 0;
   background: #fff;
 }
 
-.patriot-network-community-banner-image img {
+.patriot-network-community-banner-icon img {
   display: block;
   width: 100%;
-  height: clamp(100px, 12vw, 132px);
+  height: 100%;
   object-fit: contain;
   object-position: center;
 }
@@ -1699,7 +1771,13 @@ nav a {
 .feed-widget {
   display: grid;
   gap: 1rem;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
+}
+
+.section > .feed-widget {
+  width: 100%;
 }
 
 .feed-hero {
@@ -1912,6 +1990,33 @@ nav a {
   box-shadow: 0 12px 36px rgba(17, 27, 71, 0.1), 0 0 26px rgba(21, 56, 111, 0.08);
 }
 
+.candidate-directory-sponsored {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 0.85rem 1rem;
+  margin: -1.1rem 0 1.15rem;
+}
+
+.candidate-directory-sponsored-start,
+.candidate-directory-sponsored-center,
+.candidate-directory-sponsored-end {
+  display: flex;
+  min-width: 0;
+}
+
+.candidate-directory-sponsored-start {
+  justify-content: flex-start;
+}
+
+.candidate-directory-sponsored-center {
+  justify-content: center;
+}
+
+.candidate-directory-sponsored-end {
+  justify-content: flex-end;
+}
+
 .candidate-filter-count {
   grid-column: 1 / -1;
   margin: 0;
@@ -1919,7 +2024,8 @@ nav a {
   font-weight: 800;
 }
 
-.candidate-directory-notice {
+.candidate-directory-notice,
+.candidate-directory-empty-banner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
@@ -1934,8 +2040,14 @@ nav a {
   box-shadow: 0 12px 36px rgba(17, 27, 71, 0.1), 0 0 28px rgba(21, 56, 111, 0.11);
 }
 
+.candidate-directory-empty-banner {
+  margin-top: 0.25rem;
+}
+
 .candidate-directory-notice h2,
-.candidate-directory-notice p {
+.candidate-directory-notice p,
+.candidate-directory-empty-banner h2,
+.candidate-directory-empty-banner p {
   margin: 0;
 }
 
@@ -2458,10 +2570,26 @@ nav a {
     flex: 0 0 auto;
   }
 
+  .candidate-directory-sponsored {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .candidate-directory-sponsored-start,
+  .candidate-directory-sponsored-center,
+  .candidate-directory-sponsored-end {
+    justify-content: stretch;
+  }
+
+  .candidate-directory-sponsored .feed-presented-by {
+    width: 100%;
+  }
+
   .feed-grid,
   .feed-item,
   .candidate-filters,
   .candidate-directory-notice,
+  .candidate-directory-empty-banner,
   .directory-search,
   .candidate-details div,
   .sponsor-card-leaderboard,
@@ -2524,8 +2652,9 @@ nav a {
     gap: 0.75rem;
   }
 
-  .patriot-network-community-banner-image img {
-    height: clamp(80px, 22vw, 108px);
+  .patriot-network-community-banner-icon {
+    width: clamp(64px, 18vw, 84px);
+    height: clamp(64px, 18vw, 84px);
   }
 
   .patriot-network-community-banner-copy {

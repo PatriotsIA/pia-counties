@@ -152,8 +152,8 @@ function CountySponsorCarousel({
 }
 
 function scrollCarousel(track: HTMLDivElement, direction: -1 | 1) {
-  const firstCard = track.querySelector<HTMLElement>(".sponsor-carousel-item");
-  const step = firstCard ? firstCard.offsetWidth + 16 : track.clientWidth;
+  const firstCard = track.querySelector<HTMLElement>(".sponsor-banner-carousel-item, .sponsor-carousel-item");
+  const step = firstCard ? firstCard.offsetWidth : track.clientWidth;
   const nearEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - step / 2;
   const nearStart = track.scrollLeft <= step / 2;
   const left = direction > 0

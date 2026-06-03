@@ -1,12 +1,18 @@
-import pia980Banner from "../../NewAds/PIA980.jpg";
+import { site } from "../data/site";
 
 const communityUrl = "https://community.patriotsinaction.com/";
 
-export function PatriotNetworkCommunityBanner() {
+type PatriotNetworkCommunityBannerProps = {
+  className?: string;
+};
+
+export function PatriotNetworkCommunityBanner({ className }: PatriotNetworkCommunityBannerProps = {}) {
+  const sectionClassName = ["patriot-network-community-banner", className].filter(Boolean).join(" ");
+
   return (
-    <section className="patriot-network-community-banner" aria-label="Join your county Patriot Network">
-      <a className="patriot-network-community-banner-image" href={communityUrl} target="_blank" rel="noopener noreferrer">
-        <img src={pia980Banner} alt="" loading="lazy" />
+    <section className={sectionClassName} aria-label="Join your county Patriot Network">
+      <a className="patriot-network-community-banner-icon" href={communityUrl} target="_blank" rel="noopener noreferrer">
+        <img src={site.brand.icon} alt={site.name} loading="lazy" />
       </a>
       <div className="patriot-network-community-banner-copy">
         <div className="patriot-network-community-banner-text">
