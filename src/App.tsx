@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type MouseEvent, type ReactNode, type UIEvent } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
@@ -42,7 +42,6 @@ const candidateProjectDisclaimer =
   "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
 const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
 const heroHeadline = "Patriots in Action";
-const patriotPartnerPaymentUrl = "";
 const heroKicker = "A Nationwide and Ultra Local Hub for Action";
 const heroDescription =
   "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
@@ -403,7 +402,6 @@ function seoDataForPath(pathname: string): SeoData {
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
   if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
-  if (pathname === "/payments") return { title: "Patriot Partner Payments", description: "Secure founding partner payments for Patriots in Action county and statewide partnerships.", canonicalPath: "/payments" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
 
@@ -548,7 +546,6 @@ function App() {
         <Route path="/tv" element={<MainTvPage />} />
       <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
-        <Route path="/payments" element={<PaymentsPage />} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
@@ -743,65 +740,6 @@ function MainPartnersPage() {
           </p>
           <PartnerList partners={countySpecificPartners} showCountyScope />
         </div>
-      </section>
-      <PartnerPaymentsFooter />
-    </Shell>
-  );
-}
-
-function PartnerPaymentsDetails() {
-  return (
-    <>
-      <p className="partner-payments-tooltip">
-        Payments are subject to our <Link to="/privacy">Privacy Policy</Link> and <Link to="/terms">Terms &amp; Conditions</Link>.
-      </p>
-      <p className="partner-payments-secured">Payment Secured by Stripe</p>
-    </>
-  );
-}
-
-function PartnerPaymentsFooter() {
-  return (
-    <section className="partner-payments-footer">
-      <Link className="button primary" to="/payments">
-        Patriot Partner Payments
-      </Link>
-      <PartnerPaymentsDetails />
-    </section>
-  );
-}
-
-function PaymentsPage() {
-  usePageTitle("Patriot Partner Payments");
-
-  function handlePaymentClick(event: MouseEvent<HTMLAnchorElement>) {
-    if (!patriotPartnerPaymentUrl) {
-      event.preventDefault();
-      window.open("about:blank", "_blank", "noopener,noreferrer");
-    }
-  }
-
-  return (
-    <Shell route="static" suppressAdRails>
-      <PageHero
-        eyebrow="Partners"
-        title="Patriot Partner Payments"
-        subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships."
-      />
-      <section className="section narrow payments-panel">
-        <p className="payments-demo-notice">
-          Payment system coming soon. Present iteration is for demo purposes only.
-        </p>
-        <a
-          className="button primary"
-          href={patriotPartnerPaymentUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handlePaymentClick}
-        >
-          Patriot Partner Payments
-        </a>
-        <PartnerPaymentsDetails />
       </section>
     </Shell>
   );
