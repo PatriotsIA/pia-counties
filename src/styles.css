@@ -1579,6 +1579,78 @@ nav a {
   letter-spacing: 0.02em;
 }
 
+.shell-pre-footer {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.35rem 0 0;
+}
+
+.patriot-network-community-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    var(--flag-gradient-soft) border-box;
+  box-shadow: 0 10px 30px rgba(17, 27, 71, 0.1), 0 0 22px rgba(21, 56, 111, 0.08);
+}
+
+.patriot-network-community-banner-image {
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+  line-height: 0;
+  background: #fff;
+}
+
+.patriot-network-community-banner-image img {
+  display: block;
+  width: 100%;
+  height: clamp(88px, 11vw, 120px);
+  object-fit: contain;
+  object-position: center;
+}
+
+.patriot-network-community-banner-copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem 0.85rem;
+}
+
+.patriot-network-community-banner-text {
+  display: grid;
+  gap: 0.35rem;
+  min-width: min(100%, 260px);
+  flex: 1 1 220px;
+}
+
+.patriot-network-community-banner-copy h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  line-height: 1.12;
+}
+
+.patriot-network-community-banner-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(0.84rem, 1.5vw, 0.95rem);
+  line-height: 1.45;
+}
+
+.patriot-network-community-banner-cta {
+  min-height: 42px;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
 .narrow {
   max-width: 760px;
   margin-inline: auto;
@@ -2443,5 +2515,22 @@ nav a {
   .video-modal-header {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .patriot-network-community-banner {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .patriot-network-community-banner-image img {
+    height: clamp(80px, 22vw, 108px);
+  }
+
+  .patriot-network-community-banner-copy {
+    align-items: flex-start;
+  }
+
+  .patriot-network-community-banner-cta {
+    width: 100%;
   }
 }

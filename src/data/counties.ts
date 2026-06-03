@@ -212,16 +212,6 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
       federalOfficials: civicResourceLinks.federalOfficials,
       countyParty: `https://www.google.com/search?q=${encodeURIComponent(`${displayName} ${state.name} political parties`)}`,
     },
-    customBlocks: {
-      home: [
-        {
-          title: "Join Your County's Patriot Network",
-          body: "Connect with neighbors, share local events, and stay ready for practical civic action.",
-          href: site.links.community,
-          cta: "Join the Movement",
-        },
-      ],
-    },
   };
 }
 

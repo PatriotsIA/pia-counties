@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent, type MouseEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
+import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { TopTicker } from "./components/TopTicker";
 import { getCandidateById, getCandidatesForCounty, getCandidatesForState, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
@@ -1132,7 +1133,6 @@ function CountyHome({ county }: { county: CountySite }) {
       </section>
       <CountyNewsSection county={county} page="home" />
       <ActionGrid county={county} />
-      <CustomBlocks county={county} page="home" />
     </>
   );
 }
@@ -1954,7 +1954,10 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
         ))}
       </nav>
       {children}
-      <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
+      <div className="shell-pre-footer">
+        <PatriotNetworkCommunityBanner />
+        <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
+      </div>
     </Shell>
   );
 }
@@ -2020,9 +2023,10 @@ function Shell({
         <div className={showAdRails ? "container shell-main-content" : undefined}>{children}</div>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-right-rail" /> : null}
       </main>
-      {route !== "county" && !suppressAdRails ? (
-        <div className="container">
-          <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />
+      {route !== "county" ? (
+        <div className="container shell-pre-footer">
+          <PatriotNetworkCommunityBanner />
+          {!suppressAdRails ? <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} /> : null}
         </div>
       ) : null}
       <Footer />
