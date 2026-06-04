@@ -80,6 +80,11 @@ export const countyPackages = [
   },
 ] as const;
 
+export const adAssetDeliveryInstructions =
+  "Please email your ad asset(s) to erik@patriotsinaction.com. 250x250px for regular ad spots, 980x300px for banners.";
+
+export const paymentsQuotePath = "/contact";
+
 export const adAssetSpecs = {
   square: {
     size: "250×250",
@@ -92,6 +97,7 @@ export const adAssetSpecs = {
   format: "PNG",
   backgrounds: "White or transparent background",
   email: "erik@patriotsinaction.com",
+  deliveryInstructions: adAssetDeliveryInstructions,
 } as const;
 
 export const countyPresentedByTier = {
@@ -135,9 +141,50 @@ export function nationalPlacementPreviewSize(key: AdPricingKey): NationalPlaceme
   return placement?.previewSize ?? "square";
 }
 
+export const adjacentCountyPricingNote =
+  "Each additional adjacent county is 50% of your base tier price. Add adjacent counties as separate Stripe add-on subscriptions—never use a sitewide promotion code on checkout, or the base county would be discounted too.";
+
+export const adjacentCountyAddOns = [
+  {
+    id: "adjacent-preferred",
+    name: "Additional Adjacent County — Preferred",
+    monthly: 22.5,
+    yearly: 225,
+    matchesTier: "Patriot Preferred Business Program ($45/mo base)",
+  },
+  {
+    id: "adjacent-gold",
+    name: "Additional Adjacent County — Gold",
+    monthly: 147.5,
+    yearly: 1475,
+    matchesTier: "Gold Business Partner ($295/mo base)",
+  },
+  {
+    id: "adjacent-platinum",
+    name: "Additional Adjacent County — Platinum",
+    monthly: 247.5,
+    yearly: 2475,
+    matchesTier: "Platinum Business Partner ($495/mo base)",
+  },
+  {
+    id: "adjacent-county-sponsor",
+    name: "Additional Adjacent County — County Sponsor",
+    monthly: 497.5,
+    yearly: 4975,
+    matchesTier: "County Sponsor — Presented By ($995/mo base)",
+  },
+  {
+    id: "adjacent-county-gold-founding",
+    name: "Additional Adjacent County — County Gold Founding",
+    monthly: 47.5,
+    yearly: 475,
+    matchesTier: "County Gold Partner founding ($95/mo base)",
+  },
+] as const;
+
 export const pricingDiscounts = [
   { label: "Annual prepay", detail: "Brochure annual rates ($450 / $2,950 / $4,950 / $9,950) — equivalent to about two months free vs monthly." },
-  { label: "Multi-county buy", detail: "Additional adjacent counties are half off." },
+  { label: "Adjacent counties", detail: adjacentCountyPricingNote },
   { label: "Multi-placement county bundle", detail: "10% off when buying 3+ elements in one county." },
   { label: "Category exclusivity", detail: "Add 25%–50% premium when one sponsor owns a business category in a geography." },
   { label: "Founding sponsor scarcity", detail: "Limit to 3–5 founding sponsors per county." },
@@ -300,7 +347,11 @@ export function getAdPricing(key: AdPricingKey): AdPricing {
 }
 
 export function formatAdPrice(amount: number) {
-  return `$${amount.toLocaleString("en-US")}`;
+  const hasCents = !Number.isInteger(amount);
+  return `$${amount.toLocaleString("en-US", {
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: hasCents ? 2 : 0,
+  })}`;
 }
 
 export function formatPlacementPricing(pricing: AdPricing) {
@@ -329,8 +380,16 @@ export function pricingNationalPlacements() {
   return nationalHomepagePlacements.map((placement) => getAdPricing(placement.key));
 }
 
-/** Placeholder until Stripe Payment Links are configured per tier. */
-export const stripeCheckoutPlaceholderUrl = "https://stripe.com";
+export const stripePaymentLinks = {
+  patriotPreferredMonthly: "https://buy.stripe.com/3cIdR91PrbOIfygfwT6EU06",
+  patriotPreferredYearly: "https://buy.stripe.com/fZu5kDcu56uo0DmfwT6EU07",
+  goldMonthly: "https://buy.stripe.com/8x28wP9hTdWQ2Lu98v6EU09",
+  goldYearly: "https://buy.stripe.com/5kQbJ1eCdcSMbi02K76EU08",
+  countyGoldFoundingMonthly: "https://buy.stripe.com/aFa28r2Tv5qk99SbgD6EU0a",
+  countyGoldFoundingYearly: "https://buy.stripe.com/4gM4gz1Pr3ic0DmckH6EU0b",
+  platinumMonthly: "https://buy.stripe.com/3cI6oHdy9cSM1Hq0BZ6EU0c",
+  platinumYearly: "https://buy.stripe.com/7sYdR9dy9cSM5XGfwT6EU0d",
+} as const;
 
 export type PartnerSubscriptionTier = {
   id: string;
@@ -360,8 +419,8 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "Link to website or social profile",
     ],
     placements: ["Top-level and county partner pages", "Patriot Rewards eligibility"],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeMonthlyUrl: stripePaymentLinks.patriotPreferredMonthly,
+    stripeYearlyUrl: stripePaymentLinks.patriotPreferredYearly,
   },
   {
     id: "gold-business",
@@ -381,8 +440,8 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "County sponsor carousel (250×250)",
       "Newsroom ad strip rotation",
     ],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeMonthlyUrl: stripePaymentLinks.goldMonthly,
+    stripeYearlyUrl: stripePaymentLinks.goldYearly,
   },
   {
     id: "platinum-business",
@@ -403,8 +462,8 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "Feed and weather sponsorship priority",
       "Partner directory premium listing",
     ],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeMonthlyUrl: stripePaymentLinks.platinumMonthly,
+    stripeYearlyUrl: stripePaymentLinks.platinumYearly,
   },
   {
     id: "county-gold",
@@ -419,8 +478,8 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "Founding partner recognition on county pages",
     ],
     placements: ["One county Presented by or feed", "County sponsor carousel (250×250)", "County partner card"],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeMonthlyUrl: stripePaymentLinks.countyGoldFoundingMonthly,
+    stripeYearlyUrl: stripePaymentLinks.countyGoldFoundingYearly,
   },
   {
     id: "county-platinum",
@@ -441,8 +500,7 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "County hero Presented by (when available)",
       "Feed and weather priority in county",
     ],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    quoteOnly: true,
   },
   {
     id: "county-sponsor",
@@ -457,8 +515,7 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
       "Ideal for category leaders in a county",
     ],
     placements: ["County home hero Presented by", "County-specific visibility across hero messaging"],
-    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
-    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+    quoteOnly: true,
   },
   {
     id: "national-level",
@@ -481,3 +538,7 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
     quoteLabel: nationwidePricingLabel,
   },
 ] as const;
+
+export function tierHasStripeCheckout(tier: PartnerSubscriptionTier) {
+  return Boolean(tier.stripeMonthlyUrl && tier.stripeYearlyUrl && !tier.quoteOnly);
+}

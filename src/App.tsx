@@ -1,8 +1,10 @@
 import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
-import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
 import { AdPreviewPlaceholder, PresentedByPreview } from "./components/AdPreviewPlaceholder";
 import { PaymentsPricingContent } from "./components/PaymentsPricingContent";
+import { AdAssetDeliveryNotice } from "./components/AdAssetDeliveryNotice";
+import { PaymentsAdjacentCountyAddOns } from "./components/PaymentsAdjacentCountyAddOns";
 import { PaymentsSubscriptionTable } from "./components/PaymentsSubscriptionTable";
 import { TopTicker } from "./components/TopTicker";
 import { ADVERTISER_PREVIEW_ENABLED } from "./config/advertiser-preview";
@@ -734,19 +736,15 @@ function PaymentsPage() {
       <PageHero
         eyebrow="Partners"
         title="Patriot Partner Payments"
-        subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships. Send sponsor artwork as PNG (white or transparent background) to erik@patriotsinaction.com — 250×250 for square ads, 980×300 for bottom banners."
+        subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships."
       />
       <section className="section payments-panel payments-panel-intro">
-        <p>
-          After checkout, email your ad files to{" "}
-          <a href="mailto:erik@patriotsinaction.com">erik@patriotsinaction.com</a> in PNG format with a white or
-          transparent background. Use 250×250 pixels for square carousel and newsroom ads; use 980×300 pixels for bottom
-          banner placements.
-        </p>
+        <AdAssetDeliveryNotice />
         <PartnerPaymentsDetails />
       </section>
       <section className="section payments-subscription-panel">
         <PaymentsSubscriptionTable />
+        <PaymentsAdjacentCountyAddOns />
       </section>
       <PaymentsPricingContent />
     </Shell>
@@ -1801,6 +1799,8 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
 }
 
 function SiteContactForm() {
+  const [searchParams] = useSearchParams();
+  const quoteSubject = searchParams.get("subject") ?? "";
   const [status, setStatus] = useState<{ message: string; tone: "success" | "error" } | undefined>();
   const [sending, setSending] = useState(false);
 
@@ -1840,11 +1840,12 @@ function SiteContactForm() {
 
   return (
     <form className="form-card" onSubmit={handleSubmit}>
+      <AdAssetDeliveryNotice />
       <label className="honeypot">Website <input name="website" tabIndex={-1} autoComplete="off" /></label>
       <FormInput name="name" label="Name" required />
       <FormInput name="email" label="Email" type="email" required />
       <FormInput name="phone" label="Phone" />
-      <FormInput name="subject" label="Subject" required />
+      <FormInput name="subject" label="Subject" required defaultValue={quoteSubject} />
       <FormInput name="message" label="Message" textarea required />
       <SponsorInterestCheckbox />
       <ConsentCheckbox />
@@ -1856,6 +1857,8 @@ function SiteContactForm() {
 }
 
 function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "event" }) {
+  const [searchParams] = useSearchParams();
+  const quoteSubject = searchParams.get("subject") ?? "";
   const [status, setStatus] = useState<{ message: string; tone: "success" | "error" } | undefined>();
   const [sending, setSending] = useState(false);
 
@@ -1901,12 +1904,13 @@ function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "e
     <form className="form-card" onSubmit={handleSubmit}>
       <input type="hidden" name="county" value={`${county.displayName}, ${county.state.name}`} />
       <label className="honeypot">Website <input name="website" tabIndex={-1} autoComplete="off" /></label>
+      {kind === "contact" ? <AdAssetDeliveryNotice /> : null}
       {kind === "contact" ? (
         <>
           <FormInput name="name" label="Name" required />
           <FormInput name="email" label="Email" type="email" required />
           <FormInput name="phone" label="Phone" />
-          <FormInput name="subject" label="Subject" required />
+          <FormInput name="subject" label="Subject" required defaultValue={quoteSubject} />
           <FormInput name="message" label="Message" textarea required />
           <SponsorInterestCheckbox />
           <ConsentCheckbox />
@@ -1934,11 +1938,29 @@ function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "e
   );
 }
 
-function FormInput({ name, label, type = "text", required = false, textarea = false }: { name: string; label: string; type?: string; required?: boolean; textarea?: boolean }) {
+function FormInput({
+  name,
+  label,
+  type = "text",
+  required = false,
+  textarea = false,
+  defaultValue,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  textarea?: boolean;
+  defaultValue?: string;
+}) {
   return (
     <label className="field">
       <span>{label}{required ? " *" : ""}</span>
-      {textarea ? <textarea name={name} required={required} rows={5} /> : <input name={name} type={type} required={required} />}
+      {textarea ? (
+        <textarea name={name} required={required} rows={5} defaultValue={defaultValue} />
+      ) : (
+        <input name={name} type={type} required={required} defaultValue={defaultValue} />
+      )}
     </label>
   );
 }

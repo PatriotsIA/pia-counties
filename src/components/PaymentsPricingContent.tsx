@@ -1,5 +1,8 @@
 import { adClickHint } from "../data/ads";
+import { AdAssetDeliveryNotice } from "./AdAssetDeliveryNotice";
+import { PaymentsQuoteLink } from "./PaymentsQuoteLink";
 import {
+  adAssetDeliveryInstructions,
   adAssetSpecs,
   brochureTiers,
   countyPackages,
@@ -103,10 +106,9 @@ export function PaymentsPricingContent() {
       <section className="payments-pricing-block">
         <p className="eyebrow">Ad Assets</p>
         <h2>Sponsor creative specifications</h2>
+        <AdAssetDeliveryNotice />
         <p>
-          Send finished ad artwork to{" "}
-          <a href={`mailto:${adAssetSpecs.email}`}>{adAssetSpecs.email}</a> as a {adAssetSpecs.format} file with a{" "}
-          {adAssetSpecs.backgrounds.toLowerCase()}.
+          Send finished ad artwork as a {adAssetSpecs.format} file with a {adAssetSpecs.backgrounds.toLowerCase()}.
         </p>
         <ul className="payments-list">
           <li>
@@ -155,9 +157,11 @@ export function PaymentsPricingContent() {
         <p className="eyebrow">National &amp; Homepage</p>
         <h2>Nationwide homepage ad spots</h2>
         <p>
-          National-level placements on patriotsinaction.com use custom pricing. Email{" "}
-          <a href={`mailto:${adAssetSpecs.email}`}>{adAssetSpecs.email}</a> for availability, creative specs, and a quote.
+          National-level placements on patriotsinaction.com use custom pricing.{" "}
+          <PaymentsQuoteLink tierName="National Level — Presented By" label="Get a quote" className="button primary" /> for
+          availability and pricing.
         </p>
+        <p>{adAssetDeliveryInstructions}</p>
         <div className="payments-national-grid">
           {nationalPlacements.map((placement) => {
             const placementMeta = nationalHomepagePlacements.find((item) => item.key === placement.key);

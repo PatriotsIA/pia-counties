@@ -1,4 +1,12 @@
-import { adAssetSpecs, formatAdPrice, partnerSubscriptionTiers, stripeCheckoutPlaceholderUrl } from "../data/ad-pricing";
+import { Link } from "react-router-dom";
+import {
+  adAssetDeliveryInstructions,
+  formatAdPrice,
+  partnerSubscriptionTiers,
+  paymentsQuotePath,
+  tierHasStripeCheckout,
+} from "../data/ad-pricing";
+import { PaymentsQuoteLink } from "./PaymentsQuoteLink";
 
 export function PaymentsSubscriptionTable() {
   return (
@@ -6,11 +14,8 @@ export function PaymentsSubscriptionTable() {
       <p className="eyebrow">Subscribe</p>
       <h2>Choose your partner tier</h2>
       <p>
-        Select a monthly or annual subscription below. Checkout is processed securely through Stripe. After payment, email
-        your ad artwork to <a href={`mailto:${adAssetSpecs.email}`}>{adAssetSpecs.email}</a>.
-      </p>
-      <p className="payments-demo-notice">
-        Stripe Payment Links are placeholders and open stripe.com in a new tab until live checkout URLs are configured.
+        Select a monthly or annual subscription below. Checkout is processed securely through Stripe.{" "}
+        {adAssetDeliveryInstructions}
       </p>
       <div className="payments-table-wrap payments-subscription-table-wrap">
         <table className="payments-table payments-subscription-table">
@@ -31,7 +36,7 @@ export function PaymentsSubscriptionTable() {
                 </td>
                 <td className="payments-subscription-price-cell">
                   {tier.quoteOnly ? (
-                    <span className="payments-subscription-quote">{tier.quoteLabel}</span>
+                    <span className="payments-subscription-quote">{tier.quoteLabel || "Custom pricing"}</span>
                   ) : (
                     <>
                       <span>
@@ -59,15 +64,11 @@ export function PaymentsSubscriptionTable() {
                   </ul>
                 </td>
                 <td className="payments-subscription-actions-cell">
-                  {tier.quoteOnly ? (
-                    <a className="button primary" href={`mailto:${adAssetSpecs.email}?subject=${encodeURIComponent(tier.name)}`}>
-                      Request a quote
-                    </a>
-                  ) : (
+                  {tierHasStripeCheckout(tier) ? (
                     <div className="payments-subscription-actions">
                       <a
                         className="button primary"
-                        href={tier.stripeMonthlyUrl || stripeCheckoutPlaceholderUrl}
+                        href={tier.stripeMonthlyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -75,13 +76,15 @@ export function PaymentsSubscriptionTable() {
                       </a>
                       <a
                         className="button"
-                        href={tier.stripeYearlyUrl || stripeCheckoutPlaceholderUrl}
+                        href={tier.stripeYearlyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Subscribe yearly — {formatAdPrice(tier.yearly)}
                       </a>
                     </div>
+                  ) : (
+                    <PaymentsQuoteLink tierName={tier.name} />
                   )}
                 </td>
               </tr>
@@ -89,6 +92,10 @@ export function PaymentsSubscriptionTable() {
           </tbody>
         </table>
       </div>
+      <p className="payments-subscription-footnote">
+        Tiers without Stripe checkout above require a custom quote—use{" "}
+        <Link to={paymentsQuotePath}>the contact form</Link> or email erik@patriotsinaction.com.
+      </p>
     </section>
   );
 }
