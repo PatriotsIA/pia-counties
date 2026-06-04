@@ -1,8 +1,9 @@
-import { useEffect, useState, type FormEvent, type MouseEvent, type ReactNode, type UIEvent } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
 import { AdPreviewPlaceholder, PresentedByPreview } from "./components/AdPreviewPlaceholder";
 import { PaymentsPricingContent } from "./components/PaymentsPricingContent";
+import { PaymentsSubscriptionTable } from "./components/PaymentsSubscriptionTable";
 import { TopTicker } from "./components/TopTicker";
 import { ADVERTISER_PREVIEW_ENABLED } from "./config/advertiser-preview";
 import type { AdPricingKey } from "./data/ad-pricing";
@@ -44,7 +45,6 @@ const candidateProjectDisclaimer =
   "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
 const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
 const heroHeadline = "Patriots in Action";
-const patriotPartnerPaymentUrl = "";
 const heroKicker = "A Nationwide and Ultra Local Hub for Action";
 const heroDescription =
   "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
@@ -729,13 +729,6 @@ function PartnerPaymentsFooter() {
 function PaymentsPage() {
   usePageTitle("Patriot Partner Payments");
 
-  function handlePaymentClick(event: MouseEvent<HTMLAnchorElement>) {
-    if (!patriotPartnerPaymentUrl) {
-      event.preventDefault();
-      window.open("about:blank", "_blank", "noopener,noreferrer");
-    }
-  }
-
   return (
     <Shell route="static" suppressAdRails>
       <PageHero
@@ -743,26 +736,17 @@ function PaymentsPage() {
         title="Patriot Partner Payments"
         subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships. Send sponsor artwork as PNG (white or transparent background) to erik@patriotsinaction.com — 250×250 for square ads, 980×300 for bottom banners."
       />
-      <section className="section narrow payments-panel">
+      <section className="section payments-panel payments-panel-intro">
         <p>
           After checkout, email your ad files to{" "}
           <a href="mailto:erik@patriotsinaction.com">erik@patriotsinaction.com</a> in PNG format with a white or
           transparent background. Use 250×250 pixels for square carousel and newsroom ads; use 980×300 pixels for bottom
           banner placements.
         </p>
-        <p className="payments-demo-notice">
-          Payment system coming soon. Present iteration is for demo purposes only.
-        </p>
-        <a
-          className="button primary"
-          href={patriotPartnerPaymentUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handlePaymentClick}
-        >
-          Patriot Partner Payments
-        </a>
         <PartnerPaymentsDetails />
+      </section>
+      <section className="section payments-subscription-panel">
+        <PaymentsSubscriptionTable />
       </section>
       <PaymentsPricingContent />
     </Shell>

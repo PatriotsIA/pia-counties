@@ -107,23 +107,33 @@ export const nationalPresentedByTier = {
   summary: "Nationwide homepage hero, sponsor carousel, and bottom banner placements for brands supporting the full Patriots in Action network.",
 } as const;
 
+export type NationalPlacementPreviewSize = "hero" | "square" | "banner";
+
 export const nationalHomepagePlacements = [
   {
     key: "national-hero-sponsor" as const,
     label: "Homepage Hero Presented By",
+    previewSize: "hero" as const,
     note: "Presented by logo and link in the main homepage hero section.",
   },
   {
     key: "homepage-sponsor-carousel" as const,
     label: "Homepage Sponsor Carousel (250×250)",
+    previewSize: "square" as const,
     note: "Rotating square sponsors below “From Awareness to Action” on patriotsinaction.com.",
   },
   {
     key: "site-footer" as const,
     label: "Homepage Bottom Banner Carousel (980×300)",
+    previewSize: "banner" as const,
     note: "Wide banner carousel on the homepage and other top-level pages.",
   },
 ] as const;
+
+export function nationalPlacementPreviewSize(key: AdPricingKey): NationalPlacementPreviewSize {
+  const placement = nationalHomepagePlacements.find((item) => item.key === key);
+  return placement?.previewSize ?? "square";
+}
 
 export const pricingDiscounts = [
   { label: "Annual prepay", detail: "Brochure annual rates ($450 / $2,950 / $4,950 / $9,950) — equivalent to about two months free vs monthly." },
@@ -318,3 +328,156 @@ export function pricingInventoryPlacements() {
 export function pricingNationalPlacements() {
   return nationalHomepagePlacements.map((placement) => getAdPricing(placement.key));
 }
+
+/** Placeholder until Stripe Payment Links are configured per tier. */
+export const stripeCheckoutPlaceholderUrl = "https://stripe.com";
+
+export type PartnerSubscriptionTier = {
+  id: string;
+  name: string;
+  tagline: string;
+  monthly: number;
+  yearly: number;
+  perks: readonly string[];
+  placements: readonly string[];
+  quoteOnly?: boolean;
+  quoteLabel?: string;
+  stripeMonthlyUrl?: string;
+  stripeYearlyUrl?: string;
+};
+
+export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
+  {
+    id: "patriot-preferred",
+    name: "Patriot Preferred Business Program",
+    tagline: "Directory listing and Patriot Rewards entry point for local businesses.",
+    monthly: 45,
+    yearly: 450,
+    perks: [
+      "Patriot Rewards membership",
+      "Clickable partner directory listing",
+      "Business logo and short description",
+      "Link to website or social profile",
+    ],
+    placements: ["Top-level and county partner pages", "Patriot Rewards eligibility"],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "gold-business",
+    name: "Gold Business Partner",
+    tagline: "County content visibility on Weather, Obituary, and News surfaces.",
+    monthly: 295,
+    yearly: 2950,
+    perks: [
+      "Everything in Patriot Preferred",
+      "Partner logo linked on key county content",
+      "One primary Presented by or feed sponsorship",
+      "Rotating county sponsor carousel inclusion",
+    ],
+    placements: [
+      "Weather presented by",
+      "Local Articles, Obituaries, Video, or Sports feed",
+      "County sponsor carousel (250×250)",
+      "Newsroom ad strip rotation",
+    ],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "platinum-business",
+    name: "Platinum Business Partner",
+    tagline: "Premium county visibility with banner and priority placement.",
+    monthly: 495,
+    yearly: 4950,
+    perks: [
+      "Everything in Gold",
+      "Priority county sponsor carousel rotation",
+      "County bottom banner carousel (980×300)",
+      "Priority Weather, Obituary, and News placement",
+      "County hero eligibility when bundled as founding sponsor",
+    ],
+    placements: [
+      "County sponsor carousel priority",
+      "County page bottom banner carousel",
+      "Feed and weather sponsorship priority",
+      "Partner directory premium listing",
+    ],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "county-gold",
+    name: "County Gold Partner (Founding)",
+    tagline: "Reduced founding rate for one county content sponsorship plus carousel.",
+    monthly: 95,
+    yearly: 950,
+    perks: [
+      "Everything in Patriot Preferred",
+      "One county content element (Weather, Obituaries, Articles, Video, or Sports)",
+      "County sponsor carousel rotation",
+      "Founding partner recognition on county pages",
+    ],
+    placements: ["One county Presented by or feed", "County sponsor carousel (250×250)", "County partner card"],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "county-platinum",
+    name: "County Platinum Partner (Founding)",
+    tagline: "Top county package with banners, carousel priority, and hero eligibility.",
+    monthly: 495,
+    yearly: 4950,
+    perks: [
+      "Everything in County Gold",
+      "Priority county carousel placement",
+      "County bottom banner carousel",
+      "County hero Presented by eligibility",
+      "Network homepage visibility when sold sitewide",
+    ],
+    placements: [
+      "County carousel priority",
+      "County bottom banner (980×300)",
+      "County hero Presented by (when available)",
+      "Feed and weather priority in county",
+    ],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "county-sponsor",
+    name: "County Sponsor — Presented By",
+    tagline: "Own the County Hero Presented by placement for a specific county.",
+    monthly: 995,
+    yearly: 9950,
+    perks: [
+      "County Hero Presented by logo and link",
+      "Premium above-the-fold county branding",
+      "County-specific sponsor recognition",
+      "Ideal for category leaders in a county",
+    ],
+    placements: ["County home hero Presented by", "County-specific visibility across hero messaging"],
+    stripeMonthlyUrl: stripeCheckoutPlaceholderUrl,
+    stripeYearlyUrl: stripeCheckoutPlaceholderUrl,
+  },
+  {
+    id: "national-level",
+    name: "National Level — Presented By",
+    tagline: "Nationwide homepage hero, carousel, and bottom banner inventory.",
+    monthly: 0,
+    yearly: 0,
+    perks: [
+      "Homepage hero Presented by",
+      "Homepage sponsor carousel (250×250)",
+      "Homepage bottom banner carousel (980×300)",
+      "Custom contract and category exclusivity options",
+    ],
+    placements: [
+      "patriotsinaction.com homepage hero",
+      "Homepage sponsor carousel",
+      "Top-level bottom banner carousel",
+    ],
+    quoteOnly: true,
+    quoteLabel: nationwidePricingLabel,
+  },
+] as const;

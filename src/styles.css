@@ -1798,13 +1798,148 @@ nav a {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.payments-inventory-grid,
-.payments-national-grid {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.payments-inventory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
 .payments-national-grid {
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+  justify-items: center;
+}
+
+.payments-national-card,
+.payments-placement-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.payments-national-card-banner,
+.payments-placement-card-banner {
+  grid-column: 1 / -1;
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+.payments-national-preview {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  box-sizing: border-box;
+  border: 2px solid rgba(21, 56, 111, 0.35);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #1a4f9c 0%, #15386f 55%, #0f2c5f 100%);
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(17, 27, 71, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.payments-national-preview-square {
+  width: 250px;
+  height: 250px;
+  flex: 0 0 auto;
+}
+
+.payments-national-preview-banner {
+  width: min(100%, 980px);
+  aspect-ratio: 980 / 300;
+  max-width: 980px;
+}
+
+.payments-national-preview-hero {
+  width: min(100%, 280px);
+  min-height: 108px;
+  padding: 0.85rem 1rem;
+}
+
+.payments-national-preview-size {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.payments-national-preview-sample {
+  font-size: 0.68rem;
+  font-weight: 700;
+  opacity: 0.88;
+}
+
+.payments-national-details {
+  width: 100%;
+  max-width: 36rem;
+  text-align: center;
+}
+
+.payments-national-card-square .payments-national-details,
+.payments-placement-card-square .payments-national-details {
+  max-width: 280px;
+}
+
+.payments-national-card-banner .payments-national-details,
+.payments-placement-card-banner .payments-national-details {
+  max-width: 980px;
+}
+
+.payments-national-details h3 {
+  margin: 0 0 0.35rem;
+  color: var(--navy);
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.payments-national-click-hint {
+  margin: 0 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.payments-national-tier {
+  margin: 0 0 0.2rem;
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.payments-national-quote {
+  margin: 0 0 0.35rem;
+  color: var(--navy);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.payments-national-pricing {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+}
+
+.payments-national-pricing strong {
+  color: var(--navy);
+  font-size: 1.1rem;
+}
+
+.payments-national-pricing span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.payments-national-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 .payments-tier-price-quote strong {
@@ -1812,17 +1947,6 @@ nav a {
   line-height: 1.4;
 }
 
-.payments-inventory-card-quote .ad-preview-quote {
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-.payments-placement-note {
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.82);
-  text-align: center;
-}
 
 .payments-tier-card {
   padding: 1.1rem;
@@ -1891,24 +2015,104 @@ nav a {
   color: var(--muted);
 }
 
-.payments-inventory-card {
-  min-height: 150px;
+.payments-panel-intro {
+  max-width: 760px;
+  margin-inline: auto;
 }
 
-.payments-inventory-card-banner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  grid-column: 1 / -1;
+.payments-subscription-panel {
+  margin-top: 0;
+}
+
+.payments-subscription-section {
+  margin-top: 0;
+}
+
+.payments-subscription-table {
+  min-width: 920px;
+}
+
+.payments-subscription-table th:last-child,
+.payments-subscription-table td:last-child {
+  min-width: 220px;
+}
+
+.payments-subscription-tier-cell {
+  min-width: 200px;
+}
+
+.payments-subscription-tier-cell strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--navy);
+  font-size: 1rem;
+}
+
+.payments-subscription-tier-cell span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.payments-subscription-price-cell {
+  min-width: 140px;
+}
+
+.payments-subscription-price-cell span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--navy);
+}
+
+.payments-subscription-price-cell strong {
+  font-size: 1.05rem;
+}
+
+.payments-subscription-savings {
+  font-size: 0.78rem !important;
+  color: var(--muted) !important;
+  font-weight: 600;
+}
+
+.payments-subscription-quote {
+  display: block;
+  color: var(--navy);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.payments-subscription-perks-cell ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.payments-subscription-perks-cell ul:last-child {
+  margin-bottom: 0;
+}
+
+.payments-subscription-label {
+  margin: 0 0 0.25rem;
+  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.payments-subscription-actions {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.payments-subscription-actions .button {
   width: 100%;
-  max-width: 980px;
-  min-height: 0;
-  aspect-ratio: 980 / 300;
-  margin-inline: auto;
-  padding: 0.85rem 1.25rem;
-  justify-self: center;
   text-align: center;
+  font-size: 0.82rem;
+  white-space: normal;
 }
 
 .narrow {
@@ -2711,10 +2915,27 @@ nav a {
     grid-template-columns: 1fr;
   }
 
-  .ad-preview-placeholder-banner,
-  .payments-inventory-card-banner {
+  .ad-preview-placeholder-banner {
     max-width: 100%;
     aspect-ratio: 980 / 300;
+  }
+
+  .payments-national-preview-banner {
+    width: 100%;
+  }
+
+  .payments-national-preview-square {
+    width: min(250px, 100%);
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .payments-subscription-table {
+    min-width: 0;
+  }
+
+  .payments-subscription-actions .button {
+    font-size: 0.78rem;
   }
 
   .sponsor-carousel-shell {

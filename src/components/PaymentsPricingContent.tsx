@@ -6,6 +6,7 @@ import {
   countyPresentedByTier,
   formatAdPrice,
   nationalHomepagePlacements,
+  nationalPlacementPreviewSize,
   nationalPresentedByTier,
   nationwidePricingLabel,
   placementTierGuide,
@@ -13,14 +14,92 @@ import {
   pricingDiscounts,
   pricingInventoryPlacements,
   pricingNationalPlacements,
+  type AdPricing,
+  type NationalPlacementPreviewSize,
 } from "../data/ad-pricing";
 
 const inventoryPlacements = pricingInventoryPlacements();
 const nationalPlacements = pricingNationalPlacements();
 
+function placementPreviewSize(key: AdPricing["key"]): NationalPlacementPreviewSize | "hero-presented" {
+  if (key === "county-page-footer" || key === "site-footer") return "banner";
+  if (key === "county-hero-sponsor" || key === "national-hero-sponsor") return "hero-presented";
+  if (
+    key === "county-home-inline" ||
+    key === "county-news-inline" ||
+    key === "county-calendar-inline" ||
+    key === "homepage-sponsor-carousel"
+  ) {
+    return "square";
+  }
+  return "hero-presented";
+}
+
+function PlacementInventoryCard({ placement }: { placement: AdPricing }) {
+  const previewSize = placementPreviewSize(placement.key);
+  const isBanner = previewSize === "banner";
+  const isSquare = previewSize === "square";
+
+  return (
+    <article className={`payments-placement-card payments-placement-card-${previewSize}`}>
+      <div className={`payments-national-preview payments-national-preview-${isBanner ? "banner" : isSquare ? "square" : "hero"}`} aria-hidden="true">
+        <span className="payments-national-preview-size">
+          {isBanner ? "980×300" : isSquare ? "250×250" : "Presented by"}
+        </span>
+        <span className="payments-national-preview-sample">Sponsor creative</span>
+      </div>
+      <div className="payments-national-details">
+        <h3>{placement.label}</h3>
+        <p className="payments-national-click-hint">{adClickHint}</p>
+        <p className="payments-national-tier">{placement.tier}</p>
+        {placement.quoteOnly ? (
+          <p className="payments-national-quote">{placement.quoteLabel || nationwidePricingLabel}</p>
+        ) : (
+          <p className="payments-national-pricing">
+            <strong>{formatAdPrice(placement.monthly)}/mo</strong>
+            <span>{formatAdPrice(placement.yearly)}/yr</span>
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function NationalPlacementCard({
+  previewSize,
+  label,
+  tier,
+  quoteLabel,
+  note,
+}: {
+  previewSize: NationalPlacementPreviewSize;
+  label: string;
+  tier: string;
+  quoteLabel: string;
+  note?: string;
+}) {
+  return (
+    <article className={`payments-national-card payments-national-card-${previewSize}`}>
+      <div className={`payments-national-preview payments-national-preview-${previewSize}`} aria-hidden="true">
+        <span className="payments-national-preview-size">
+          {previewSize === "square" ? "250×250" : previewSize === "banner" ? "980×300" : "Presented by"}
+        </span>
+        <span className="payments-national-preview-sample">Sponsor creative</span>
+      </div>
+      <div className="payments-national-details">
+        <h3>{label}</h3>
+        <p className="payments-national-click-hint">{adClickHint}</p>
+        <p className="payments-national-tier">{tier}</p>
+        <p className="payments-national-quote">{quoteLabel}</p>
+        {note ? <p className="payments-national-note">{note}</p> : null}
+      </div>
+    </article>
+  );
+}
+
 export function PaymentsPricingContent() {
   return (
-    <div className="payments-pricing-content">
+    <div className="payments-pricing-content section">
       <section className="payments-pricing-block">
         <p className="eyebrow">Ad Assets</p>
         <h2>Sponsor creative specifications</h2>
@@ -81,19 +160,17 @@ export function PaymentsPricingContent() {
         </p>
         <div className="payments-national-grid">
           {nationalPlacements.map((placement) => {
-            const isBanner = placement.key === "site-footer";
-            const placementNote = nationalHomepagePlacements.find((item) => item.key === placement.key)?.note;
+            const placementMeta = nationalHomepagePlacements.find((item) => item.key === placement.key);
+            const previewSize = nationalPlacementPreviewSize(placement.key);
             return (
-              <article
-                className={`ad-preview-placeholder payments-inventory-card payments-inventory-card-quote${isBanner ? " payments-inventory-card-banner" : ""}`}
+              <NationalPlacementCard
                 key={placement.key}
-              >
-                <span className="ad-preview-spot">{placement.label}</span>
-                <span className="ad-click-hint">{adClickHint}</span>
-                <span className="ad-preview-tier">{placement.tier}</span>
-                <span className="ad-preview-quote">{placement.quoteLabel || nationwidePricingLabel}</span>
-                {placementNote ? <span className="payments-placement-note">{placementNote}</span> : null}
-              </article>
+                previewSize={previewSize}
+                label={placement.label}
+                tier={placement.tier}
+                quoteLabel={placement.quoteLabel || nationwidePricingLabel}
+                note={placementMeta?.note}
+              />
             );
           })}
         </div>
@@ -128,27 +205,9 @@ export function PaymentsPricingContent() {
           founding packages below may offer reduced bundle pricing. Preview mode shows these rates on live ad spots.
         </p>
         <div className="payments-inventory-grid">
-          {inventoryPlacements.map((placement) => {
-            const isBanner = placement.key === "county-page-footer";
-            return (
-              <article
-                className={`ad-preview-placeholder payments-inventory-card${isBanner ? " payments-inventory-card-banner" : ""}`}
-                key={placement.key}
-              >
-                <span className="ad-preview-spot">{placement.label}</span>
-                <span className="ad-click-hint">{adClickHint}</span>
-                <span className="ad-preview-tier">{placement.tier}</span>
-                {placement.quoteOnly ? (
-                  <span className="ad-preview-quote">{placement.quoteLabel || nationwidePricingLabel}</span>
-                ) : (
-                  <>
-                    <span className="ad-preview-monthly">{formatAdPrice(placement.monthly)}/mo</span>
-                    <span className="ad-preview-yearly">{formatAdPrice(placement.yearly)}/yr</span>
-                  </>
-                )}
-              </article>
-            );
-          })}
+          {inventoryPlacements.map((placement) => (
+            <PlacementInventoryCard key={placement.key} placement={placement} />
+          ))}
         </div>
       </section>
 
