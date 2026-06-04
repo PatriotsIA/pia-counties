@@ -28,12 +28,12 @@ export type AdSlotId =
   | "county-calendar-inline"
   | "county-news-inline"
   | "county-page-footer"
-  | "site-footer"
-  | "site-left-rail"
-  | "site-right-rail";
+  | "site-footer";
 
 export type AdPlacement = "leaderboard" | "inline" | "compact";
 export type AdDisplayMode = "card" | "image-only";
+
+export const adClickHint = "Clickable ad, opens in new tab";
 
 export type AdImageSet = {
   desktop: string;
@@ -411,52 +411,6 @@ export const ads: AdCreative[] = [
       slots: ["county-news-inline", "county-calendar-inline"],
       routes: ["county"],
       pages: ["home", "news", "events", "tv", "contact"],
-    },
-  },
-  {
-    id: "pia-tv-left-rail-2026",
-    campaignId: "pia-house-tv",
-    sponsor: "Patriots in Action TV",
-    title: "Watch Patriots in Action TV",
-    body: "Interviews, updates, and stories from Patriots in Action.",
-    cta: "Watch Now",
-    href: "/tv",
-    placement: "compact",
-    display: "image-only",
-    image: {
-      desktop: "/ads/PIATVLarge.jpg",
-      mobile: "/ads/PIATVSmall.jpg",
-      alt: "Patriots in Action TV",
-    },
-    priority: 100,
-    active: true,
-    targeting: {
-      slots: ["site-left-rail"],
-      routes: ["home", "directory", "state", "county", "tv", "rewards", "partners", "contact"],
-      pages: ["home", "about", "elections", "news", "events", "tv", "partners", "contact", "submit-event"],
-    },
-  },
-  {
-    id: "patriot-trailer-right-rail-2026",
-    campaignId: "pia-house-trailer-store",
-    sponsor: "Patriot Trailer Store",
-    title: "Visit the Patriot Trailer Store",
-    body: "Find Patriots in Action events and shop gear for showing up locally.",
-    cta: "Find Events",
-    href: "https://piaevents.com/",
-    placement: "compact",
-    display: "image-only",
-    image: {
-      desktop: trailerLargeAdImage,
-      mobile: "/ads/TrailerSmall.jpg",
-      alt: "Patriot Trailer Store",
-    },
-    priority: 100,
-    active: true,
-    targeting: {
-      slots: ["site-right-rail"],
-      routes: ["home", "directory", "state", "county", "tv", "rewards", "partners", "contact"],
-      pages: ["home", "about", "elections", "news", "events", "tv", "partners", "contact", "submit-event"],
     },
   },
   {

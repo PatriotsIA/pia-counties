@@ -9,7 +9,7 @@ The sales brochure establishes three core business tiers:
 | Tier | Monthly | Annual | Brochure Benefits |
 | --- | ---: | ---: | --- |
 | Patriot Preferred Business Program | $45/mo | $450/yr | Patriot Rewards membership and clickable business directory listing. |
-| Gold Business Partner | $95/mo | $950/yr | Partner logos linked to business website on Weather, Obituary, and News pages, plus automatic Patriot Preferred Business membership. |
+| Gold Business Partner | $295/mo | $2,950/yr | Partner logos linked to business website on Weather, Obituary, and News pages, plus automatic Patriot Preferred Business membership. |
 | Platinum Business Partner | $495/mo | $4,950/yr | Partner logo linked to business website, top-tier homepage placement at top and bottom, priority extra placement on Weather, Obituary, and News pages, plus automatic Patriot Preferred Business membership. |
 
 ## Positioning
@@ -71,7 +71,7 @@ Recommended website benefits:
   - Local Obituaries feed sponsor.
   - County News Videos feed sponsor.
   - Local Sports feed sponsor.
-- Rotating 300x250 sponsor carousel placement on that county page.
+- Rotating 250×250 sponsor carousel placement on that county page.
 
 Suggested limits:
 
@@ -117,11 +117,11 @@ The current site has these sellable placement families:
 | Top ticker | Market ticker | Not sponsor inventory | Keep editorial/utility only unless a future financial sponsor is approved. |
 | Weather bar | County-specific weather | Gold or Platinum | Sponsor name links to partner site. |
 | County hero | Presented by partner with logo | Platinum | Only county-specific sponsors should appear here. |
-| Homepage sponsor carousel | 300x250 carousel | Platinum / rotating sponsor inventory | Heading: “Patriots In Action is Sponsored By.” |
-| County sponsor carousel | 300x250 carousel | Gold or Platinum | Heading: “X County Patriots is sponsored by.” |
+| Homepage sponsor carousel | 250×250 carousel | Platinum / rotating sponsor inventory | Heading: “Patriots In Action is Sponsored By.” |
+| County sponsor carousel | 250×250 carousel | Gold or Platinum | Heading: “X County Patriots is sponsored by.” |
 | Feed sponsor labels | Presented by per feed | Gold or Platinum | Articles, Obituaries, Video, Sports, and PIA Video Feed can each be sold. |
-| News sponsor row | Five 300x250 ads below newsroom | Gold add-on / rotating inventory | Lower-cost rotating ad inventory. |
-| Bottom banner carousel | Responsive wide banner carousel | Platinum | Use 980x300 or wide banner creatives only. |
+| News sponsor row | Five 250×250 ads below newsroom | Gold add-on / rotating inventory | Lower-cost rotating ad inventory. |
+| Bottom banner carousel | Responsive wide banner carousel | Platinum | Use 980×300 banner creatives only. |
 | Partner pages | Logo/card listings | Patriot Preferred and up | Top-level page separates nationwide partners and county-specific sponsors. |
 | Side rails | Tall desktop ads | Future inventory | Currently disabled. Re-enable only when layout is approved. |
 
@@ -237,9 +237,8 @@ The brochure tiers should stay the official pricing. The following map shows how
 | County sponsor carousel | Gold or Platinum | Include in Gold; give priority rotation to Platinum. |
 | Homepage sponsor carousel | Platinum | Included in Platinum only. |
 | Bottom banner carousel | Platinum | Included in Platinum only. |
-| County hero sponsor | Platinum | Premium county-specific placement. |
+| County hero sponsor | County Sponsor ($995/mo) | County Hero Presented By placement. |
 | County news ad strip | Gold or Platinum | Gold can rotate; Platinum gets priority. |
-| Desktop side rails | Future Platinum add-on | Currently disabled. |
 
 ## Recommended County Sponsorship Packages
 
@@ -329,11 +328,10 @@ Recommended rules:
 
 - Annual prepay follows the flyer:
   - $45/mo or $450/yr.
-  - $95/mo or $950/yr.
+  - $295/mo or $2,950/yr.
+  - $995/mo or $9,950/yr (County Sponsor — Presented By).
   - $495/mo or $4,950/yr.
-- Multi-county local buy:
-  - 10% off 3 to 5 counties.
-  - 15% off 6+ counties.
+- Multi-county local buy: additional adjacent counties are half off.
 - Multi-placement county bundle:
   - 10% off when buying 3+ elements in one county.
 - Category exclusivity:
@@ -366,8 +364,37 @@ Better framing:
 - The top ticker should remain utility/editorial inventory unless a financial sponsor is approved.
 - County-specific sponsors should only appear on their assigned county pages.
 - Nationwide partners can appear on top-level partner pages and sitewide placements.
-- Bottom banner ads should use wide banner creatives only.
-- Sponsor carousel ads should prefer 300x250 creatives.
+- Bottom banner ads should use 980×300 wide banner creatives only.
+- Sponsor carousel ads should use 250×250 square creatives.
+
+## Sponsor Creative Delivery
+
+Partners should email finished artwork to **erik@patriotsinaction.com** as **PNG** files with either a **white** or **transparent** background.
+
+| Placement family | Pixel size | Format |
+| --- | --- | --- |
+| Square sponsor carousel and newsroom ads | 250×250 | PNG (white or transparent background) |
+| Bottom banner carousel | 980×300 | PNG (white or transparent background) |
+
+## County Sponsor — Presented By
+
+Price: **$995/mo or $9,950/yr**
+
+County Hero “Presented by” sponsorship for premium county-specific visibility (per brochure County Sponsor tier).
+
+## National Level — Presented By
+
+Price: **Contact for nationwide ad pricing** (per brochure National Level Presented By tier).
+
+Nationwide homepage inventory:
+
+| Placement | Format | Notes |
+| --- | --- | --- |
+| Homepage hero presented by | Logo + link in main hero | patriotsinaction.com homepage |
+| Homepage sponsor carousel | 250×250 | Below “From Awareness to Action” |
+| Homepage bottom banner carousel | 980×300 | Top-level site footer banners |
+
+County hero remains county-priced ($995/mo). National homepage placements are quoted separately via erik@patriotsinaction.com.
 
 # Patriots in Action Ad Pricing and Sponsorship Plan
 
@@ -380,7 +407,7 @@ The printed sales brochure establishes three core business partner tiers:
 | Tier | Monthly | Annual | Primary offer |
 | --- | ---: | ---: | --- |
 | Patriot Preferred Business Program | $45/mo | $450/yr | Patriot Rewards membership and clickable business directory listing. |
-| Gold Business Partner | $95/mo | $950/yr | Partner logo linked to business website on Weather, Obituary, and News pages, plus Patriot Preferred membership. |
+| Gold Business Partner | $295/mo | $2,950/yr | Partner logo linked to business website on Weather, Obituary, and News pages, plus Patriot Preferred membership. |
 | Platinum Business Partner | $495/mo | $4,950/yr | Top-tier homepage placement, bottom placement, priority placement on Weather, Obituary, and News pages, plus Patriot Preferred membership. |
 
 ## Recommended Sales Strategy
@@ -475,7 +502,6 @@ The current site includes the following sellable ad and sponsorship elements.
 | County news ad strip | Five square ads under newsroom | Add-on or Platinum | Lower-cost rotating ad inventory. |
 | Bottom banner carousel | Responsive banner carousel | Platinum | Use only wide banner assets. |
 | Partner pages | Logo/card listings | Patriot Preferred and above | Included in all paid tiers. |
-| Desktop side rails | Tall side ads | Future premium add-on | Currently disabled; reserve pricing for later relaunch. |
 
 ## Current Ad Counts by Page
 
@@ -644,8 +670,8 @@ These are optional internal pricing models if Patriots in Action wants more gran
 - County-specific sponsors should only appear on the counties they sponsor.
 - Nationwide partners can appear on top-level pages and broad network elements.
 - Use “presented by” language for sponsorships instead of “ad.”
-- Use bottom banners only for wide banner creatives.
-- Use carousel tiles only for 250-style square or 300x250 creatives.
+- Use bottom banners only for 980×300 wide banner creatives.
+- Use carousel tiles only for 250×250 square creatives.
 - Obituary sponsorship should be handled carefully and respectfully.
 - Weather sponsorship should be sold as a high-value daily utility placement.
 

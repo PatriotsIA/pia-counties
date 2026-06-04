@@ -347,7 +347,7 @@ function seoDataForPath(pathname: string): SeoData {
   if (pathname === "/payments") {
     return {
       title: "Patriot Partner Payments",
-      description: "View Patriots in Action partner tiers, placement pricing, discounts, and secure founding partner payments.",
+      description: "View Patriots in Action partner tiers, placement pricing, ad asset specs (250×250 square, 980×300 banners), and secure founding partner payments.",
       canonicalPath: "/payments",
     };
   }
@@ -521,6 +521,9 @@ function HomePage() {
           <p className="eyebrow">Join Our Interactive Community</p>
           <h1>{heroHeadline}</h1>
           <p className="eyebrow hero-subtitle-eyebrow">{heroKicker}</p>
+          {ADVERTISER_PREVIEW_ENABLED ? (
+            <PresentedByPreview pricingKey="national-hero-sponsor" className="county-hero-sponsor-preview hero-presented-by-preview" />
+          ) : null}
           <p>{heroDescription}</p>
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
@@ -738,9 +741,15 @@ function PaymentsPage() {
       <PageHero
         eyebrow="Partners"
         title="Patriot Partner Payments"
-        subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships."
+        subtitle="Secure founding partner payments for Patriots in Action county and statewide partnerships. Send sponsor artwork as PNG (white or transparent background) to erik@patriotsinaction.com — 250×250 for square ads, 980×300 for bottom banners."
       />
       <section className="section narrow payments-panel">
+        <p>
+          After checkout, email your ad files to{" "}
+          <a href="mailto:erik@patriotsinaction.com">erik@patriotsinaction.com</a> in PNG format with a white or
+          transparent background. Use 250×250 pixels for square carousel and newsroom ads; use 980×300 pixels for bottom
+          banner placements.
+        </p>
         <p className="payments-demo-notice">
           Payment system coming soon. Present iteration is for demo purposes only.
         </p>
@@ -2006,8 +2015,6 @@ function Shell({
   suppressAdRails?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const showAdRails = false;
-
   return (
     <>
       <TopTicker county={county} weatherSponsor={county ? countyWeatherSponsor(county) : undefined} />
@@ -2048,11 +2055,7 @@ function Shell({
           </nav>
         </div>
       </header>
-      <main className={showAdRails ? "shell-content-frame" : "container"}>
-        {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
-        <div className={showAdRails ? "container shell-main-content" : undefined}>{children}</div>
-        {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-right-rail" /> : null}
-      </main>
+      <main className="container">{children}</main>
       {route !== "county" && (!suppressAdRails || ADVERTISER_PREVIEW_ENABLED) ? (
         <div className="container">
           <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />

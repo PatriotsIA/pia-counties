@@ -69,14 +69,6 @@ img {
   margin-inline: auto;
 }
 
-.shell-content-frame {
-  display: block;
-}
-
-.shell-main-content {
-  min-width: 0;
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -461,7 +453,10 @@ nav a {
 }
 
 .sponsor-slot-county-news-inline {
-  grid-template-columns: repeat(5, minmax(130px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(5, 250px);
+  gap: 1rem;
+  justify-content: center;
   justify-items: center;
   align-items: center;
 }
@@ -492,12 +487,12 @@ nav a {
 
 .sponsor-carousel-track {
   display: grid;
-  grid-auto-columns: 300px;
+  grid-auto-columns: 250px;
   grid-auto-flow: column;
   gap: 1rem;
   overflow-x: auto;
   justify-self: center;
-  width: min(100%, 932px);
+  width: min(100%, 782px);
   padding: 0.35rem 0;
   scroll-padding-inline: 0;
   scroll-snap-type: x mandatory;
@@ -519,9 +514,14 @@ nav a {
   width: 100%;
 }
 
+.sponsor-carousel .sponsor-card-image-only {
+  width: 250px;
+}
+
 .sponsor-carousel .sponsor-card-image-only img {
-  width: 100%;
-  aspect-ratio: 6 / 5;
+  width: 250px;
+  height: 250px;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
 }
 
@@ -612,13 +612,10 @@ nav a {
 
 .sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img {
   width: 100%;
-  max-height: 260px;
+  max-width: 980px;
+  max-height: 300px;
+  aspect-ratio: 980 / 300;
   object-fit: contain;
-}
-
-.sponsor-slot-site-left-rail,
-.sponsor-slot-site-right-rail {
-  display: none;
 }
 
 .news-sponsor-row {
@@ -759,7 +756,7 @@ nav a {
 }
 
 .sponsor-card-image-only img {
-  width: min(100%, 300px);
+  width: min(100%, 250px);
   height: auto;
   border: 0;
   border-radius: 0;
@@ -778,14 +775,17 @@ nav a {
 
 .sponsor-card-leaderboard.sponsor-card-image-only img {
   width: 100%;
-  max-height: 240px;
+  max-height: 300px;
   object-fit: contain;
 }
 
-.sponsor-slot-site-left-rail .sponsor-card-image-only img,
-.sponsor-slot-site-right-rail .sponsor-card-image-only img {
-  width: min(100%, 190px);
-  max-height: none;
+.sponsor-slot-county-news-inline .sponsor-card-image-only {
+  width: 250px;
+}
+
+.sponsor-slot-county-news-inline .sponsor-card-image-only img {
+  width: 250px;
+  height: 250px;
   object-fit: contain;
 }
 
@@ -810,6 +810,23 @@ nav a {
 
 .sponsor-card-image-only {
   grid-template-columns: 1fr;
+  gap: 0.2rem;
+}
+
+.sponsor-card-image-only .ad-click-hint {
+  justify-self: center;
+  padding: 0.15rem 0.4rem;
+  color: var(--navy);
+  background: rgba(255, 250, 240, 0.94);
+  border-radius: 6px;
+}
+
+.sponsor-card-content .ad-click-hint {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  text-transform: none;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .compact-about {
@@ -1634,10 +1651,61 @@ nav a {
   color: rgba(255, 255, 255, 0.88);
 }
 
-.ad-preview-leaderboard {
-  min-height: 120px;
-  width: min(100%, 980px);
-  min-width: min(100%, 320px);
+.ad-click-hint {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.ad-preview-placeholder .ad-click-hint,
+.payments-inventory-card .ad-click-hint {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.ad-preview-quote {
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.ad-preview-placeholder-quote .ad-preview-quote {
+  font-size: 0.78rem;
+}
+
+.hero-presented-by-preview {
+  margin: 0.35rem 0 0.15rem;
+}
+
+.ad-preview-placeholder-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 980px;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 980 / 300;
+  margin-inline: auto;
+  padding: 0.75rem 1.25rem;
+  text-align: center;
+}
+
+.ad-preview-placeholder-banner .ad-preview-spot {
+  font-size: 0.68rem;
+}
+
+.sponsor-banner-carousel.ad-preview-banner .sponsor-banner-carousel-item {
+  display: flex;
+  justify-content: center;
+}
+
+.sponsor-banner-carousel.ad-preview-banner .ad-preview-placeholder-banner {
+  box-sizing: border-box;
 }
 
 .presented-by-preview {
@@ -1669,11 +1737,10 @@ nav a {
   justify-self: end;
 }
 
-.ad-preview-carousel-track,
-.ad-preview-banner-track {
+.ad-preview-carousel-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(220px, 300px);
+  grid-auto-columns: minmax(200px, 250px);
   gap: 1rem;
   overflow-x: auto;
   padding-bottom: 0.35rem;
@@ -1681,12 +1748,12 @@ nav a {
 
 .ad-preview-news-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(5, 250px);
+  gap: 1rem;
+  justify-content: center;
   width: 100%;
 }
 
-.ad-preview-banner-item,
 .ad-preview-carousel-item {
   display: flex;
 }
@@ -1731,8 +1798,30 @@ nav a {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.payments-inventory-grid {
+.payments-inventory-grid,
+.payments-national-grid {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.payments-national-grid {
+  gap: 1rem;
+}
+
+.payments-tier-price-quote strong {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.payments-inventory-card-quote .ad-preview-quote {
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.payments-placement-note {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: center;
 }
 
 .payments-tier-card {
@@ -1804,6 +1893,22 @@ nav a {
 
 .payments-inventory-card {
   min-height: 150px;
+}
+
+.payments-inventory-card-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 980px;
+  min-height: 0;
+  aspect-ratio: 980 / 300;
+  margin-inline: auto;
+  padding: 0.85rem 1.25rem;
+  justify-self: center;
+  text-align: center;
 }
 
 .narrow {
@@ -2421,41 +2526,6 @@ nav a {
   }
 }
 
-@media (min-width: 1580px) {
-  .shell-content-frame {
-    display: grid;
-    grid-template-columns: minmax(120px, 190px) minmax(0, 1240px) minmax(120px, 190px);
-    gap: clamp(4rem, 7vw, 9rem);
-    align-items: start;
-    width: min(100% - 16px, 1960px);
-    margin-inline: auto;
-  }
-
-  .shell-content-frame > .container {
-    width: 100%;
-  }
-
-  .sponsor-slot-site-left-rail,
-  .sponsor-slot-site-right-rail {
-    position: sticky;
-    top: 50vh;
-    display: grid;
-    justify-items: center;
-    margin-top: 10rem;
-    transform: translateY(-50%);
-  }
-
-  .sponsor-slot-site-left-rail {
-    justify-self: end;
-    transform: translate(-1.5rem, -50%);
-  }
-
-  .sponsor-slot-site-right-rail {
-    justify-self: start;
-    transform: translate(1.5rem, -50%);
-  }
-}
-
 @media (max-width: 780px) {
   .container {
     width: min(100% - 20px, 1180px);
@@ -2619,19 +2689,32 @@ nav a {
   .candidate-details div,
   .sponsor-card-leaderboard,
   .sponsor-card-inline,
-  .sponsor-card-compact,
-  .sponsor-slot-county-news-inline {
+  .sponsor-card-compact {
     grid-template-columns: 1fr;
+  }
+
+  .sponsor-slot-county-news-inline,
+  .ad-preview-news-row {
+    grid-template-columns: repeat(5, 250px);
+    justify-content: start;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    scrollbar-width: thin;
   }
 
   .sponsor-carousel-track {
-    grid-auto-columns: 300px;
-    width: min(100%, 300px);
+    grid-auto-columns: 250px;
+    width: min(100%, 250px);
   }
 
-  .ad-preview-carousel-track,
-  .ad-preview-banner-track {
+  .ad-preview-carousel-track {
     grid-template-columns: 1fr;
+  }
+
+  .ad-preview-placeholder-banner,
+  .payments-inventory-card-banner {
+    max-width: 100%;
+    aspect-ratio: 980 / 300;
   }
 
   .sponsor-carousel-shell {

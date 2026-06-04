@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { AdCreative, AdPlacement, AdSlotId } from "../data/ads";
+import { adClickHint } from "../data/ads";
 import { adSlotPricingKey, type AdPricingKey } from "../data/ad-pricing";
 import type { CountyPageKey, CountySite } from "../data/counties";
 import { ADVERTISER_PREVIEW_ENABLED } from "../config/advertiser-preview";
@@ -24,7 +25,7 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement }: AdSl
   );
 
   if (ADVERTISER_PREVIEW_ENABLED) {
-    return <AdPreviewSlot slot={slot} limit={limit} placement={placement} county={county} />;
+    return <AdPreviewSlot slot={slot} limit={limit} county={county} />;
   }
 
   if (!resolvedAds.length) return null;
@@ -51,12 +52,10 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement }: AdSl
 function AdPreviewSlot({
   slot,
   limit = 1,
-  placement,
   county,
 }: {
   slot: AdSlotId;
   limit?: number;
-  placement?: AdPlacement;
   county?: CountySite;
 }) {
   const pricingKey: AdPricingKey =
@@ -85,17 +84,7 @@ function AdPreviewSlot({
   }
 
   if (isBanner) {
-    return (
-      <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel ad-preview-banner`} aria-label="Advertiser preview banners">
-        <div className="ad-preview-banner-track">
-          {Array.from({ length: previewCount }, (_, index) => (
-            <div className="sponsor-banner-carousel-item ad-preview-banner-item" key={`${slot}-${index}`}>
-              <AdPreviewPlaceholder pricingKey={pricingKey} className={placement === "leaderboard" ? "ad-preview-leaderboard" : ""} />
-            </div>
-          ))}
-        </div>
-      </aside>
-    );
+    return <BannerPreviewCarousel pricingKey={pricingKey} slot={slot} slideCount={Math.min(previewCount, 3)} />;
   }
 
   if (isNewsRow) {
@@ -113,6 +102,47 @@ function AdPreviewSlot({
       {Array.from({ length: previewCount }, (_, index) => (
         <AdPreviewPlaceholder pricingKey={pricingKey} key={`${slot}-${index}`} />
       ))}
+    </aside>
+  );
+}
+
+function BannerPreviewCarousel({
+  pricingKey,
+  slot,
+  slideCount,
+}: {
+  pricingKey: AdPricingKey;
+  slot: AdSlotId;
+  slideCount: number;
+}) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const slides = Math.max(slideCount, 1);
+
+  function handleCarouselClick(direction: -1 | 1) {
+    if (trackRef.current) scrollCarousel(trackRef.current, direction);
+  }
+
+  return (
+    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel ad-preview-banner`} aria-label="Advertiser preview banners">
+      <div className="sponsor-banner-carousel-shell">
+        {slides > 1 ? (
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-prev" type="button" onClick={() => handleCarouselClick(-1)} aria-label="Previous sponsor banner preview">
+            <span aria-hidden="true">&lt;</span>
+          </button>
+        ) : null}
+        <div className="sponsor-banner-carousel-track" ref={trackRef}>
+          {Array.from({ length: slides }, (_, index) => (
+            <div className="sponsor-banner-carousel-item" key={`${slot}-preview-${index}`}>
+              <AdPreviewPlaceholder pricingKey={pricingKey} banner />
+            </div>
+          ))}
+        </div>
+        {slides > 1 ? (
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-next" type="button" onClick={() => handleCarouselClick(1)} aria-label="Next sponsor banner preview">
+            <span aria-hidden="true">&gt;</span>
+          </button>
+        ) : null}
+      </div>
     </aside>
   );
 }
@@ -228,7 +258,9 @@ function CountySponsorCarousel({
 }
 
 function scrollCarousel(track: HTMLDivElement, direction: -1 | 1) {
-  const firstCard = track.querySelector<HTMLElement>(".sponsor-carousel-item");
+  const firstCard =
+    track.querySelector<HTMLElement>(".sponsor-banner-carousel-item") ||
+    track.querySelector<HTMLElement>(".sponsor-carousel-item");
   const step = firstCard ? firstCard.offsetWidth + 16 : track.clientWidth;
   const nearEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - step / 2;
   const nearStart = track.scrollLeft <= step / 2;
@@ -243,8 +275,6 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
   const cardRef = useRef<HTMLAnchorElement | null>(null);
   const trackedRef = useRef(false);
   const trackingPayload = useMemo(() => adTrackingPayload(ad, slot, county, page), [ad, county, page, slot]);
-  const opensNewWindow = /^https?:\/\//i.test(ad.href);
-
   useEffect(() => {
     const element = cardRef.current;
     if (!element || trackedRef.current || typeof IntersectionObserver === "undefined") return;
@@ -281,8 +311,9 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
       href={ad.href}
       onClick={() => trackAdClick(trackingPayload)}
       ref={cardRef}
-      rel={opensNewWindow ? "noreferrer" : undefined}
-      target={opensNewWindow ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      target="_blank"
+      aria-label={`${ad.sponsor}: ${ad.title}. ${adClickHint}`}
     >
       <picture>
         {ad.image.mobile ? <source media="(max-width: 780px)" srcSet={ad.image.mobile} /> : null}
@@ -294,8 +325,11 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
           <strong>{ad.title}</strong>
           <span>{ad.body}</span>
           <span className="sponsor-cta">{ad.cta}</span>
+          <span className="ad-click-hint">{adClickHint}</span>
         </span>
-      ) : null}
+      ) : (
+        <span className="ad-click-hint">{adClickHint}</span>
+      )}
     </a>
   );
 }
