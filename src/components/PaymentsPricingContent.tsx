@@ -269,7 +269,7 @@ export function PaymentsPricingContent() {
         <h2>Broader network sponsorship</h2>
         <ul className="payments-list">
           <li>
-            <strong>State Patriot Preferred:</strong> {formatAdPrice(450)}/yr per business listing across state-related partner pages.
+            <strong>State Patriot Preferred:</strong> {formatAdPrice(950)}/yr per business listing across state-related partner pages.
           </li>
           <li>
             <strong>State Gold:</strong> {formatAdPrice(950)}/yr per state-level content sponsorship or regional partner placement.

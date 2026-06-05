@@ -31,8 +31,8 @@ export type AdPricing = {
 export const brochureTiers = [
   {
     name: "Patriot Preferred Business Program",
-    monthly: 45,
-    yearly: 450,
+    monthly: 95,
+    yearly: 950,
     summary: "Patriot Rewards membership and clickable business directory listing.",
   },
   {
@@ -52,8 +52,8 @@ export const brochureTiers = [
 export const countyPackages = [
   {
     name: "County Patriot Preferred",
-    monthly: 45,
-    yearly: 450,
+    monthly: 95,
+    yearly: 950,
     includes: ["Patriot Rewards membership", "Clickable county partner listing", "Business logo and ad image"],
   },
   {
@@ -150,7 +150,7 @@ export const adjacentCountyAddOns = [
     name: "Additional Adjacent County — Preferred",
     monthly: 22.5,
     yearly: 225,
-    matchesTier: "Patriot Preferred Business Program ($45/mo base)",
+    matchesTier: "Patriot Preferred Business Program ($95/mo base)",
   },
   {
     id: "adjacent-gold",
@@ -183,7 +183,7 @@ export const adjacentCountyAddOns = [
 ] as const;
 
 export const pricingDiscounts = [
-  { label: "Annual prepay", detail: "Brochure annual rates ($450 / $2,950 / $4,950 / $9,950) — equivalent to about two months free vs monthly." },
+  { label: "Annual prepay", detail: "Brochure annual rates ($950 / $2,950 / $4,950 / $9,950) — equivalent to about two months free vs monthly." },
   { label: "Adjacent counties", detail: adjacentCountyPricingNote },
   { label: "Multi-placement county bundle", detail: "10% off when buying 3+ elements in one county." },
   { label: "Category exclusivity", detail: "Add 25%–50% premium when one sponsor owns a business category in a geography." },
@@ -198,7 +198,7 @@ export const pricingAddOns = [
 ] as const;
 
 export const placementTierGuide = [
-  { placement: "Partner directory listing", tier: "Patriot Preferred", note: "Included at $45/mo ($450/yr)." },
+  { placement: "Partner directory listing", tier: "Patriot Preferred", note: "Included at $95/mo ($950/yr)." },
   { placement: "Weather sponsor", tier: "Gold or Platinum", note: "Gold minimum $295/mo if sold standalone." },
   { placement: "Local Articles feed sponsor", tier: "Gold or Platinum", note: "Gold minimum $295/mo." },
   { placement: "Local Obituaries feed sponsor", tier: "Gold or Platinum", note: "Ideal for funeral, floral, hospice, estate services." },
@@ -219,8 +219,8 @@ const pricingByKey: Record<AdPricingKey, AdPricing> = {
   "partner-directory": {
     key: "partner-directory",
     label: "Partner Directory Listing",
-    monthly: 45,
-    yearly: 450,
+    monthly: 95,
+    yearly: 950,
     tier: "Patriot Preferred",
   },
   "weather-sponsor": {
@@ -381,8 +381,8 @@ export function pricingNationalPlacements() {
 }
 
 export const stripePaymentLinks = {
-  patriotPreferredMonthly: "https://buy.stripe.com/3cIdR91PrbOIfygfwT6EU06",
-  patriotPreferredYearly: "https://buy.stripe.com/fZu5kDcu56uo0DmfwT6EU07",
+  patriotPreferredMonthly: "https://buy.stripe.com/cNi8wPdy90605XGgAX6EU0e",
+  patriotPreferredYearly: "https://buy.stripe.com/6oUeVd1Pr06099SdoL6EU0f",
   goldMonthly: "https://buy.stripe.com/8x28wP9hTdWQ2Lu98v6EU09",
   goldYearly: "https://buy.stripe.com/5kQbJ1eCdcSMbi02K76EU08",
   countyGoldFoundingMonthly: "https://buy.stripe.com/aFa28r2Tv5qk99SbgD6EU0a",
@@ -410,8 +410,8 @@ export const partnerSubscriptionTiers: readonly PartnerSubscriptionTier[] = [
     id: "patriot-preferred",
     name: "Patriot Preferred Business Program",
     tagline: "Directory listing and Patriot Rewards entry point for local businesses.",
-    monthly: 45,
-    yearly: 450,
+    monthly: 95,
+    yearly: 950,
     perks: [
       "Patriot Rewards membership",
       "Clickable partner directory listing",

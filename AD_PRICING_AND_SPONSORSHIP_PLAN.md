@@ -8,7 +8,7 @@ The sales brochure establishes three core business tiers:
 
 | Tier | Monthly | Annual | Brochure Benefits |
 | --- | ---: | ---: | --- |
-| Patriot Preferred Business Program | $45/mo | $450/yr | Patriot Rewards membership and clickable business directory listing. |
+| Patriot Preferred Business Program | $95/mo | $950/yr | Patriot Rewards membership and clickable business directory listing. |
 | Gold Business Partner | $295/mo | $2,950/yr | Partner logos linked to business website on Weather, Obituary, and News pages, plus automatic Patriot Preferred Business membership. |
 | Platinum Business Partner | $495/mo | $4,950/yr | Partner logo linked to business website, top-tier homepage placement at top and bottom, priority extra placement on Weather, Obituary, and News pages, plus automatic Patriot Preferred Business membership. |
 
@@ -33,7 +33,7 @@ Avoid leading with “buy a banner ad.” Lead with “become a founding county 
 
 ### Patriot Preferred Business Program
 
-Price: **$45/mo or $450/yr**
+Price: **$95/mo or $950/yr**
 
 Best for small businesses that want a low-friction entry point.
 
@@ -227,7 +227,7 @@ The brochure tiers should stay the official pricing. The following map shows how
 
 | Placement | Recommended Tier | Standalone Add-On Guidance |
 | --- | --- | --- |
-| Partner directory listing | Patriot Preferred | Included at $45/mo. |
+| Partner directory listing | Patriot Preferred | Included at $95/mo. |
 | Weather sponsor | Gold or Platinum | If sold standalone, use Gold pricing minimum. |
 | Local Articles feed sponsor | Gold or Platinum | If sold standalone, use Gold pricing minimum. |
 | Local Obituaries feed sponsor | Gold or Platinum | Use Gold pricing minimum; ideal for funeral homes, florists, churches, hospice, estate services. |
@@ -244,7 +244,7 @@ The brochure tiers should stay the official pricing. The following map shows how
 
 ### County Patriot Preferred
 
-Price: **$45/mo or $450/yr**
+Price: **$95/mo or $950/yr**
 
 Includes:
 
@@ -286,7 +286,7 @@ Use brochure pricing as the entry point, then multiply by scope.
 
 Suggested strategy:
 
-- State Patriot Preferred: $450/yr per business listing across state-related partner pages.
+- State Patriot Preferred: $950/yr per business listing across state-related partner pages.
 - State Gold: $950/yr per state-level content sponsorship or regional partner placement.
 - State Platinum: $4,950/yr for priority placement across state and county pages in a state.
 
@@ -327,7 +327,7 @@ Sitewide sponsorship should be limited to avoid clutter and protect the premium 
 Recommended rules:
 
 - Annual prepay follows the flyer:
-  - $45/mo or $450/yr.
+  - $95/mo or $950/yr.
   - $295/mo or $2,950/yr.
   - $995/mo or $9,950/yr (County Sponsor — Presented By).
   - $495/mo or $4,950/yr.
@@ -406,7 +406,7 @@ The printed sales brochure establishes three core business partner tiers:
 
 | Tier | Monthly | Annual | Primary offer |
 | --- | ---: | ---: | --- |
-| Patriot Preferred Business Program | $45/mo | $450/yr | Patriot Rewards membership and clickable business directory listing. |
+| Patriot Preferred Business Program | $95/mo | $950/yr | Patriot Rewards membership and clickable business directory listing. |
 | Gold Business Partner | $295/mo | $2,950/yr | Partner logo linked to business website on Weather, Obituary, and News pages, plus Patriot Preferred membership. |
 | Platinum Business Partner | $495/mo | $4,950/yr | Top-tier homepage placement, bottom placement, priority placement on Weather, Obituary, and News pages, plus Patriot Preferred membership. |
 
@@ -432,7 +432,7 @@ Avoid selling this as generic “banner ads.” Use language like:
 
 ### Patriot Preferred Business Program
 
-Price: $45/mo or $450/yr
+Price: $95/mo or $950/yr
 
 Includes:
 
@@ -621,7 +621,7 @@ Use the brochure tiers as the public pricing, but map each specific element to a
 
 ### County Preferred Listing
 
-Price: $45/mo or $450/yr
+Price: $95/mo or $950/yr
 
 Includes:
 
