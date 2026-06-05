@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { AdCreative, AdPlacement, AdSlotId } from "../data/ads";
 import type { CountyPageKey, CountySite } from "../data/counties";
-import { resolveAdsForSlot, type AdRouteType } from "../lib/ads";
+import { resolveAdsByIds, resolveAdsForSlot, type AdRouteType } from "../lib/ads";
 import { trackAdClick, trackAdImpression, type AdTrackingPayload } from "../lib/analytics";
 
 type AdSlotProps = {
@@ -11,13 +11,14 @@ type AdSlotProps = {
   page?: CountyPageKey;
   limit?: number;
   placement?: AdPlacement;
+  adIds?: readonly string[];
 };
 
-export function AdSlot({ slot, route, county, page, limit = 1, placement }: AdSlotProps) {
+export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds }: AdSlotProps) {
   const resolveLimit = slot === "county-page-footer" || slot === "site-footer" ? Math.max(limit, 20) : limit;
   const resolvedAds = useMemo(
-    () => resolveAdsForSlot({ slot, route, county, page, limit: resolveLimit }),
-    [county, page, resolveLimit, route, slot],
+    () => (adIds?.length ? resolveAdsByIds([...adIds]) : resolveAdsForSlot({ slot, route, county, page, limit: resolveLimit })),
+    [adIds, county, page, resolveLimit, route, slot],
   );
 
   if (!resolvedAds.length) return null;

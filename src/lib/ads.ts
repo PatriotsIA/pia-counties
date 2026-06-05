@@ -27,6 +27,13 @@ export function resolveAdsForSlot({ slot, limit = 1, catalog = ads, ...context }
     .slice(0, limit);
 }
 
+export function resolveAdsByIds(adIds: string[], catalog = ads) {
+  if (!SPONSOR_ADS_ENABLED) return [];
+
+  const adsById = new Map(catalog.filter((ad) => ad.active).map((ad) => [ad.id, ad]));
+  return adIds.map((id) => adsById.get(id)).filter((ad): ad is AdCreative => Boolean(ad));
+}
+
 export function isAdEligible(ad: AdCreative, slot: AdSlotId, context: AdContext) {
   if (!ad.active) return false;
   if (!ad.targeting.slots.includes(slot)) return false;

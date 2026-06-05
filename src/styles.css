@@ -483,10 +483,13 @@ nav a {
   justify-items: stretch;
 }
 
-.sponsor-slot-county-news-inline {
+.sponsor-slot-county-news-inline,
+.sponsor-slot-county-news-mid-inline {
+  display: grid;
   grid-template-columns: repeat(5, minmax(130px, 1fr));
   justify-items: center;
   align-items: center;
+  width: min(100%, 1400px);
 }
 
 .sponsor-carousel {
@@ -671,11 +674,16 @@ nav a {
   display: none;
 }
 
-.news-sponsor-row {
+.news-sponsor-row,
+.news-sponsor-mid-row {
   display: grid;
   gap: 1rem;
   justify-items: center;
   margin: 2rem 0 0;
+}
+
+.news-sponsor-mid-row {
+  margin: 0;
 }
 
 .sponsor-slot-county-calendar-inline {
@@ -1702,6 +1710,19 @@ nav a {
   row-gap: 2rem;
 }
 
+.feed-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.feed-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  column-gap: clamp(2rem, 6vw, 5rem);
+  row-gap: 2rem;
+}
+
 .feed-column {
   display: grid;
   gap: 2rem;
@@ -2544,7 +2565,9 @@ nav a {
   .sponsor-card-leaderboard,
   .sponsor-card-inline,
   .sponsor-card-compact,
-  .sponsor-slot-county-news-inline {
+  .feed-pair,
+  .sponsor-slot-county-news-inline,
+  .sponsor-slot-county-news-mid-inline {
     grid-template-columns: 1fr;
   }
 

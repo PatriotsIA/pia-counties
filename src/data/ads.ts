@@ -27,10 +27,20 @@ export type AdSlotId =
   | "county-home-inline"
   | "county-calendar-inline"
   | "county-news-inline"
+  | "county-news-mid-inline"
   | "county-page-footer"
   | "site-footer"
   | "site-left-rail"
   | "site-right-rail";
+
+/** Fixed order for the 250x250 sponsor row between county news feed pairs (Guerrilla Gear centered). */
+export const countyNewsMidRowAdIds = [
+  "lemc-news-inline-2026",
+  "america-250-logo-2026",
+  "guerrilla-gear-national-2026",
+  "plains-bank-news-inline-2026",
+  "pia-merch-2026",
+] as const;
 
 export type AdPlacement = "leaderboard" | "inline" | "compact";
 export type AdDisplayMode = "card" | "image-only";
@@ -68,6 +78,29 @@ export type AdCreative = {
 };
 
 export const ads: AdCreative[] = [
+  {
+    id: "guerrilla-gear-national-2026",
+    campaignId: "pia-national-partners",
+    sponsor: "Guerrilla Gear",
+    title: "Guerrilla Gear",
+    body: "Faith-based apparel for those who serve. A portion of every purchase supports veteran mental health initiatives.",
+    cta: "Shop Guerrilla Gear",
+    href: "https://www.guerrillagear.com/",
+    placement: "compact",
+    display: "image-only",
+    image: {
+      desktop: "/ads/ad-guerilla-gear.png",
+      mobile: "/ads/ad-guerilla-gear.png",
+      alt: "Guerrilla Gear",
+    },
+    priority: 120,
+    active: true,
+    targeting: {
+      slots: ["county-home-inline", "county-news-mid-inline"],
+      routes: ["county"],
+      pages: ["home", "news"],
+    },
+  },
   {
     id: "lemc-county-home-2026",
     campaignId: "pia-county-sponsors",

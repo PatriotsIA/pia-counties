@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
+import { ScrollToTop } from "./components/ScrollToTop";
+import { countyNewsMidRowAdIds } from "./data/ads";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
@@ -98,6 +100,12 @@ const nationwidePartners: Partner[] = [
     description: "Shop patriotic merchandise and gear from the Patriots in Action merch store.",
     href: site.links.merch,
     image: merchPartnerImage,
+  },
+  {
+    name: "Guerrilla Gear",
+    description: "Faith-based apparel for those who serve. A portion of every purchase supports veteran mental health initiatives.",
+    href: "https://www.guerrillagear.com/",
+    image: "/ads/ad-guerilla-gear.png",
   },
 ];
 
@@ -539,6 +547,7 @@ function AnalyticsTracker() {
 function App() {
   return (
     <>
+      <ScrollToTop />
       <AnalyticsTracker />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -1429,8 +1438,8 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
         <h2>Local news feeds for {county.displayName}</h2>
         <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
       </div>
-      <div className="feed-grid">
-        <div className="feed-column">
+      <div className="feed-layout">
+        <div className="feed-pair">
           <RssFeedWidget
             eyebrow="Local Articles"
             title="County & City News"
@@ -1449,7 +1458,16 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             topic="obituaries"
           />
         </div>
-        <div className="feed-column">
+        <div className="news-sponsor-mid-row">
+          <AdSlot
+            adIds={countyNewsMidRowAdIds}
+            county={county}
+            page={page}
+            route="county"
+            slot="county-news-mid-inline"
+          />
+        </div>
+        <div className="feed-pair">
           <RssFeedWidget
             eyebrow="Local Video"
             title="County News Videos"
