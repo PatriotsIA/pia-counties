@@ -88,6 +88,19 @@ export const candidates: Candidate[] = [
     videoTitle: "AMANDA MAYFIELD for Justice of the Peace Place 1 Potter County",
   },
   {
+    id: "abraham-george",
+    name: "Abraham George",
+    office: "Chairman of the Republican Party of Texas",
+    stateSlug: "texas",
+    scope: "statewide",
+    party: "Republican",
+    ballotpediaUrl: "https://ballotpedia.org/Abraham_George",
+    websiteUrl: "https://www.texasgop.org/abraham-george",
+    image: "/candidates/Abraham-George.jpg",
+    videoEmbedUrl: "https://player.vimeo.com/video/1198229855?h=e5c4e4eb35",
+    videoTitle: "ABRAHAM GEORGE RPT",
+  },
+  {
     id: "andrew-smith",
     name: "Andrew Smith",
     office: "Randall County Court at Law 1",
@@ -135,6 +148,18 @@ export const candidates: Candidate[] = [
     videoTitle: "BLAIR SCHAEFER for County Commissioner Place 2 Potter County",
   },
   {
+    id: "bill-eastland",
+    name: "Bill Eastland",
+    office: "Chairman of the Republican Party of Texas",
+    stateSlug: "texas",
+    scope: "statewide",
+    party: "Republican",
+    ballotpediaUrl: "https://ballotpedia.org/Bill_Eastland",
+    image: "/candidates/bill-eastland.webp",
+    videoEmbedUrl: "https://player.vimeo.com/video/1198601482?h=e8facfa2e7",
+    videoTitle: "BILL EASTLAND PATRIOTSTV",
+  },
+  {
     id: "brett-ferguson",
     name: "Brett Ferguson",
     office: "Kerr County Court at Law Judge",
@@ -167,6 +192,18 @@ export const candidates: Candidate[] = [
     videoEmbedUrl: "https://player.vimeo.com/video/1168644496?h=b4b0ed68f4",
     videoTitle: "BRYAN TACKETT for JOP PRECINCT 1",
     image: "/candidates/bryan-tackett.webp",
+  },
+  {
+    id: "drinda-randall",
+    name: "D'Rinda Randall",
+    office: "Chairman of the Republican Party of Texas",
+    stateSlug: "texas",
+    scope: "statewide",
+    party: "Republican",
+    websiteUrl: "https://www.texasgop.org/drinda-randall",
+    image: "/candidates/drinda-randall.JPG",
+    videoEmbedUrl: "https://player.vimeo.com/video/1198499259?h=d0c103eb70",
+    videoTitle: "D'RINDA RANDALL PIATV",
   },
   {
     id: "cathy-welch",
@@ -248,6 +285,18 @@ export const candidates: Candidate[] = [
     image: "/candidates/dc-caldwell.jpg",
     videoEmbedUrl: "https://player.vimeo.com/video/1159478687?h=89c6b90513",
     videoTitle: "DANIEL CALDWELL for Justice of the Peace 3 in Denton, County",
+  },
+  {
+    id: "ethan-libby",
+    name: "Ethan Libby",
+    office: "State Republican Executive Committee, Senate District 31",
+    stateSlug: "texas",
+    scope: "district",
+    district: "State Republican Executive Committee, Senate District 31",
+    party: "Republican",
+    image: "/candidates/ethan-libby.jpg",
+    videoEmbedUrl: "https://player.vimeo.com/video/1194167084?h=46c76978f9",
+    videoTitle: "LIVE! ETHAN LIBBY SREC SD 31",
   },
   {
     id: "elizabeth-waters",
@@ -355,6 +404,20 @@ export const candidates: Candidate[] = [
     image: "/candidates/holly-jeffreys.webp",
     videoEmbedUrl: "https://player.vimeo.com/video/1157360437?h=c5b1f721e3",
     videoTitle: "HOLLY JEFFREYES for House Dist 86 Seat",
+  },
+  {
+    id: "julie-kellogg",
+    name: "Julie Kellogg",
+    office: "State Republican Executive Committee, Senate District 31",
+    stateSlug: "texas",
+    scope: "district",
+    district: "State Republican Executive Committee, Senate District 31",
+    countySlug: "ector",
+    countyName: "Ector County",
+    party: "Republican",
+    image: "/candidates/julie-kellogg.jpg",
+    videoEmbedUrl: "https://player.vimeo.com/video/1197931631?h=97d17ab556",
+    videoTitle: "JULIE KELLOGG",
   },
   {
     id: "james-matlock",
@@ -534,6 +597,18 @@ export const candidates: Candidate[] = [
     videoTitle: "LESLI FITZPATRICK for Place 3 Judge Texas Court of Criminal Appeals",
   },
   {
+    id: "misty-collier",
+    name: "Misty Collier",
+    office: "State Republican Executive Committee, Senate District 31",
+    stateSlug: "texas",
+    scope: "district",
+    district: "State Republican Executive Committee, Senate District 31",
+    party: "Republican",
+    image: "https://i.vimeocdn.com/video/2164763846-5a3e90175a7a20786ec19c51e22ccfe73cc85666bb5adb478772096ad0262f2f-d_960?region=us",
+    videoEmbedUrl: "https://player.vimeo.com/video/1198224399?h=c2e38533e4",
+    videoTitle: "MISTY COLLIER",
+  },
+  {
     id: "mayes-middleton",
     name: "Mayes Middleton",
     office: "Texas Attorney General",
@@ -648,6 +723,18 @@ export const candidates: Candidate[] = [
     videoTitle: "Ryan Zink on What It's Like to Disappear Into the American Gulag for Political Crimes",
   },
   {
+    id: "sandra-whitten",
+    name: "Sandra Whitten",
+    office: "Republican Party of Texas Chair Candidate",
+    stateSlug: "texas",
+    scope: "statewide",
+    party: "Republican",
+    ballotpediaUrl: "https://ballotpedia.org/Sandra_Whitten",
+    image: "/candidates/SandraWhitten.jpg",
+    videoEmbedUrl: "https://player.vimeo.com/video/1199835158?h=8ffc1a4307",
+    videoTitle: "SANDRA WHITTEN",
+  },
+  {
     id: "shandi-williams",
     name: "Shandi Williams",
     office: "Midland City Council Place 3",
@@ -689,6 +776,20 @@ export const candidates: Candidate[] = [
     image: "/candidates/sylvester-vanerson.jpg",
     videoEmbedUrl: "https://player.vimeo.com/video/1163385692?h=dcc6a3e46b",
     videoTitle: "Sylvester Vanerson for Precinct Chair 4250 Tarrant County",
+  },
+  {
+    id: "tammy-smith",
+    name: "Tammy Smith",
+    office: "State Republican Executive Committee, Senate District 31",
+    stateSlug: "texas",
+    scope: "district",
+    district: "State Republican Executive Committee, Senate District 31",
+    countySlug: "upton",
+    countyName: "Upton County",
+    party: "Republican",
+    image: "/candidates/tammie-smith.jpg",
+    videoEmbedUrl: "https://player.vimeo.com/video/1198242838?h=28cfc261fb",
+    videoTitle: "TAMMY SMITH",
   },
   {
     id: "tanya-lovenburg",
@@ -767,6 +868,29 @@ export const candidates: Candidate[] = [
     videoTitle: "ZACHARY PRICE for PRECINCT CHAIR 1 PALO PINTO COUNTY",
   },
 ];
+
+export const pinnedCandidateIds = [
+  "sandra-whitten",
+  "bill-eastland",
+  "drinda-randall",
+  "tammy-smith",
+  "abraham-george",
+  "misty-collier",
+  "julie-kellogg",
+  "ethan-libby",
+] as const;
+
+const pinnedCandidateIdSet = new Set<string>(pinnedCandidateIds);
+
+export function isPinnedCandidate(candidateId: string) {
+  return pinnedCandidateIdSet.has(candidateId);
+}
+
+export function getPinnedCandidates(catalog: Candidate[] = candidates) {
+  return pinnedCandidateIds
+    .map((id) => catalog.find((candidate) => candidate.id === id))
+    .filter((candidate): candidate is Candidate => Boolean(candidate));
+}
 
 export function getCandidatesForState(stateSlug?: string) {
   const state = getStateBySlug(stateSlug);

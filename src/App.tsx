@@ -6,7 +6,7 @@ import { countyNewsMidRowAdIds } from "./data/ads";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
-import { getCandidateById, getCandidatesForCounty, getCandidatesForState, type Candidate } from "./data/candidates";
+import { getCandidateById, getCandidatesForCounty, getCandidatesForState, getPinnedCandidates, isPinnedCandidate, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { site } from "./data/site";
 import type { AdRouteType } from "./lib/ads";
@@ -1002,9 +1002,9 @@ function StateCandidatesPage() {
   });
   const statewideCandidates = filteredCandidates.filter((candidate) => candidate.scope === "statewide");
   const localCandidates = filteredCandidates.filter((candidate) => candidate.scope !== "statewide");
-  const runOffCandidates = filteredCandidates.filter((candidate) => candidateProjectCandidateIds.has(candidate.id));
-  const remainingStatewideCandidates = statewideCandidates.filter((candidate) => !candidateProjectCandidateIds.has(candidate.id));
-  const remainingLocalCandidates = localCandidates.filter((candidate) => !candidateProjectCandidateIds.has(candidate.id));
+  const pinnedCandidates = getPinnedCandidates(filteredCandidates);
+  const remainingStatewideCandidates = statewideCandidates.filter((candidate) => !isPinnedCandidate(candidate.id));
+  const remainingLocalCandidates = localCandidates.filter((candidate) => !isPinnedCandidate(candidate.id));
   const hasJurisdictionFilter = jurisdictionFilter !== "all";
 
   usePageTitle(state ? `${state.name} Candidates` : "Not Found");
@@ -1031,7 +1031,7 @@ function StateCandidatesPage() {
       />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
       {!allCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
-      {runOffCandidates.length && !hasJurisdictionFilter ? <RunoffInterviewsSection candidates={runOffCandidates} /> : null}
+      {pinnedCandidates.length && !hasJurisdictionFilter ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local and District Races</p>
@@ -1237,14 +1237,14 @@ function stateConstitutionUrl(stateName: string) {
 }
 
 function CountyCandidates({ county }: { county: CountySite }) {
-  const countyCandidates = getCandidatesForCounty(county);
-  const runoffCandidates = getCandidatesForState(county.state.slug).filter((candidate) => candidateProjectCandidateIds.has(candidate.id));
+  const countyCandidates = getCandidatesForCounty(county).filter((candidate) => !isPinnedCandidate(candidate.id));
+  const pinnedCandidates = getPinnedCandidates(getCandidatesForState(county.state.slug));
   return (
     <>
       <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
       <CandidateDirectorySponsors county={county} />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
-      {runoffCandidates.length ? <RunoffInterviewsSection candidates={runoffCandidates} /> : null}
+      {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       {!countyCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       <section className="section">
         <div className="section-heading">
@@ -1265,15 +1265,15 @@ function CountyCandidates({ county }: { county: CountySite }) {
   );
 }
 
-function RunoffInterviewsSection({ candidates }: { candidates: Candidate[] }) {
+function FeaturedInterviewsSection({ candidates }: { candidates: Candidate[] }) {
   return (
     <section className="section">
       <div className="section-heading">
-        <p className="eyebrow">Runoff Interviews</p>
-        <h2>Texas Statewide runoff interviews</h2>
-        <p>We reached out to all and these are the ones who showed up and spoke to Patriots In Action.</p>
+        <p className="eyebrow">Featured Interviews</p>
+        <h2>Recent Patriots in Action TV interviews</h2>
+        <p>Watch recent conversations with Texas Republican Party leadership candidates, local office seekers, and conservative leaders interviewed on Patriots in Action TV.</p>
       </div>
-      <CandidateGrid candidates={candidates} emptyText="No statewide runoff interviews are available yet." />
+      <CandidateGrid candidates={candidates} emptyText="No featured interviews are available yet." />
     </section>
   );
 }
