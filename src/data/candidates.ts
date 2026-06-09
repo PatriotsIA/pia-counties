@@ -201,7 +201,7 @@ export const candidates: Candidate[] = [
     scope: "statewide",
     party: "Republican",
     websiteUrl: "https://www.texasgop.org/drinda-randall",
-    image: "/candidates/drinda-randall.JPG",
+    image: "/candidates/drinda-randall.jpg",
     videoEmbedUrl: "https://player.vimeo.com/video/1198499259?h=d0c103eb70",
     videoTitle: "D'RINDA RANDALL PIATV",
   },
