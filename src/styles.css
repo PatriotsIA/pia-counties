@@ -2973,12 +2973,88 @@ nav a {
     aspect-ratio: 1 / 1;
   }
 
-  .payments-subscription-table {
+  .payments-subscription-table-wrap,
+  .payments-table-wrap:has(.payments-adjacent-county-table) {
+    overflow-x: visible;
+  }
+
+  .payments-subscription-table,
+  .payments-adjacent-county-table {
     min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .payments-subscription-table thead,
+  .payments-adjacent-county-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .payments-subscription-table tbody tr,
+  .payments-adjacent-county-table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    padding: 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+      var(--flag-gradient-soft) border-box;
+    box-shadow: 0 10px 28px rgba(17, 27, 71, 0.08);
+  }
+
+  .payments-subscription-table tbody tr:last-child,
+  .payments-adjacent-county-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .payments-subscription-table td,
+  .payments-adjacent-county-table td {
+    display: block;
+    min-width: 0 !important;
+    padding: 0;
+    border-bottom: none;
+    margin-bottom: 0.85rem;
+  }
+
+  .payments-subscription-table td:last-child,
+  .payments-adjacent-county-table td:last-child {
+    margin-bottom: 0;
+  }
+
+  .payments-subscription-table td::before,
+  .payments-adjacent-county-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--navy);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .payments-subscription-tier-cell::before,
+  .payments-adjacent-county-name-cell::before {
+    display: none;
+  }
+
+  .payments-subscription-tier-cell strong,
+  .payments-adjacent-county-name-cell strong {
+    font-size: 1.05rem;
+    margin-bottom: 0.35rem;
   }
 
   .payments-subscription-actions .button {
-    font-size: 0.78rem;
+    font-size: 0.82rem;
   }
 
   .sponsor-carousel-shell {

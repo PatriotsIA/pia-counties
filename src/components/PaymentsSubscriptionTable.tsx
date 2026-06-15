@@ -30,11 +30,11 @@ export function PaymentsSubscriptionTable() {
           <tbody>
             {partnerSubscriptionTiers.map((tier) => (
               <tr key={tier.id}>
-                <td className="payments-subscription-tier-cell">
+                <td className="payments-subscription-tier-cell" data-label="Partner tier">
                   <strong>{tier.name}</strong>
                   <span>{tier.tagline}</span>
                 </td>
-                <td className="payments-subscription-price-cell">
+                <td className="payments-subscription-price-cell" data-label="Pricing">
                   {tier.quoteOnly ? (
                     <span className="payments-subscription-quote">{tier.quoteLabel || "Custom pricing"}</span>
                   ) : (
@@ -49,7 +49,7 @@ export function PaymentsSubscriptionTable() {
                     </>
                   )}
                 </td>
-                <td className="payments-subscription-perks-cell">
+                <td className="payments-subscription-perks-cell" data-label="Perks and placements">
                   <p className="payments-subscription-label">Perks</p>
                   <ul>
                     {tier.perks.map((perk) => (
@@ -63,7 +63,7 @@ export function PaymentsSubscriptionTable() {
                     ))}
                   </ul>
                 </td>
-                <td className="payments-subscription-actions-cell">
+                <td className="payments-subscription-actions-cell" data-label="Subscribe">
                   {tierHasStripeCheckout(tier) ? (
                     <div className="payments-subscription-actions">
                       <a

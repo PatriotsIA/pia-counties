@@ -32,13 +32,13 @@ export function PaymentsAdjacentCountyAddOns() {
           <tbody>
             {adjacentCountyAddOns.map((addOn) => (
               <tr key={addOn.id}>
-                <td>
+                <td className="payments-adjacent-county-name-cell" data-label="Add-on product">
                   <strong>{addOn.name}</strong>
                 </td>
-                <td>{addOn.matchesTier}</td>
-                <td>{formatAdPrice(addOn.monthly)}/mo</td>
-                <td>{formatAdPrice(addOn.yearly)}/yr</td>
-                <td className="payments-adjacent-county-actions">
+                <td data-label="Matches base tier">{addOn.matchesTier}</td>
+                <td data-label="Monthly add-on">{formatAdPrice(addOn.monthly)}/mo</td>
+                <td data-label="Annual add-on">{formatAdPrice(addOn.yearly)}/yr</td>
+                <td className="payments-adjacent-county-actions" data-label="Subscribe">
                   <PaymentsQuoteLink tierName={addOn.name} label="Get a quote" />
                 </td>
               </tr>
