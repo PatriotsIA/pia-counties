@@ -2,6 +2,7 @@ import { adClickHint } from "../data/ads";
 import { AdAssetDeliveryNotice } from "./AdAssetDeliveryNotice";
 import { PaymentsQuoteLink } from "./PaymentsQuoteLink";
 import {
+  adjacentCountyPricingNote,
   adAssetDeliveryInstructions,
   adAssetSpecs,
   brochureTiers,
@@ -183,6 +184,7 @@ export function PaymentsPricingContent() {
       <section className="payments-pricing-block">
         <p className="eyebrow">County Packages</p>
         <h2>Recommended county sponsorship packages</h2>
+        <p>{adjacentCountyPricingNote}</p>
         <div className="payments-package-grid">
           {countyPackages.map((pkg) => (
             <article className="payments-tier-card" key={pkg.name}>

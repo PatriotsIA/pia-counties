@@ -13,9 +13,9 @@ export function PaymentsAdjacentCountyAddOns() {
       <h2>Additional adjacent county add-ons</h2>
       <p>{adjacentCountyPricingNote}</p>
       <p>
-        Subscribe to your <strong>base county</strong> at full tier price first, then add one adjacent-county line item per
-        extra county at the rates below. Each add-on is a separate Stripe product/price—not a coupon on the primary
-        checkout.
+        Subscribe to your <strong>base county</strong> at full tier price first, then add one contiguous neighboring
+        county at a time at half price using the add-on rates below. Each add-on is a separate Stripe product/price—not a
+        coupon on the primary checkout.
       </p>
       <p>{adAssetDeliveryInstructions}</p>
       <div className="payments-table-wrap">

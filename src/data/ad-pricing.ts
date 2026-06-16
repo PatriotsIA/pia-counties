@@ -58,8 +58,8 @@ export const countyPackages = [
   },
   {
     name: "County Gold Partner",
-    monthly: 95,
-    yearly: 950,
+    monthly: 295,
+    yearly: 2950,
     includes: [
       "Everything in Patriot Preferred",
       "One key county content sponsorship (Weather, Obituaries, Articles, Video, or Sports)",
@@ -142,7 +142,7 @@ export function nationalPlacementPreviewSize(key: AdPricingKey): NationalPlaceme
 }
 
 export const adjacentCountyPricingNote =
-  "Each additional adjacent county is 50% of your base tier price. Add adjacent counties as separate Stripe add-on subscriptions—never use a sitewide promotion code on checkout, or the base county would be discounted too.";
+  "Advertisers can add multiple contiguous neighboring counties at half the base tier price for each additional county. Subscribe to your primary county at full price first, then add one adjacent-county subscription per extra county at 50% off. Each add-on is a separate Stripe product—never use a sitewide promotion code on checkout, or your base county would be discounted too.";
 
 export const adjacentCountyAddOns = [
   {
