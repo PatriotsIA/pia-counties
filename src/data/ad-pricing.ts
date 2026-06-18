@@ -148,8 +148,8 @@ export const adjacentCountyAddOns = [
   {
     id: "adjacent-preferred",
     name: "Additional Adjacent County — Preferred",
-    monthly: 22.5,
-    yearly: 225,
+    monthly: 47.5,
+    yearly: 475,
     matchesTier: "Patriot Preferred Business Program ($95/mo base)",
   },
   {
