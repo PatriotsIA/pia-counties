@@ -39,6 +39,7 @@ const DEFAULT_PROVIDER_URL = "https://api.rss2json.com/v1/api.json";
 const DEFAULT_RAW_PROXY_URL = "https://api.allorigins.win/raw";
 const MAX_ITEMS = 40;
 const CACHE_TTL_MS = minutesEnv("VITE_RSS_CACHE_TTL_MINUTES", 60) * 60 * 1000;
+export const RSS_FEED_MIN_ITEMS = 3;
 
 export async function fetchRssFeedItems(feedUrl: string) {
   const cached = readCachedFeed(feedUrl);
@@ -52,6 +53,35 @@ export async function fetchRssFeedItems(feedUrl: string) {
     if (cached) return cached.items;
     throw error;
   }
+}
+
+export type RssFeedFetchResult = {
+  items: NewsFeedItem[];
+  usedFallback: boolean;
+  feedUrl: string;
+};
+
+export async function fetchRssFeedItemsWithFallback(
+  primaryUrl: string,
+  fallbackUrl?: string,
+  minItems = RSS_FEED_MIN_ITEMS,
+): Promise<RssFeedFetchResult> {
+  if (!fallbackUrl || fallbackUrl === primaryUrl) {
+    const items = await fetchRssFeedItems(primaryUrl);
+    return { items, usedFallback: false, feedUrl: primaryUrl };
+  }
+
+  try {
+    const primaryItems = await fetchRssFeedItems(primaryUrl);
+    if (primaryItems.length >= minItems) {
+      return { items: primaryItems, usedFallback: false, feedUrl: primaryUrl };
+    }
+  } catch {
+    // Try the nearest-city feed below.
+  }
+
+  const fallbackItems = await fetchRssFeedItems(fallbackUrl);
+  return { items: fallbackItems, usedFallback: true, feedUrl: fallbackUrl };
 }
 
 async function fetchProviderItems(feedUrl: string) {

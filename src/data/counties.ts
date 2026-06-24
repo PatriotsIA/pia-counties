@@ -1,5 +1,10 @@
 import { getCountyByState } from "@nickgraffis/us-counties";
+import { buildCountyFeedUrl } from "../lib/county-feed-urls";
 import { site } from "./site";
+import { getStateBySlug, stateFromAbbr, states, type StateSite } from "./states";
+
+export type { StateSite } from "./states";
+export { getStateBySlug, stateFromAbbr, states };
 
 type UsCounty = {
   FIPS: string;
@@ -18,12 +23,6 @@ export type CountyPageKey =
   | "partners"
   | "contact"
   | "submit-event";
-
-export type StateSite = {
-  name: string;
-  abbr: string;
-  slug: string;
-};
 
 export type CustomBlock = {
   title: string;
@@ -72,88 +71,12 @@ export type CountySite = {
   customBlocks?: Partial<Record<CountyPageKey, CustomBlock[]>>;
 };
 
-export const states: StateSite[] = [
-  { name: "Alabama", abbr: "AL", slug: "alabama" },
-  { name: "Alaska", abbr: "AK", slug: "alaska" },
-  { name: "Arizona", abbr: "AZ", slug: "arizona" },
-  { name: "Arkansas", abbr: "AR", slug: "arkansas" },
-  { name: "California", abbr: "CA", slug: "california" },
-  { name: "Colorado", abbr: "CO", slug: "colorado" },
-  { name: "Connecticut", abbr: "CT", slug: "connecticut" },
-  { name: "Delaware", abbr: "DE", slug: "delaware" },
-  { name: "District of Columbia", abbr: "DC", slug: "district-of-columbia" },
-  { name: "Florida", abbr: "FL", slug: "florida" },
-  { name: "Georgia", abbr: "GA", slug: "georgia" },
-  { name: "Hawaii", abbr: "HI", slug: "hawaii" },
-  { name: "Idaho", abbr: "ID", slug: "idaho" },
-  { name: "Illinois", abbr: "IL", slug: "illinois" },
-  { name: "Indiana", abbr: "IN", slug: "indiana" },
-  { name: "Iowa", abbr: "IA", slug: "iowa" },
-  { name: "Kansas", abbr: "KS", slug: "kansas" },
-  { name: "Kentucky", abbr: "KY", slug: "kentucky" },
-  { name: "Louisiana", abbr: "LA", slug: "louisiana" },
-  { name: "Maine", abbr: "ME", slug: "maine" },
-  { name: "Maryland", abbr: "MD", slug: "maryland" },
-  { name: "Massachusetts", abbr: "MA", slug: "massachusetts" },
-  { name: "Michigan", abbr: "MI", slug: "michigan" },
-  { name: "Minnesota", abbr: "MN", slug: "minnesota" },
-  { name: "Mississippi", abbr: "MS", slug: "mississippi" },
-  { name: "Missouri", abbr: "MO", slug: "missouri" },
-  { name: "Montana", abbr: "MT", slug: "montana" },
-  { name: "Nebraska", abbr: "NE", slug: "nebraska" },
-  { name: "Nevada", abbr: "NV", slug: "nevada" },
-  { name: "New Hampshire", abbr: "NH", slug: "new-hampshire" },
-  { name: "New Jersey", abbr: "NJ", slug: "new-jersey" },
-  { name: "New Mexico", abbr: "NM", slug: "new-mexico" },
-  { name: "New York", abbr: "NY", slug: "new-york" },
-  { name: "North Carolina", abbr: "NC", slug: "north-carolina" },
-  { name: "North Dakota", abbr: "ND", slug: "north-dakota" },
-  { name: "Ohio", abbr: "OH", slug: "ohio" },
-  { name: "Oklahoma", abbr: "OK", slug: "oklahoma" },
-  { name: "Oregon", abbr: "OR", slug: "oregon" },
-  { name: "Pennsylvania", abbr: "PA", slug: "pennsylvania" },
-  { name: "Rhode Island", abbr: "RI", slug: "rhode-island" },
-  { name: "South Carolina", abbr: "SC", slug: "south-carolina" },
-  { name: "South Dakota", abbr: "SD", slug: "south-dakota" },
-  { name: "Tennessee", abbr: "TN", slug: "tennessee" },
-  { name: "Texas", abbr: "TX", slug: "texas" },
-  { name: "Utah", abbr: "UT", slug: "utah" },
-  { name: "Vermont", abbr: "VT", slug: "vermont" },
-  { name: "Virginia", abbr: "VA", slug: "virginia" },
-  { name: "Washington", abbr: "WA", slug: "washington" },
-  { name: "West Virginia", abbr: "WV", slug: "west-virginia" },
-  { name: "Wisconsin", abbr: "WI", slug: "wisconsin" },
-  { name: "Wyoming", abbr: "WY", slug: "wyoming" },
-];
-
-const statesBySlug = new Map(states.map((state) => [state.slug, state]));
-const statesByAbbr = new Map(states.map((state) => [state.abbr, state]));
-const statesByAbbrSlug = new Map(states.map((state) => [state.abbr.toLowerCase(), state]));
-
 export function slugify(value: string) {
   return value
     .toLowerCase()
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-}
-
-function newsSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} local news OR ${county.name} ${state.abbr} community news`);
-}
-
-function videoSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} local news video OR ${county.name} ${state.abbr} news video`);
-}
-
-function sportsSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(
-    `${county.name} County ${state.name} high school sports OR ${county.name} ${state.abbr} college sports OR ${county.name} ${state.abbr} football OR ${county.name} ${state.abbr} basketball OR ${county.name} ${state.abbr} baseball OR ${county.name} ${state.abbr} softball`,
-  );
-}
-
-function obituariesSearchUrl(county: UsCounty, state: StateSite) {
-  return googleNewsRssUrl(`${county.name} County ${state.name} obituaries OR ${county.name} ${state.abbr} obituary OR ${county.name} ${state.abbr} funeral home OR ${county.name} ${state.abbr} death notice`);
 }
 
 const civicResourceLinks = {
@@ -165,15 +88,6 @@ const civicResourceLinks = {
   stateOfficials: "https://open.pluralpolicy.com/find_your_legislator/",
   federalOfficials: "https://www.usa.gov/elected-officials",
 } as const;
-
-function googleNewsRssUrl(query: string) {
-  const url = new URL(site.links.googleNewsRssSearch);
-  url.searchParams.set("q", query);
-  url.searchParams.set("hl", "en-US");
-  url.searchParams.set("gl", "US");
-  url.searchParams.set("ceid", "US:en");
-  return url.toString();
-}
 
 function createCountySite(county: UsCounty, state: StateSite): CountySite {
   const slug = slugify(county.name);
@@ -192,11 +106,11 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
       "Your voice matters locally and nationally. Knowing who represents you helps you stay informed, engaged, and ready to make a difference for your community and country.",
     calendar: {},
     feeds: {
-      localNewsUrl: newsSearchUrl(county, state),
-      localSportsUrl: sportsSearchUrl(county, state),
-      localVideoUrl: videoSearchUrl(county, state),
+      localNewsUrl: buildCountyFeedUrl("localNews", county.name, state),
+      localSportsUrl: buildCountyFeedUrl("localSports", county.name, state),
+      localVideoUrl: buildCountyFeedUrl("localVideo", county.name, state),
       nationalNewsUrl: site.links.nationalNews,
-      obituariesUrl: obituariesSearchUrl(county, state),
+      obituariesUrl: buildCountyFeedUrl("obituaries", county.name, state),
     },
     links: {
       community: site.links.community,
@@ -216,6 +130,9 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
 }
 
 const countyOverrides: Record<string, Partial<CountySite>> = {
+  "arkansas/polk": {
+    primaryCity: "Mena",
+  },
   "texas/potter": {
     primaryCity: "Amarillo",
     phone: "806.351.0084",
@@ -263,12 +180,6 @@ export const counties = states.flatMap((state) =>
 
 const countiesByStateAndSlug = new Map(counties.map((county) => [`${county.state.slug}/${county.slug}`, county]));
 
-export function getStateBySlug(slug?: string) {
-  if (!slug) return undefined;
-  const normalized = slug.toLowerCase();
-  return statesBySlug.get(normalized) || statesByAbbrSlug.get(normalized);
-}
-
 export function getCounty(stateSlug?: string, countySlug?: string) {
   if (!stateSlug || !countySlug) return undefined;
   const state = getStateBySlug(stateSlug);
@@ -284,8 +195,4 @@ export function getCountiesForState(stateSlug?: string) {
 
 export function getCountyCalendarFeed(stateSlug?: string, countySlug?: string) {
   return getCounty(stateSlug, countySlug)?.calendar.icsUrl;
-}
-
-export function stateFromAbbr(abbr: string) {
-  return statesByAbbr.get(abbr);
 }

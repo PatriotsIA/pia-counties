@@ -13,7 +13,10 @@ import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
 import { fetchCalendarFeed, parseIcsEvents, type CalendarEvent } from "./lib/calendar";
 import { sendCountyFormEmail, sendSiteContactEmail } from "./lib/email";
-import { fetchRssFeedItems } from "./lib/rss-client";
+import { fetchRssFeedItems, RSS_FEED_MIN_ITEMS } from "./lib/rss-client";
+import { buildMarketFeedUrl, type CountyFeedKind } from "./lib/county-feed-urls";
+import { filterFeedItemsByRegion } from "./lib/county-feed-filter";
+import { resolveNewsMarketCity } from "./lib/county-news-market";
 import type { NewsFeedItem } from "./lib/rss-feed";
 import cbtPartnerImage from "../NewAds/CBT4.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
@@ -1421,115 +1424,172 @@ function CountySubmitEvent({ county }: { county: CountySite }) {
 }
 
 type RssFeedWidgetProps = {
+  county: CountySite;
   title: string;
   eyebrow: string;
   description: string;
   feedUrl: string;
+  supplementalFeedUrl?: string;
+  fallbackFeedUrl?: string;
+  fallbackMarketCity?: string;
   emptyText: string;
   presentedBy?: (typeof preferredPartners)[number];
   topic?: "general" | "obituaries" | "sports";
 };
 
-function CountyNewsSection({ county, page }: { county: CountySite; page: CountyPageKey }) {
+type CountyRssFeedWidgetProps = Omit<RssFeedWidgetProps, "fallbackFeedUrl" | "fallbackMarketCity" | "county"> & {
+  county: CountySite;
+  feedKind: CountyFeedKind;
+};
+
+function CountyRssFeedWidget({ county, feedKind, feedUrl, ...props }: CountyRssFeedWidgetProps) {
+  const [fallbackFeedUrl, setFallbackFeedUrl] = useState<string>();
+  const [fallbackMarketCity, setFallbackMarketCity] = useState<string>();
+
+  useEffect(() => {
+    let active = true;
+
+    resolveNewsMarketCity(county).then((marketCity) => {
+      if (!active) return;
+      setFallbackMarketCity(marketCity);
+      setFallbackFeedUrl(buildMarketFeedUrl(feedKind, marketCity, county.state));
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [county, feedKind]);
+
   return (
-    <section className="section news-section">
-      <div className="section-heading">
-        <p className="eyebrow">County Newsroom</p>
-        <h2>Local news feeds for {county.displayName}</h2>
-        <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
-      </div>
-      <div className="feed-layout">
-        <div className="feed-pair">
-          <RssFeedWidget
-            eyebrow="Local Articles"
-            title="County & City News"
-            description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
-            feedUrl={county.feeds.localNewsUrl}
-            emptyText="No local article results are available yet."
-            presentedBy={countyPartner(county, "CBT Real Estate Services")}
-          />
-          <RssFeedWidget
-            eyebrow="Obituaries"
-            title="Local Obituaries"
-            description={`Recent obituary notices and memorial news for ${county.displayName}.`}
-            feedUrl={county.feeds.obituariesUrl}
-            emptyText="No local obituary results are available yet."
-            presentedBy={preferredPartner("Patriot Rewards")}
-            topic="obituaries"
-          />
-        </div>
-        <div className="news-sponsor-mid-row">
-          <AdSlot
-            adIds={countyNewsMidRowAdIds}
-            county={county}
-            page={page}
-            route="county"
-            slot="county-news-mid-inline"
-          />
-        </div>
-        <div className="feed-pair">
-          <RssFeedWidget
-            eyebrow="Local Video"
-            title="County News Videos"
-            description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
-            feedUrl={county.feeds.localVideoUrl}
-            emptyText="No local video results are available yet."
-            presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
-          />
-          <VimeoFeed compact />
-        </div>
-      </div>
-      <div className="feed-feature-row">
-        <RssFeedWidget
-          eyebrow="Local Sports"
-          title="High School & College Sports"
-          description={`Local high school, college, and athletics coverage connected to ${county.displayName}.`}
-          feedUrl={county.feeds.localSportsUrl}
-          emptyText="No local sports results are available yet."
-          presentedBy={preferredPartner("piaevents.com")}
-          topic="sports"
-        />
-      </div>
-      <div className="news-sponsor-row">
-        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={5} />
-        <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
-      </div>
-    </section>
+    <RssFeedWidget
+      {...props}
+      county={county}
+      feedUrl={feedUrl}
+      fallbackFeedUrl={fallbackFeedUrl}
+      fallbackMarketCity={fallbackMarketCity}
+    />
   );
 }
 
-function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presentedBy, topic = "general" }: RssFeedWidgetProps) {
+function countyFeedLabel(topic: RssFeedWidgetProps["topic"]) {
+  if (topic === "obituaries") return "obituary results";
+  if (topic === "sports") return "sports coverage";
+  return "local news";
+}
+
+function RssFeedWidget({
+  county,
+  title,
+  eyebrow,
+  description,
+  feedUrl,
+  supplementalFeedUrl,
+  fallbackFeedUrl,
+  fallbackMarketCity,
+  emptyText,
+  presentedBy,
+  topic = "general",
+}: RssFeedWidgetProps) {
   const [items, setItems] = useState<NewsFeedItem[]>([]);
+  const [activeFeedUrl, setActiveFeedUrl] = useState(feedUrl);
+  const [usedFallback, setUsedFallback] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5);
   const [status, setStatus] = useState("Loading feed...");
 
   useEffect(() => {
     let active = true;
 
-    fetchRssFeedItems(feedUrl)
-      .then((parsed) => {
-        if (!active) return;
-        const topicItems = filterFeedItemsByTopic(parsed, topic);
-        setItems(topicItems);
-        setVisibleCount(5);
-        setStatus(topicItems.length ? "" : emptyText);
-      })
-      .catch(() => {
-        if (!active) return;
-        setItems([]);
-        setVisibleCount(5);
-        setStatus("This feed could not be loaded right now.");
+    function applyFeedFilters(parsed: NewsFeedItem[], isFallback: boolean) {
+      return filterFeedItemsByRegion(filterFeedItemsByTopic(parsed, topic), {
+        county,
+        marketCity: fallbackMarketCity,
+        usedFallback: isFallback,
       });
+    }
+
+    async function fetchMergedFeedItems(...urls: Array<string | undefined>) {
+      const uniqueUrls = [...new Set(urls.filter((url): url is string => Boolean(url)))];
+      const results = await Promise.allSettled(uniqueUrls.map((url) => fetchRssFeedItems(url)));
+      return mergeFeedItems(
+        results
+          .filter((result): result is PromiseFulfilledResult<NewsFeedItem[]> => result.status === "fulfilled")
+          .map((result) => result.value),
+      );
+    }
+
+    async function loadFeed() {
+      let topicItems: NewsFeedItem[] = [];
+      let nextUsedFallback = false;
+      let nextActiveFeedUrl = feedUrl;
+
+      try {
+        const parsed = await fetchMergedFeedItems(feedUrl, supplementalFeedUrl);
+        topicItems = applyFeedFilters(parsed, false);
+      } catch {
+        // Primary county feed failed; try the nearby market feed below.
+      }
+
+      if (
+        topicItems.length < RSS_FEED_MIN_ITEMS &&
+        fallbackFeedUrl &&
+        fallbackFeedUrl !== feedUrl
+      ) {
+        try {
+          const fallbackParsed = await fetchRssFeedItems(fallbackFeedUrl);
+          const fallbackTopicItems = applyFeedFilters(fallbackParsed, true);
+          if (fallbackTopicItems.length > topicItems.length) {
+            topicItems = fallbackTopicItems;
+            nextUsedFallback = true;
+            nextActiveFeedUrl = fallbackFeedUrl;
+          }
+        } catch {
+          if (!topicItems.length) {
+            if (!active) return;
+            setItems([]);
+            setActiveFeedUrl(feedUrl);
+            setUsedFallback(false);
+            setVisibleCount(5);
+            setStatus("This feed could not be loaded right now.");
+            return;
+          }
+        }
+      }
+
+      if (!active) return;
+
+      setItems(topicItems);
+      setActiveFeedUrl(nextActiveFeedUrl);
+      setUsedFallback(nextUsedFallback);
+      setVisibleCount(5);
+      if (topicItems.length) {
+        setStatus(
+          nextUsedFallback && fallbackMarketCity
+            ? `Limited ${countyFeedLabel(topic)} for this county. Showing nearby coverage from ${fallbackMarketCity}.`
+            : "",
+        );
+      } else {
+        setStatus(emptyText);
+      }
+    }
+
+    loadFeed().catch(() => {
+      if (!active) return;
+      setItems([]);
+      setActiveFeedUrl(feedUrl);
+      setUsedFallback(false);
+      setVisibleCount(5);
+      setStatus("This feed could not be loaded right now.");
+    });
 
     return () => {
       active = false;
     };
-  }, [emptyText, feedUrl, topic]);
+  }, [county, emptyText, fallbackFeedUrl, fallbackMarketCity, feedUrl, supplementalFeedUrl, topic]);
 
   const orderedItems = [...items].sort((first, second) => feedItemTimestamp(second) - feedItemTimestamp(first));
   const visibleItems = orderedItems.slice(0, visibleCount);
   const hasMore = visibleCount < orderedItems.length;
-  const feedSource = readableFeedSource(feedUrl);
+  const feedSource = readableFeedSource(activeFeedUrl);
 
   return (
     <article className="feed-widget">
@@ -1547,10 +1607,10 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
         ) : null}
         <p className="feed-hero-description">{description}</p>
       </div>
-      {status ? <p className="status">{status}</p> : null}
+      {status ? <p className={`status${usedFallback ? " feed-fallback-notice" : ""}`}>{status}</p> : null}
       <div className="feed-list scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 5))}>
         {visibleItems.map((item) => (
-          <a className={item.imageUrl ? "feed-item" : "feed-item no-image"} href={item.link} key={item.id}>
+          <a className={item.imageUrl ? "feed-item" : "feed-item no-image"} href={item.link} key={item.id} target="_blank" rel="noreferrer">
             {item.imageUrl ? <img src={item.imageUrl} alt="" /> : null}
             <div>
               <strong>{item.title}</strong>
@@ -1563,6 +1623,83 @@ function RssFeedWidget({ title, eyebrow, description, feedUrl, emptyText, presen
       </div>
       <a className="feed-source" href={feedSource.href} target="_blank" rel="noreferrer">{feedSource.label}</a>
     </article>
+  );
+}
+
+function CountyNewsSection({ county, page }: { county: CountySite; page: CountyPageKey }) {
+  return (
+    <section className="section news-section">
+      <div className="section-heading">
+        <p className="eyebrow">County Newsroom</p>
+        <h2>Local news feeds for {county.displayName}</h2>
+        <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
+      </div>
+      <div className="feed-layout">
+        <div className="feed-pair">
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="localNews"
+            eyebrow="Local Articles"
+            title="County & City News"
+            description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
+            feedUrl={county.feeds.localNewsUrl}
+            emptyText="No local article results are available yet."
+            presentedBy={countyPartner(county, "CBT Real Estate Services")}
+          />
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="obituaries"
+            eyebrow="Obituaries"
+            title="Local Obituaries"
+            description={`Recent obituary notices and memorial news for ${county.displayName}.`}
+            feedUrl={county.feeds.obituariesUrl}
+            supplementalFeedUrl={county.feeds.localNewsUrl}
+            emptyText="No local obituary results are available yet."
+            presentedBy={preferredPartner("Patriot Rewards")}
+            topic="obituaries"
+          />
+        </div>
+        <div className="news-sponsor-mid-row">
+          <AdSlot
+            adIds={countyNewsMidRowAdIds}
+            county={county}
+            page={page}
+            route="county"
+            slot="county-news-mid-inline"
+          />
+        </div>
+        <div className="feed-pair">
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="localVideo"
+            eyebrow="Local Video"
+            title="County News Videos"
+            description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
+            feedUrl={county.feeds.localVideoUrl}
+            emptyText="No local video results are available yet."
+            presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
+          />
+          <VimeoFeed compact />
+        </div>
+      </div>
+      <div className="feed-feature-row">
+        <CountyRssFeedWidget
+          county={county}
+          feedKind="localSports"
+          eyebrow="Local Sports"
+          title="High School & College Sports"
+          description={`Local high school, college, and athletics coverage connected to ${county.displayName}.`}
+          feedUrl={county.feeds.localSportsUrl}
+          emptyText="No local sports results are available yet."
+          presentedBy={preferredPartner("piaevents.com")}
+          topic="sports"
+        />
+      </div>
+      <div className="news-sponsor-row">
+        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={5} />
+        <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
+      </div>
+    </section>
   );
 }
 
@@ -1602,10 +1739,23 @@ function feedItemTimestamp(item: NewsFeedItem) {
   return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
+function mergeFeedItems(groups: NewsFeedItem[][]) {
+  const deduped = new Map<string, NewsFeedItem>();
+
+  for (const items of groups) {
+    for (const item of items) {
+      const key = item.link || item.id;
+      if (!deduped.has(key)) deduped.set(key, item);
+    }
+  }
+
+  return [...deduped.values()];
+}
+
 function filterFeedItemsByTopic(items: NewsFeedItem[], topic: RssFeedWidgetProps["topic"]) {
   if (topic === "obituaries") return items.filter(isObituaryFeedItem);
   if (topic === "sports") return items.filter(isSportsFeedItem);
-  return items;
+  return items.filter((item) => !isObituaryFeedItem(item));
 }
 
 function feedSearchText(item: NewsFeedItem) {
@@ -1618,10 +1768,16 @@ function isObituaryFeedItem(item: NewsFeedItem) {
     "obituary",
     "obituaries",
     "death notice",
+    "funeral service",
+    "funeral home",
     "funeral",
     "memorial service",
     "celebration of life",
     "passed away",
+    "survived by",
+    "preceded in death",
+    "visitation",
+    "interment",
     "in memory",
     "legacy.com",
     "tributes",
@@ -1795,7 +1951,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
       <div className="feed-list video-feed scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + (compact ? 8 : 12)))}>
         {visibleVideos.map((video) => {
           return (
-            <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || "/tv"} key={video.id}>
+            <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || "/tv"} key={video.id} target="_blank" rel="noreferrer">
               {video.imageUrl ? <img src={video.imageUrl} alt="" /> : null}
               <div>
                 <strong>{video.title || "Patriots in Action TV"}</strong>
