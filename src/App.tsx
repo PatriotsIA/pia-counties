@@ -401,7 +401,7 @@ function seoDataForPath(pathname: string): SeoData {
   if (pathname === "/counties") {
     return {
       title: "Find Your County Patriot Network",
-      description: "Search nationwide by state, county, city, or FIPS to find local Patriots in Action county pages with voter resources, candidate profiles, events, news, and civic information.",
+      description: "Search nationwide by state, county, or city to find local Patriots in Action county pages with voter resources, candidate profiles, events, news, and civic information.",
       canonicalPath: "/counties",
     };
   }
@@ -801,7 +801,7 @@ function DirectoryPage() {
 
   return (
     <Shell route="directory">
-      <PageHero eyebrow="Counties" title="Find your county Patriot Network" subtitle="Search nationwide by state, county, city, or FIPS to open local county pages for civic information, calendars, news, TV, partners, and forms." />
+      <PageHero eyebrow="Counties" title="Find your county Patriot Network" subtitle="Search nationwide by state, county, or city to open local county pages for civic information, calendars, news, TV, partners, and forms." />
       <CountyDirectoryNotice />
       <section className="directory-search directory-search-wide" aria-label="Search states and counties">
         <label className="field">
@@ -809,7 +809,7 @@ function DirectoryPage() {
           <input
             value={directorySearch}
             onChange={(event) => setDirectorySearch(event.target.value)}
-            placeholder="Search Texas, TX, Potter, Amarillo, FIPS..."
+            placeholder="Search Texas, TX, Potter, Amarillo..."
             type="search"
           />
           <CountyVotingResourcesTooltip stateName={selectedState?.name} />
@@ -894,7 +894,7 @@ function StatePage() {
           <input
             value={countySearch}
             onChange={(event) => setCountySearch(event.target.value)}
-            placeholder="Search by county, city, or FIPS..."
+            placeholder="Search by county or city..."
             type="search"
           />
           <CountyVotingResourcesTooltip stateName={state.name} />
@@ -1941,7 +1941,11 @@ function CountyForm({ county, kind }: { county: CountySite; kind: "contact" | "e
           <FormInput name="eventAddress" label="Event Address" />
           <FormInput name="eventUrl" label="Event URL / Community Link" type="url" />
           <FormInput name="eventDescription" label="Event Description" textarea required />
-          <ConsentCheckbox extraText="I understand this submission will be reviewed before being added to the calendar." />
+          <label className="checkbox">
+            <input name="eventReviewAck" type="checkbox" required />
+            <span>I understand this submission will be reviewed before being added to the calendar.</span>
+          </label>
+          <ConsentCheckbox />
         </>
       )}
       {status ? <p className={`status form-status-${status.tone}`}>{status.message}</p> : null}
@@ -1969,17 +1973,15 @@ function SponsorInterestCheckbox() {
   );
 }
 
-function ConsentCheckbox({ extraText }: { extraText?: string }) {
+function ConsentCheckbox() {
   return (
     <label className="checkbox consent-checkbox">
       <input name="consent" type="checkbox" required />
       <span>
-        {extraText ? `${extraText} ` : ""}
-        By checking this box and providing my mobile number, I consent to receive recurring SMS/MMS messages from Patriots Connect, LLC,
-        DBA Patriots in Action, including voter education, event, volunteer, donation, and outreach messages.
-        Message frequency varies. Message and data rates may apply. Reply STOP to opt out and HELP for help. Consent is not required to make
-        a purchase or contribution. I agree to the <Link to="/privacy">Privacy Policy</Link> and{" "}
-        <Link to="/terms">Terms & Conditions</Link>.
+        I consent to receive marketing, donation-related, and informational emails, calls and text messages from Patriots in
+        Action, including pre-recorded messages and via automated methods. Msg &amp; data rates may apply. Msg frequency may
+        vary. Reply &ldquo;STOP&rdquo; to opt-out and &ldquo;HELP&rdquo; for help. I have read and agree to the{" "}
+        <Link to="/privacy">Privacy Policy</Link> and <Link to="/terms">Terms &amp; Conditions</Link>.
       </span>
     </label>
   );
@@ -2580,62 +2582,91 @@ function TermsPage() {
 
   return (
     <Shell route="static">
-      <PageHero eyebrow={site.name} title="Terms & Conditions" subtitle="Last revised 01/01/2026" />
+      <PageHero
+        eyebrow={site.name}
+        title="Terms & Conditions"
+        subtitle="Terms for use of Patriots in Action online services, including mobile communications disclosures."
+      />
       <section className="section narrow legal-content">
-        <h2>Terms & Conditions</h2>
-        <p>Last revised 01/01/2026</p>
-        <p>These Terms and Conditions (“Terms”) apply to your access to and use of the websites and other online services (collectively, the “Services”) provided by PatriotsInActionTX.com (“client”, “we” or “us”). By accessing and using the Services, you agree to these Terms. If you do not agree to these Terms, do not use the Services.</p>
-        <p>We may provide additional or different terms and conditions with respect to some of the Services (“Additional Terms”). If you use any Services with</p>
-        <p>Additional Terms: The Additional Terms will apply to your use of such Services. If there is any conflict between these Terms and any Additional Terms, the Additional Terms will control to the extent of such conflict.</p>
-        <p>We may update these Terms from time to time. If we make any changes to these Terms, we will notify you by revising the “Last Revised” date at the top of these Terms, and, in some cases, we may provide you with additional notice (such as by adding a statement to our website homepage or by sending you a notification).</p>
-        <p>Unless otherwise indicated in our notice to you, any changes to these Terms will be effective immediately, and your continued use of the Services following our provision of such notice will confirm your acceptance of such changes. If you do not agree to any changes to these Terms, you must stop using the Services.</p>
-        <p>If you have any questions regarding these Terms or the Services, please contact us at: <strong>[email protected]</strong></p>
-        <h3>Entity Notice</h3>
-        <p>Patriots Connect, LLC, DBA Patriots in Action provides technology, community, merchandise, and platform services. Third-party political, donation, community, and merchandise services may have their own terms and policies.</p>
-        <h3>Privacy Policy</h3>
-        <p>For information about how we collect, use, and share information about you, please see our Privacy Policy.</p>
-        <h3>Mobile Communications</h3>
-        <p>If you subscribe to receive messages or calls, you consent to receive automated messages from us via your mobile device. Subscribers may receive multiple messages a week from client.</p>
-        <p>We do not charge for these services. However, your carrier’s normal messaging, data, and other rates and fees will still apply. You should check with your carrier to find out what plans are available and how much they cost. At any time, you may text STOP to cancel or HELP for customer support</p>
-        <p>information. For all questions about the services provided, you can send an email to <strong>[email protected]</strong></p>
+        <p>
+          <strong>Last revised:</strong> June 22, 2026
+        </p>
+        <p>
+          These Terms and Conditions (&ldquo;Terms&rdquo;) apply to your access to and use of the websites and other online
+          services (collectively, the &ldquo;Services&rdquo;) provided by Patriots Connect, LLC, DBA Patriots in Action
+          (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) at {site.url.replace("https://", "")}. By accessing and
+          using the Services, you agree to these Terms. If you do not agree to these Terms, do not use the Services.
+        </p>
+        <p>
+          We may update these Terms from time to time by revising the &ldquo;Last revised&rdquo; date above; when required we
+          may provide additional notice. Continued use after changes constitutes acceptance unless you stop using the Services.
+        </p>
+        <p>
+          Questions:{" "}
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>, by phone at {site.contact.phone}, or through
+          the <Link to="/contact">Contact</Link> page on this website.
+        </p>
+
+        <h3>Privacy policy</h3>
+        <p>
+          For information about how we collect, use, and share information about you, please see our{" "}
+          <Link to="/privacy">Privacy Policy</Link>.
+        </p>
+
+        <h3>Mobile communications</h3>
+        <p>
+          If you subscribe to receive messages or calls, you consent to receive automated messages from us via your mobile
+          device. Subscribers may receive multiple messages a week from us, depending on the program you join.
+        </p>
+        <p>
+          We do not charge for these services. However, your carrier&apos;s normal messaging, data, and other rates and fees
+          will still apply. You should check with your carrier to find out what plans are available and how much they cost. At
+          any time, you may text STOP to cancel or HELP for customer support information. For all questions about the services
+          provided, you can send an email to <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+        </p>
         <p>Carriers are not liable for delayed or undelivered messages.</p>
-        <p>By entering your phone number and selecting to opt in, you consent to join a recurring SMS/MMS text messaging program that will provide alerts, donation requests, updates, and other important information. By participating, you agree to the terms & privacy policy for auto-dialed messages from client to the phone number you provide. No consent is required to buy. Msg & data rates may apply. Reply HELP for help or STOP to opt-out at any time. SMS information is not rented, sold, or shared. Privacy Policy and Terms and Conditions.</p>
-        <h3>Donations and Payment Processing</h3>
-        <p>Donations may be processed by third-party providers, including Anedot or another payment processor we designate. We do not collect raw payment-card details on this site. Refunds, chargebacks, recurring contributions, and payment-processing rules are governed by the processor and applicable law.</p>
-        <p>Donation links may direct users to a third-party donation page or payment processor. Donations and payment-processing rules are governed by the processor, the receiving organization, and applicable law.</p>
-        <h3>Membership Benefits and Renewals</h3>
-        <p>Any paid membership renewal is separate from any donation or third-party payment transaction and requires separate billing authorization.</p>
-        <h3>Ownership and Limited License</h3>
-        <p>The Services, including the text, graphics, images, photographs, videos, illustrations, and other content contained therein, are owned by client or our licensors and are protected under both United States and foreign laws. Except as explicitly stated in these Terms, all rights in and to the Services are reserved by us or our licensors. Subject to your compliance with these Terms, you are hereby granted a limited, nonexclusive, non-transferable, non-sublicensable, revocable license to access and use our Services for your own personal, informational, and non-commercial use. Any use of the Services other than as specifically authorized herein, without our prior written permission, is strictly prohibited and will terminate the license granted herein and violate our intellectual property rights.</p>
-        <h3>Trademarks</h3>
-        <p>“client”, “client” and our logos, our slogans, our product or service names, and the look and feel of the Services are trademarks of client and may not be copied, imitated or used, in whole or in part, without our prior written permission. All other trademarks, registered trademarks, product or service names, and company names or logos mentioned on or included in the Services are the property of their respective owners. Reference to any products, services, processes, or other information by trade name, trademark, manufacturer, supplier, or otherwise does not constitute or imply endorsement, sponsorship, or recommendation thereof by us.</p>
-        <h3>Feedback</h3>
-        <p>You may voluntarily submit or otherwise communicate to us any questions, comments, suggestions, ideas, original or creative materials, or other</p>
-        <p>information about client or the Services (collectively, “Feedback”). You understand that we may use Feedback for any purpose, without acknowledgment or compensation to you, including to develop, copy, publish, or improve the Feedback in our sole discretion. You understand that client may treat Feedback as nonconfidential.</p>
-        <h3>Third-Party Content</h3>
-        <p>We may provide information about third-party products, services, activities, or events, or we may allow third parties to make their content and information available on or through the Services (collectively, “Third-Party Content”). We provide Third-Party Content as a service to those interested in such content. Your dealings or correspondence with third parties and your use of or interaction with any Third-Party Content are solely between you and the applicable third party. The client does not control or endorse, and makes no representations or warranties regarding, any Third-Party Content. Your access to and use of Third-Party Content is at your own risk.</p>
-        <h3>Prohibited Content and Conduct</h3>
-        <p>You will not violate any applicable law, contract, intellectual property right, or other third-party right or commit a tort, and you are solely responsible for your conduct while using the Services. You will not: engage in any harassing, threatening, intimidating, predatory, or stalking conduct; impersonate, submit, or post on behalf of any person or entity, or otherwise misrepresent your affiliation with a person or entity; sell, resell, or commercially use the Services; copy, reproduce, distribute, publicly perform, or publicly display all or portions of the Services, except as expressly permitted by us or our licensors; modify the Services, remove any proprietary rights notices or markings, or otherwise make any derivative works based upon the Services without our prior written consent; use the Services other than for their intended purpose or in any manner that could interfere with, disrupt, negatively affect, or inhibit other users from fully enjoying the Services or that could damage, disable, overburden, or impair the functioning of the Services in any manner; reverse engineer any aspect of the Services or do anything that might discover source code or that might bypass or circumvent measures employed to prevent or limit access to any part ofthe Services; use any data mining, robots, or similar data gathering or extraction methods designed to scrape or extract data from the Services; develop or use any applications that interact with the Services without our prior written consent; send, distribute, or post spam, unsolicited or bulk commercial electronic communications, chain letters, or pyramid schemes; bypass or ignore instructions contained in our robots.txt file; or use the Services for any illegal or unauthorized purpose, or engagein, encourage, or promote any activity that violates these Terms. This Section 7 does not create any private right of action on the part of any third party or any reasonable expectation that the Services will not contain any content that is prohibited by such rules.</p>
-        <h3>Indemnification</h3>
-        <p>To the fullest extent permitted by applicable law, you will defend, indemnify, and hold harmless client and its officers, directors, employees, volunteers and agents (individually and collectively, the “client Parties”), from and against any claims, damages, costs, liabilities, and expenses (including reasonable attorneys’ fees) (“Claims”) arising out of or related to (a) your access to and use of the Services; (b) your Feedback; (c) your violation of these Terms; (d) your conduct in connection with the Services; or (e) your violation, misappropriation, or infringement of any rights of any third party (including intellectual property or privacy rights).</p>
-        <h3>Disclaimer</h3>
-        <p>Your use of the services is at your sole risk. Except as expressly provided otherwise in a writing by client, the services and any content therein are provided on an “as is” and “as available” basis without warranties of any kind, either express or implied, including, without limitation, implied warranties of merchantability, fitness for a particular purpose, title and non-infringement. In addition, client does not represent or warrant that the services or any content therein are accurate, complete, reliable, current, or error-free.</p>
-        <p>While client attempts to make your use of the services and any content therein safe, client cannot and does not represent or warrant that the services or any content therein or our server(s) are free of viruses or other harmful components. You assume the entire risk as to the quality and performance of the services.</p>
-        <h3>Limitation of Liability</h3>
-        <p>To the fullest extent permitted by applicable law, in no event will client or any other client parties be liable to you under any theory of liability (whether based in contract, tort, negligence, warranty, or otherwise) for any indirect, consequential, incidental, exemplary, punitive or special damages, or any other damages of any kind, including, without limitation, loss of use, loss of profits or loss of data, even if client or any other client parties have been advised of the possibility of such damages.</p>
-        <p>In no event will the aggregate liability of client and the other client parties for any claims arising out of or relating to these terms or the services, regardless of the form of the action, exceed any compensation you pay, if any, to client for access to or use of the services.</p>
-        <p>The limitations set forth in this section will not limit or exclude liability for the gross negligence, fraud, or intentional misconduct of client or any other client parties or for any other matters for which liability cannot be excluded or limited under applicable law. In addition, please note that some jurisdictions do not allow limitations on implied warranties or the exclusion or limitation of certain damages. Therefore, some or all of the above exclusions or limitations may not apply to you.</p>
-        <h3>Transfer and Processing of Data</h3>
-        <p>In order for us to provide the Services, you agree that we may process, transfer, and store information about you in the United States and other countries, where you may not have the same rights and protections as you do under local law.</p>
-        <h3>Applicable Law and Venue</h3>
-        <p>Any dispute arising out of or related to these Terms or your use of the Services will be governed by and construed and enforced in accordance with the laws of the State of Texas applicable to agreements made and to be entirely performed within the State of Texas, without regard to its conflict of law provisions. Each party irrevocably consents to the exclusive jurisdiction and venue of the state and federal courts located in the State of Texas.</p>
-        <p>for all disputes arising out of or related to these Terms or your use of the Services.</p>
-        <h3>Modification or Termination of the Services</h3>
-        <p>We reserve the right to modify the Services or to suspend or stop providing all or portions of the Services at any time and without prior notice to you. We are not responsible for any loss or harm related to your inability to access or use the Services.</p>
-        <h3>Severability</h3>
-        <p>If any provision or portion of a provision of these Terms is deemed to be unlawful, void or unenforceable, that provision or portion thereof is deemed severable from these Terms and will not affect the validity and enforceability of any remaining provisions.</p>
-        <h3>Miscellaneous</h3>
-        <p>Any failure by client to enforce any provision of these Terms will not be deemed a waiver of future enforcement of that or any other provision of these Terms, unless expressly waived in writing by client. The section titles in these Terms are for convenience only and have no legal or contractual effect. Except as otherwise provided in these Terms, these Terms are intended solely for the benefit of the parties and are not intended to confer third-party beneficiary rights upon any other person or entity. You agree that communications and transactions between us may be conducted electronically.</p>
+        <p>
+          By entering your phone number and selecting to opt in, you consent to join a recurring SMS/MMS text messaging
+          program that may provide alerts, donation requests, updates, and other important information. By participating, you
+          agree to the terms &amp; privacy policy for auto-dialed messages from us to the phone number you provide. No consent
+          is required to buy goods or services. Msg &amp; data rates may apply. Reply HELP for help or STOP to opt-out at any
+          time. SMS information is not rented, sold, or shared. See our <Link to="/privacy">Privacy Policy</Link> and these
+          Terms.
+        </p>
+
+        <h3>Donations and partner payments</h3>
+        <p>
+          Donations may be processed through Anedot or another designated payment processor. Partner and sponsorship payments
+          may be processed through Stripe or another payment processor we designate. We do not collect raw payment-card details
+          on this site. Refunds, chargebacks, recurring contributions, and payment-processing rules are governed by the
+          processor and applicable law.
+        </p>
+        <p>
+          Donation links may direct users to a third-party donation page or payment processor. Donations and
+          payment-processing rules are governed by the processor, the receiving organization, and applicable law.
+        </p>
+
+        <h3>User submissions</h3>
+        <p>
+          Contact form messages, county information updates, event submissions, candidate-related requests, and other content
+          you provide may be reviewed, edited for clarity, or declined. Do not submit confidential information you are not
+          authorized to share.
+        </p>
+
+        <h3>Third-party services</h3>
+        <p>
+          The Services may link to or integrate with third-party community platforms, merchandise storefronts, donation pages,
+          news feeds, video hosts, analytics tools, and other vendors. Those third parties have their own terms and privacy
+          practices. We are not responsible for third-party content or services.
+        </p>
+
+        <h3>Disclaimer &amp; limitation of liability</h3>
+        <p>
+          THE SERVICES AND CONTENT ARE PROVIDED ON AN &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; BASIS WITHOUT
+          WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, TO THE FULLEST EXTENT PERMITTED BY LAW. TO THE FULLEST EXTENT PERMITTED
+          BY LAW, WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS
+          OF DATA, PROFITS, OR REVENUE, ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICES.
+        </p>
       </section>
     </Shell>
   );
@@ -2646,51 +2677,113 @@ function PrivacyPage() {
 
   return (
     <Shell route="static">
-      <PageHero eyebrow={site.name} title="Privacy Policy" subtitle="Effective Date: 01-01-2026" />
+      <PageHero
+        eyebrow={site.name}
+        title="Privacy Policy"
+        subtitle="Privacy practices for patriotsinaction.com, structured for counsel review and aligned with common political texting expectations."
+      />
       <section className="section narrow legal-content">
-        <h2>Privacy Policy</h2>
-        <p>Privacy Policy for <strong>PatriotsConnect.com</strong> Website</p>
-        <p>Effective Date: <strong>01-01-2026</strong></p>
-        <p><strong>PatriotsConnect.com</strong> (“we,” “us,” or “our”) is committed to protecting the privacy of</p>
-        <p>visitors and users (“you” or “your”) of our political campaign website. This Privacy Policy outlines our practices regarding the collection, use, and disclosure of personal information through our website. By accessing and using our website, you consent to the terms of this Privacy Policy.</p>
-        <h3>Entity Identity:</h3>
-        <p>Patriots Connect, LLC, DBA Patriots in Action operates this website and provides technology, community, merchandise, and platform services. Third-party political, donation, community, and merchandise services may have their own privacy policies and terms.</p>
-        <h3>1. Information We Collect:</h3>
-        <ol>
-          <li>Personal Information: We may collect personal information you voluntarily provide to us, such as your name, email address, postal address, phone number, and any other information you submit through our website’s forms.</li>
-          <li>Text Messaging Opt-In Data: If you choose to opt-in to receive text messages from us, we may collect your phone number and related data required for text messaging services.</li>
-          <li>County, event, candidate, or activity data you submit through county pages, event forms, contact forms, candidate profile requests, or community-action forms.</li>
-          <li>SMS consent records, including phone number, consent status, opt-in source, and related form submission details.</li>
-          <li>Automatically Collected Information: When you visit our website, we may automatically collect certain information about your device, browser, and usage patterns. This information may include IP addresses, cookies, analytics data, and other tracking technologies.</li>
-        </ol>
-        <h3>2. Use of Information:</h3>
-        <ol>
-          <li>We may use the personal information you provide to us for the following purposes:</li>
-          <li>To communicate with you, respond to your inquiries, and provide information about our</li>
-          <li>To send you updates, newsletters, and other campaign-related</li>
-          <li>To analyze and improve our website’s performance, content, and user</li>
-          <li>To comply with legal obligations and enforce our rights and</li>
-          <li>Text Messaging Opt-In Data: Your phone number and related data collected for text messaging services will only be used to send you campaign-related text messages and updates.</li>
-        </ol>
-        <h3>3. Sharing of Information:</h3>
-        <ol>
-          <li>We will not share, sell, rent, or disclose your personal information to any third parties, except as described in this Privacy Policy or when required by law.</li>
-          <li>Text Messaging Opt-In Data: We will not share or sell your text messaging opt-in data, consent, or related personal information with any third parties, unless required by law.</li>
-          <li>We may use vendors and service providers as processors to operate forms, analytics, email delivery, hosting, community, merchandise, payment, or other platform services, subject to applicable agreements and law.</li>
-        </ol>
-        <h3>Donations, Community, and Merchandise:</h3>
-        <p>Donations may be completed on third-party donation pages and processed by Anedot or another designated payment processor. We do not collect raw payment-card details on this site. Separate Patriot Community features may link to the Patriots in Action community platform, and merchandise links may direct you to Patriot Merch or other third-party storefronts. Those third-party services may have their own privacy policies and terms.</p>
-        <h3>4. Data Security:</h3>
-        <p>We take reasonable measures to protect the security of your personal information and employ industry-standard security technologies to safeguard it. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
-        <h3>5. Third-Party Services:</h3>
-        <p>Our website may contain links to third-party websites or services. We are not responsible for the privacy practices or content of such third parties. We encourage you to review the privacy policies of those third parties when accessing their websites or services.</p>
-        <h3>6. Children’s Privacy:</h3>
-        <p>Our website is not intended for use by individuals under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected personal information from a child under 13 without parental consent, we will take steps to remove such information from our records.</p>
-        <h3>7. Updates to this Privacy Policy:</h3>
-        <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. Any changes will be effective immediately upon posting of the revised Privacy Policy on our website. We encourage you to review this page periodically for the latest information on our privacy practices.</p>
-        <h3>8. Contact Us:</h3>
-        <p>If you have any questions or concerns regarding this Privacy Policy or our privacy practices, please contact us at:</p>
-        <p><strong>[email protected]</strong></p>
+        <p>
+          <strong>Effective date:</strong> June 22, 2026
+        </p>
+        <p>
+          Patriots Connect, LLC, DBA Patriots in Action (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
+          committed to protecting the privacy of visitors and users (&ldquo;you&rdquo; or &ldquo;your&rdquo;) of our nationwide
+          county civic network website at {site.url.replace("https://", "")}. This Privacy Policy outlines our practices
+          regarding the collection, use, and disclosure of personal information through our website. By accessing and using our
+          website, you consent to the terms of this Privacy Policy.
+        </p>
+
+        <h3>1. Information we collect</h3>
+        <h4>a) Personal information</h4>
+        <p>
+          We may collect personal information you voluntarily provide, such as your name, email address, postal address, phone
+          number, and any other information you submit through our website&apos;s forms—including contact forms, county event
+          submissions, county information updates, and partner or sponsorship inquiries.
+        </p>
+        <h4>b) Text messaging opt-in data</h4>
+        <p>
+          If you choose to opt in to receive text messages from us, we may collect your phone number and related data required
+          for text messaging services, including consent status, opt-in source, and related form submission details.
+        </p>
+        <h4>c) Automatically collected information</h4>
+        <p>
+          When you visit our website, we may automatically collect certain information about your device, browser, and usage
+          patterns. This information may include IP addresses, cookies, analytics data, and other tracking technologies when
+          those tools are enabled for this deployment.
+        </p>
+
+        <h3>2. Use of information</h3>
+        <h4>a) General uses</h4>
+        <p>We may use the personal information you provide to:</p>
+        <ul>
+          <li>Communicate with you, respond to your inquiries, and provide information about our civic network and county pages;</li>
+          <li>
+            Send updates, newsletters, fundraising and volunteer communications, partner and sponsorship information, and other
+            Patriots in Action-related information;
+          </li>
+          <li>Analyze and improve our website&apos;s performance, content, and user experience;</li>
+          <li>Comply with legal obligations and enforce our rights and agreements.</li>
+        </ul>
+        <h4>b) Text messaging opt-in data</h4>
+        <p>
+          Your phone number and related data collected for text messaging services will be used to send you Patriots in Action
+          text messages and updates you have consented to receive.
+        </p>
+
+        <h3>3. Sharing of information</h3>
+        <h4>a) General</h4>
+        <p>
+          <strong>We will not share, sell, rent, or disclose your personal information to any third parties,</strong> except as
+          described in this Privacy Policy or when required by law. For clarity, we may engage service providers (such as website
+          hosting, form intake, email delivery, analytics, payment processing, or SMS delivery vendors) solely to operate our
+          programs on our behalf, under contractual obligations consistent with this Policy—they may not use your data for
+          their own marketing.
+        </p>
+        <h4>b) Text messaging opt-in data</h4>
+        <p>
+          <strong>
+            We will not share or sell your text messaging opt-in data, consent, or related personal information with any third
+            parties,
+          </strong>{" "}
+          unless required by law.
+        </p>
+
+        <h3>4. Data security</h3>
+        <p>
+          We take reasonable measures to protect the security of your personal information and employ industry-standard security
+          technologies where appropriate. However, no method of transmission over the internet or electronic storage is 100%
+          secure, and we cannot guarantee absolute security.
+        </p>
+
+        <h3>5. Third-party services</h3>
+        <p>
+          Our website may contain links to third-party websites or services, including community platforms, merchandise
+          storefronts, donation processors, news feeds, and video hosts. We are not responsible for the privacy practices or
+          content of such third parties. We encourage you to review the privacy policies of those third parties when you leave
+          our site.
+        </p>
+
+        <h3>6. Children&apos;s privacy</h3>
+        <p>
+          Our website is not intended for use by individuals under the age of 13. We do not knowingly collect personal
+          information from children under 13. If we become aware that we have collected personal information from a child under
+          13 without appropriate consent, we will take steps to remove such information.
+        </p>
+
+        <h3>7. Updates to this privacy policy</h3>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational,
+          legal, or regulatory reasons. Changes will be effective upon posting of the revised Privacy Policy on our website. We
+          encourage you to review this page periodically.
+        </p>
+
+        <h3>8. Contact us</h3>
+        <p>
+          If you have any questions or concerns regarding this Privacy Policy or our privacy practices, please contact us at{" "}
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>, by phone at {site.contact.phone}, or through the{" "}
+          <Link to="/contact">Contact</Link> page on this website.
+        </p>
       </section>
     </Shell>
   );

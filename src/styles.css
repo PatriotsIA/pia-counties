@@ -2282,7 +2282,8 @@ nav a {
 }
 
 .legal-content h2,
-.legal-content h3 {
+.legal-content h3,
+.legal-content h4 {
   margin: 1rem 0 0;
   color: var(--navy);
 }
@@ -2293,7 +2294,8 @@ nav a {
   color: var(--muted);
 }
 
-.legal-content ol {
+.legal-content ol,
+.legal-content ul {
   margin: 0;
   padding-left: 1.25rem;
 }
