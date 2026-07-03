@@ -3,6 +3,7 @@ import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, usePa
 import { AdSlot } from "./components/AdSlot";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { countyNewsMidRowAdIds } from "./data/ads";
+import { CountyShowUpMeter } from "./components/CountyShowUpMeter";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
@@ -1110,7 +1111,7 @@ function CountyPage({ county, page }: { county: CountySite; page: CountyPageKey 
       {page === "candidates" ? <CountyCandidates county={county} /> : null}
       {page === "news" ? <CountyNews county={county} /> : null}
       {page === "events" ? <CountyEvents county={county} /> : null}
-      {page === "tv" ? <CountyTv /> : null}
+      {page === "tv" ? <CountyTv county={county} /> : null}
       {page === "partners" ? <CountyPartners county={county} /> : null}
       {page === "contact" ? <CountyContact county={county} /> : null}
       {page === "submit-event" ? <CountySubmitEvent county={county} /> : null}
@@ -1150,6 +1151,7 @@ function CountyHome({ county }: { county: CountySite }) {
         </div>
         <HeroMedia />
       </section>
+      <CountyShowUpMeter county={county} className="county-show-up-section-home" />
       <CountyAboutCompact county={county} />
       <FoundingPartnerCallout county={county} />
       <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6} />
@@ -1187,6 +1189,7 @@ function CountyAbout({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow={county.displayName} title="Making our founders proud." subtitle="Patriots in Action helps local voters find the information, relationships, and next steps they need to take action where it matters most." />
+      <CountyShowUpMeter county={county} />
       <section className="section">
         <div className="card-grid three">
           <InfoCard title="Know Your Local Ground" body={`Use the ${county.displayName} page to find voter resources, elected officials, candidates, precinct information, local news, events, and community links in one place.`} />
@@ -1207,6 +1210,7 @@ function CountyElections({ county }: { county: CountySite }) {
         title="Important civic information"
         subtitle="County, state, and federal voting resources and leader lookups for your community."
       />
+      <CountyShowUpMeter county={county} />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">{county.displayName} Resources</p>
@@ -1245,6 +1249,7 @@ function CountyCandidates({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
+      <CountyShowUpMeter county={county} />
       <CandidateDirectorySponsors county={county} />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
       {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
@@ -1285,6 +1290,7 @@ function CountyNews({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow="News & Events" title="Stay informed" subtitle="Local news, national news, obituaries, interviews, and community updates." />
+      <CountyShowUpMeter county={county} />
       <CountyNewsSection county={county} page="news" />
     </>
   );
@@ -1294,6 +1300,7 @@ function CountyEvents({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow="Community Calendar" title={`${county.displayName} events`} subtitle="Find upcoming local events or submit one for review." />
+      <CountyShowUpMeter county={county} />
       <section className="section split top-align">
         <EventCalendar county={county} />
         <div className="panel">
@@ -1306,10 +1313,11 @@ function CountyEvents({ county }: { county: CountySite }) {
   );
 }
 
-function CountyTv() {
+function CountyTv({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow="Patriots in Action TV" title="Interviews & updates" subtitle="Videos from the Patriots in Action Vimeo channel." />
+      <CountyShowUpMeter county={county} />
       <VimeoFeed />
     </>
   );
@@ -1325,6 +1333,7 @@ function CountyPartners({ county }: { county: CountySite }) {
         title="Partner with Patriots in Action"
         subtitle="Preferred partners, founding partners, merchandise, and Patriot Rewards."
       />
+      <CountyShowUpMeter county={county} />
       <FoundingPartnerCallout county={county} />
       <section className="section partner-sections">
         <div className="panel">
@@ -1399,6 +1408,7 @@ function CountyContact({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow={county.displayName} title="Connect with us" subtitle="Reach your county Patriot Network." />
+      <CountyShowUpMeter county={county} />
       <section className="section split top-align">
         <div className="panel">
           <h2>Contact</h2>
@@ -1416,6 +1426,7 @@ function CountySubmitEvent({ county }: { county: CountySite }) {
   return (
     <>
       <PageHero eyebrow={county.displayName} title="Submit an event" subtitle="Approved events may be added to the community calendar." />
+      <CountyShowUpMeter county={county} />
       <section className="section narrow">
         <CountyForm county={county} kind="event" />
       </section>

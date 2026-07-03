@@ -410,6 +410,94 @@ nav a {
   line-height: 1.1;
 }
 
+.county-show-up-section {
+  display: flex;
+  justify-content: center;
+  margin: 1.4rem 0 2.2rem;
+}
+
+.county-show-up-section-home {
+  margin-bottom: 2.55rem;
+}
+
+.show-up-meter {
+  width: min(100%, 720px);
+  padding: 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 240, 0.94)) padding-box,
+    var(--flag-gradient-soft) border-box;
+  box-shadow: 0 16px 42px rgba(17, 27, 71, 0.12), 0 0 34px rgba(21, 56, 111, 0.13);
+  text-align: left;
+}
+
+.show-up-meter h2 {
+  margin: 0 0 0.7rem;
+  color: var(--navy);
+  font-size: clamp(1.2rem, 3vw, 1.85rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+
+.show-up-meter p {
+  margin: 0;
+  color: #2d3e55;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.show-up-meter .eyebrow {
+  margin-bottom: 0.35rem;
+  color: var(--red);
+  font-size: 0.72rem;
+}
+
+.show-up-meter-track {
+  width: 100%;
+  height: 12px;
+  margin: 0.85rem 0 0.65rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e3e9f2;
+}
+
+.show-up-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--red), var(--blue));
+}
+
+.show-up-meter-meta {
+  color: #4f5f75;
+  font-weight: 900;
+}
+
+.show-up-meter-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.show-up-meter-history li {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(21, 56, 111, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  color: #314663;
+  font-size: 0.76rem;
+}
+
+.show-up-meter-note {
+  margin-top: 0.8rem !important;
+  color: #5f6f86 !important;
+  font-size: 0.78rem !important;
+}
+
 .state-flag {
   display: inline-flex;
   flex: 0 0 auto;
