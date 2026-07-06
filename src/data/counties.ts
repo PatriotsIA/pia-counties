@@ -36,6 +36,7 @@ export type CountySite = {
   slug: string;
   state: StateSite;
   fips: string;
+  mightySpaceId?: string;
   displayName: string;
   primaryCity?: string;
   phone?: string;
@@ -98,6 +99,7 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
     slug,
     state,
     fips: county.FIPS,
+    mightySpaceId: undefined,
     displayName,
     email: site.contact.email,
     heroTitle: `${displayName} Patriots`,
@@ -137,6 +139,7 @@ const countyOverrides: Record<string, Partial<CountySite>> = {
     primaryCity: "Amarillo",
     phone: "806.351.0084",
     heroTitle: "Potter County Patriots",
+    mightySpaceId: "16479206",
     calendar: {
       icsUrl:
         "webcal://community.patriotsinaction.com/spaces/16479206/calendar.ics?calendar_token=AZeR0GijnuO3hSNvZjYCqEys6byc-UmmuUqEJvGMLk4",
@@ -156,6 +159,16 @@ const countyOverrides: Record<string, Partial<CountySite>> = {
       federalOfficials: "https://www.usa.gov/elected-officials",
       countyParty: "https://pottercountygop.com/",
     },
+  },
+  "texas/randall": {
+    primaryCity: "Canyon",
+    heroTitle: "Randall County Patriots",
+    mightySpaceId: "22327304",
+  },
+  "texas/ector": {
+    primaryCity: "Odessa",
+    heroTitle: "Ector County Patriots",
+    mightySpaceId: "22327334",
   },
 };
 

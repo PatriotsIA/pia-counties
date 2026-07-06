@@ -19,6 +19,8 @@ import { buildMarketFeedUrl, type CountyFeedKind } from "./lib/county-feed-urls"
 import { filterFeedItemsByRegion } from "./lib/county-feed-filter";
 import { resolveNewsMarketCity } from "./lib/county-news-market";
 import type { NewsFeedItem } from "./lib/rss-feed";
+import { fetchSpaceEvents as fetchMightyEvents, fetchSpaceFeed as fetchMightyFeed, mightyIsConfigured } from "./lib/mighty";
+import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
 import cbtPartnerImage from "../NewAds/CBT4.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
 import lemcPartnerImage from "../NewAds/LEMC250.jpg";
@@ -1163,6 +1165,7 @@ function CountyHome({ county }: { county: CountySite }) {
         </div>
         <EventCalendar county={county} compact />
       </section>
+      <CountyCommunityFeed county={county} />
       <CountyNewsSection county={county} page="home" />
       <ActionGrid county={county} />
     </>
@@ -1291,6 +1294,7 @@ function CountyNews({ county }: { county: CountySite }) {
     <>
       <PageHero eyebrow="News & Events" title="Stay informed" subtitle="Local news, national news, obituaries, interviews, and community updates." />
       <CountyShowUpMeter county={county} />
+      <CountyCommunityFeed county={county} />
       <CountyNewsSection county={county} page="news" />
     </>
   );
@@ -1852,33 +1856,83 @@ function isSportsFeedItem(item: NewsFeedItem) {
 
 function EventCalendar({ county, compact = false, page = "events" }: { county: CountySite; compact?: boolean; page?: CountyPageKey }) {
   const feedUrl = county.calendar.icsUrl;
+  const mightySpaceId = county.mightySpaceId;
+  const hasMightyApi = Boolean(mightySpaceId && mightyIsConfigured());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
+  const [mightyError, setMightyError] = useState(false);
   const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("piaevents.com");
 
   useEffect(() => {
     let active = true;
 
-    if (!feedUrl) return;
+    async function loadFromMighty() {
+      if (!hasMightyApi || !mightySpaceId) return false;
+      try {
+        setMightyError(false);
+        const items = await fetchMightyEvents(mightySpaceId, 100);
+        if (!active) return true;
+        const normalized: CalendarEvent[] = items
+          .flatMap((event) => {
+            const startRaw = event.starts_at || event.published_at || event.created_at;
+            if (!startRaw) return [];
+            const start = new Date(startRaw);
+            const end = event.ends_at ? new Date(event.ends_at) : undefined;
+            const calendarEvent: CalendarEvent = {
+              id: `mn-${event.id}`,
+              title: event.title || event.summary || "Community event",
+              start,
+              end,
+              eventLink: event.permalink || event.link || undefined,
+              location: event.location || undefined,
+              isAllDay: false,
+            };
+            return [calendarEvent];
+          })
+          .sort((a, b) => a.start.getTime() - b.start.getTime());
 
-    fetchCalendarFeed(feedUrl)
-      .then((text) => {
+        setEvents(normalized);
+        setStatus(normalized.length ? "" : "No upcoming events are listed yet.");
+        return true;
+      } catch (error) {
+        if (active) {
+          setStatus("");
+          setMightyError(true);
+        }
+        return false;
+      }
+    }
+
+    async function loadFromIcs() {
+      if (!feedUrl) {
+        setEvents([]);
+        setStatus("No calendar feed has been added for this county yet.");
+        return;
+      }
+
+      try {
+        const text = await fetchCalendarFeed(feedUrl);
         if (!active) return;
         const parsed = parseIcsEvents(text);
         setEvents(parsed);
         setStatus(parsed.length ? "" : "No upcoming events are listed yet.");
-      })
-      .catch(() => {
+      } catch (error) {
         if (active) setStatus("The calendar feed could not be loaded right now.");
-      });
+      }
+    }
+
+    (async () => {
+      if (await loadFromMighty()) return;
+      await loadFromIcs();
+    })();
 
     return () => {
       active = false;
     };
-  }, [feedUrl]);
+  }, [feedUrl, hasMightyApi, mightySpaceId]);
 
   const visible = compact ? events.slice(0, 3) : events.slice(0, 12);
-  const displayedStatus = feedUrl ? status : "No calendar feed has been added for this county yet.";
+  const displayedStatus = status;
 
   return (
     <div className="panel">
@@ -1893,6 +1947,14 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
           </a>
         ) : null}
       </div>
+      {mightyError ? (
+        <div className="panel" style={{ marginBottom: "1rem" }}>
+          <p>The community calendar can&rsquo;t be loaded right now.</p>
+          <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
+            Join your county&apos;s Patriot Network to see the calendar
+          </a>
+        </div>
+      ) : null}
       {displayedStatus ? <p>{displayedStatus}</p> : null}
       <div className="event-list">
         {visible.map((event) => (
@@ -1906,6 +1968,101 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       </div>
       {!compact ? <AdSlot county={county} page={page} route="county" slot="county-calendar-inline" limit={4} /> : null}
     </div>
+  );
+}
+
+function CountyCommunityFeed({ county }: { county: CountySite }) {
+  const mightySpaceId = county.mightySpaceId;
+  const hasMightyApi = Boolean(mightySpaceId && mightyIsConfigured());
+  const [posts, setPosts] = useState<Awaited<ReturnType<typeof fetchMightyFeed>>>([]);
+  const [status, setStatus] = useState(hasMightyApi ? "Loading Patriot Network feed..." : "");
+  const [fetchError, setFetchError] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  useEffect(() => {
+    let active = true;
+
+    if (!hasMightyApi || !mightySpaceId) {
+      setPosts([]);
+      setStatus("Join The Patriot Network to see county community posts.");
+      return () => {
+        active = false;
+      };
+    }
+
+    setStatus("Loading Patriot Network feed...");
+    setFetchError(false);
+    setVisibleCount(8);
+    fetchMightyFeed(mightySpaceId, 40)
+      .then((data) => {
+        if (!active) return;
+        setPosts(data);
+        setStatus(data.length ? "" : "No community posts yet. Check back soon!");
+      })
+      .catch(() => {
+        if (!active) return;
+        setPosts([]);
+        setStatus("");
+        setFetchError(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [hasMightyApi, mightySpaceId]);
+
+  const visible = posts.slice(0, visibleCount);
+  const hasMore = visibleCount < posts.length;
+
+  function postTitle(post: (typeof posts)[number]) {
+    return post.title || post.summary || "Community update";
+  }
+
+  function postText(post: (typeof posts)[number]) {
+    const html = post.summary || post.description || "";
+    const plain = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+    return plain;
+  }
+
+  function postImage(post: (typeof posts)[number]) {
+    return post.images?.find(Boolean) || patriotDispatchFallback;
+  }
+
+  return (
+    <section className="section" style={{ textAlign: "center" }}>
+      <div className="section-heading">
+        <p className="eyebrow">Patriot Network</p>
+        <h2>{county.displayName} Community Feed</h2>
+        <p>Updates from the {county.displayName} space on Patriots in Action.</p>
+      </div>
+      {status ? <p className="status">{status}</p> : null}
+      {fetchError ? (
+        <div className="panel" style={{ maxWidth: "720px", margin: "0 auto 1rem" }}>
+          <p>The community feed can&rsquo;t be loaded right now.</p>
+          <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
+            Join your county&apos;s Patriot Network to see the feed
+          </a>
+        </div>
+      ) : null}
+      <div className="feed-list scroll-feed" style={{ maxWidth: "960px", margin: "0 auto" }} onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 6))}>
+        {visible.map((post) => (
+          <a className="feed-item" href={post.permalink || county.links.community} key={`mn-${post.id}`} target="_blank" rel="noreferrer">
+            {postImage(post) ? <img src={postImage(post) as string} alt="" /> : null}
+            <div>
+              <strong>{postTitle(post)}</strong>
+              <span>{formatFeedDate(post.updated_at || post.created_at || "")}</span>
+              {postText(post) ? <p>{postText(post)}</p> : null}
+            </div>
+          </a>
+        ))}
+        {hasMore ? <p className="feed-more">Scroll for more</p> : posts.length ? <p className="feed-more">Join The Patriot Network to See More</p> : null}
+      </div>
+      <div className="actions" style={{ justifyContent: "center", marginTop: "1rem" }}>
+        <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
+          Join The Patriot Network
+        </a>
+      </div>
+    </section>
   );
 }
 
