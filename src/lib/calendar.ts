@@ -80,7 +80,7 @@ export function combineIcsFeeds(icsTexts: string[]) {
     .filter(Boolean)
     .join("\n");
 
-  return `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//PatriotsInAction//CountyCalendar//EN\n${events}\nEND:VCALENDAR`;
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//TheCountyBanner//CountyCalendar//EN\n${events}\nEND:VCALENDAR`;
 }
 
 function extractCommunityEventLink(description = "") {

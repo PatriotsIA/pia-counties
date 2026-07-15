@@ -111,7 +111,7 @@ function CountySponsorCarousel({
   slot: AdSlotId;
 }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const heading = county ? `${county.displayName} Patriots is sponsored by:` : "Patriots In Action is Sponsored By:";
+  const heading = county ? `${county.displayName} Patriots is sponsored by:` : "The County Banner is Sponsored By:";
 
   useEffect(() => {
     const track = trackRef.current;
@@ -129,7 +129,7 @@ function CountySponsorCarousel({
   }
 
   return (
-    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-carousel`} aria-label={county ? `${county.displayName} sponsors` : "Patriots in Action sponsors"}>
+    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-carousel`} aria-label={county ? `${county.displayName} sponsors` : "The County Banner sponsors"}>
       <div className="sponsor-carousel-heading">
         <p className="eyebrow">{heading}</p>
       </div>

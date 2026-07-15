@@ -47,12 +47,12 @@ const countyPages: { key: CountyPageKey; label: string }[] = [
 
 const candidateProjectUrl = "https://secure.anedot.com/patriots-for-action/donate";
 const candidateProjectDisclaimer =
-  "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
+  "You are leaving The County Banner and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
 const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
-const heroHeadline = "Patriots in Action";
+const heroHeadline = "The County Banner";
 const heroKicker = "A Nationwide and Ultra Local Hub for Action";
 const heroDescription =
-  "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. Patriots In Action helps Patriots get informed, get involved, and restore our Republic one county at a time.";
+  "A nationwide county-by-county civic hub for ultra-local county and statewide Candidates, events, trusted resources, community updates, and practical action. The County Banner helps Patriots get informed, get involved, and restore our Republic one county at a time.";
 type Partner = {
   name: string;
   description: string;
@@ -73,7 +73,7 @@ const nationwidePartners: Partner[] = [
   },
   {
     name: "Patriot Dispatch",
-    description: "Get Patriots in Action updates and messaging resources.",
+    description: "Get The County Banner updates and messaging resources.",
     href: site.links.patriotDispatch,
     image: patriotMessagingPartnerImage,
   },
@@ -91,19 +91,19 @@ const nationwidePartners: Partner[] = [
   },
   {
     name: "piaevents.com",
-    description: "Find upcoming Patriots in Action events and places to show up.",
+    description: "Find upcoming The County Banner events and places to show up.",
     href: site.links.piaEvents,
     image: patriotTrailerPartnerImage,
   },
   {
     name: "The Patriots in Action Trailer Store",
-    description: "Shop and connect with Patriots in Action at live events.",
+    description: "Shop and connect with The County Banner at live events.",
     href: site.links.piaEvents,
     image: patriotTrailerPartnerImage,
   },
   {
     name: "The Patriot Merch Store",
-    description: "Shop patriotic merchandise and gear from the Patriots in Action merch store.",
+    description: "Shop patriotic merchandise and gear from The County Banner merch store.",
     href: site.links.merch,
     image: merchPartnerImage,
   },
@@ -407,17 +407,17 @@ function seoDataForPath(pathname: string): SeoData {
   if (pathname === "/counties") {
     return {
       title: "Find Your County Patriot Network",
-      description: "Search nationwide by state, county, or city to find local Patriots in Action county pages with voter resources, candidate profiles, events, news, and civic information.",
+      description: "Search nationwide by state, county, or city to find local The County Banner county pages with voter resources, candidate profiles, events, news, and civic information.",
       canonicalPath: "/counties",
     };
   }
 
   if (pathname === "/tv") return { title: "PIA TV", description: "Watch Patriots in Action TV videos, candidate interviews, civic updates, and community stories.", canonicalPath: "/tv" };
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
-  if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
-  if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
-  if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
-  if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
+  if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover The County Banner partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
+  if (pathname === "/contact") return { title: "Contact The County Banner", description: "Contact The County Banner about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
+  if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read The County Banner privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
+  if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read The County Banner terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
 
   const candidateMatch = pathname.match(/^\/candidates\/([^/]+)$/);
   if (candidateMatch) {
@@ -425,7 +425,7 @@ function seoDataForPath(pathname: string): SeoData {
     if (candidate) {
       return {
         title: `${candidate.name} Candidate Profile`,
-        description: `${candidate.name} is running for ${candidate.office}. View candidate information, interview video, contact details, and Patriots in Action profile resources.`,
+        description: `${candidate.name} is running for ${candidate.office}. View candidate information, interview video, contact details, and The County Banner profile resources.`,
         canonicalPath: candidateProfilePath(candidate),
         type: "profile",
         structuredData: [
@@ -448,14 +448,14 @@ function seoDataForPath(pathname: string): SeoData {
   if (state && parts.length === 1) {
     return {
       title: `${state.name} County Patriot Networks`,
-      description: `Find ${state.name} county Patriots in Action pages with local voter resources, county news, candidate information, events, partners, and civic action tools.`,
+      description: `Find ${state.name} county The County Banner pages with local voter resources, county news, candidate information, events, partners, and civic action tools.`,
       canonicalPath: statePath(state),
     };
   }
   if (state && parts.length === 2 && parts[1] === "candidates") {
     return {
       title: `${state.name} Candidates`,
-      description: `Browse ${state.name} candidate profiles, county and district races, campaign information, and Patriots in Action interview resources.`,
+      description: `Browse ${state.name} candidate profiles, county and district races, campaign information, and The County Banner interview resources.`,
       canonicalPath: `${statePath(state)}/candidates`,
     };
   }
@@ -469,7 +469,7 @@ function seoDataForPath(pathname: string): SeoData {
 
   return {
     title: "Page Not Found",
-    description: "The Patriots in Action page you requested could not be found. Use the county directory to find local civic resources and county pages.",
+    description: "The County Banner page you requested could not be found. Use the county directory to find local civic resources and county pages.",
     canonicalPath: pathname,
   };
 }
@@ -490,16 +490,16 @@ function countySeoData(county: CountySite, page: CountyPageKey): SeoData {
     "submit-event": `Submit a ${county.displayName} Event`,
   };
   const descriptionByPage: Record<CountyPageKey, string> = {
-    home: `Find ${county.displayName}, ${county.state.name} voter resources, elected officials, candidates, local news, community events, and Patriots in Action updates.`,
-    about: `Learn how Patriots in Action helps ${county.displayName} voters get informed, get involved, and restore our Republic one county at a time.`,
+    home: `Find ${county.displayName}, ${county.state.name} voter resources, elected officials, candidates, local news, community events, and The County Banner updates.`,
+    about: `Learn how The County Banner helps ${county.displayName} voters get informed, get involved, and restore our Republic one county at a time.`,
     elections: `Find ${county.displayName} precinct maps, voting locations, sample ballots, voter registration, elected official lookups, and civic reference resources.`,
     candidates: `Browse candidate profiles connected to ${county.displayName}, ${county.state.name}, including local, district, county, city, and precinct races.`,
     news: `Follow ${county.displayName} local news, obituary updates, civic video coverage, community events, and Patriots in Action TV updates.`,
-    events: `View the ${county.displayName} community calendar and submit local civic events for Patriots in Action review.`,
+    events: `View the ${county.displayName} community calendar and submit local civic events for The County Banner review.`,
     tv: `Watch Patriots in Action TV videos and interviews relevant to ${county.displayName} and local civic action.`,
     partners: `Discover preferred partners, events, merchandise, and community resources connected to ${county.displayName} Patriots.`,
     contact: `Contact ${county.displayName} Patriots about local resources, events, candidate profiles, civic updates, and community action.`,
-    "submit-event": `Submit a ${county.displayName} community event for review and possible addition to the Patriots in Action calendar.`,
+    "submit-event": `Submit a ${county.displayName} community event for review and possible addition to The County Banner calendar.`,
   };
 
   return {
@@ -587,14 +587,14 @@ function HomePage() {
           <h1>{heroHeadline}</h1>
           <p className="eyebrow hero-subtitle-eyebrow">{heroKicker}</p>
           <p>{heroDescription}</p>
-          <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
+          <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots In Action is the Cure.</em></p>
           <div className="actions">
             <Link className="button primary" to="/counties">Find Your County</Link>
             <Link className="button red" to="/tx/candidates">Explore Your Candidates</Link>
             <a className="button" href={site.links.community}>Join Our Community</a>
             <a className="button red" href={site.links.merch} target="_blank" rel="noreferrer">Shop Merchandise</a>
           </div>
-          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
+          <img className="hero-patriot-mark" src={site.brand.patriot} alt="The County Banner patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -602,7 +602,7 @@ function HomePage() {
         <div className="section-heading">
           <p className="eyebrow">From Awareness To Action</p>
           <h2>Built to help Patriots restore our Republic one county at a time</h2>
-          <p>PatriotsInAction.com gives voters a practical county-by-county hub for finding local information, understanding who represents them, following community updates, and taking the next step where local government decisions are made.</p>
+          <p>The County Banner gives voters a practical county-by-county hub for finding local information, understanding who represents them, following community updates, and taking the next step where local government decisions are made.</p>
         </div>
         <div className="card-grid three">
           <InfoCard title="Find Your Local Network" body={`Browse ${states.length} states and DC with county pages built to connect voters to local resources, officials, candidates, calendars, and community updates.`} />
@@ -615,7 +615,7 @@ function HomePage() {
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
           <h2>Latest PIA video updates</h2>
-          <p>Watch recent interviews, candidate conversations, and updates from the Patriots in Action Vimeo channel.</p>
+          <p>Watch recent interviews, candidate conversations, and updates from The County Banner Vimeo channel.</p>
         </div>
         <VimeoFeed compact />
       </section>
@@ -661,7 +661,7 @@ function MainTvPage() {
 
   return (
     <Shell route="tv">
-      <PageHero eyebrow="Patriots in Action TV" title="PIA TV" subtitle="Latest videos, interviews, candidate conversations, and updates from Patriots in Action." />
+      <PageHero eyebrow="Patriots in Action TV" title="PIA TV" subtitle="Latest videos, interviews, candidate conversations, and updates from The County Banner." />
       <VimeoFeed />
     </Shell>
   );
@@ -682,7 +682,7 @@ function RewardsPage() {
           <p className="eyebrow">How It Works</p>
           <h2>Join once, stay connected locally.</h2>
           <p>
-            The Patriots in Action Community is the central place to connect with neighbors, follow local civic updates, discover events, watch media,
+            The County Banner Community is the central place to connect with neighbors, follow local civic updates, discover events, watch media,
             and stay plugged into county-by-county action. County pages help you find the local resources; the community gives you a place to keep the
             conversation and coordination going.
           </p>
@@ -698,14 +698,14 @@ function RewardsPage() {
             <li>Connect with your local county network.</li>
             <li>Find updates, events, videos, and calls to action.</li>
             <li>Discover partner resources and community benefits.</li>
-            <li>Stay informed through your county page and the broader Patriots in Action community.</li>
+            <li>Stay informed through your county page and the broader The County Banner community.</li>
           </ul>
         </div>
       </section>
       <section className="section">
         <div className="card-grid three">
           <InfoCard title="Start With Your County" body="Find your county Patriot Network for local news, calendars, candidates, resources, and contact options." href="/counties" cta="Find Your County" />
-          <InfoCard title="Join The Community" body="Use the Patriots in Action community to connect, coordinate, and keep local conversations moving." href={site.links.community} cta="Join Now" />
+          <InfoCard title="Join The Community" body="Use The County Banner community to connect, coordinate, and keep local conversations moving." href={site.links.community} cta="Join Now" />
           <InfoCard title="Watch And Share" body="Use PIA TV and candidate profiles to share interviews, updates, and resources with neighbors." href="/tv" cta="Watch PIA TV" />
         </div>
       </section>
@@ -721,7 +721,7 @@ function MainPartnersPage() {
       <PageHero
         eyebrow="Partners"
         title="Patriot Partners"
-        subtitle="Connect with Patriots in Action partners, founding partners, events, rewards, media, and merchandise."
+        subtitle="Connect with The County Banner partners, founding partners, events, rewards, media, and merchandise."
       />
       <section className="partner-sponsor-banner">
         <div>
@@ -741,9 +741,9 @@ function MainPartnersPage() {
       <section className="section partner-sections">
         <div className="panel">
           <p className="eyebrow">Sitewide Partners</p>
-          <h2>Nationwide partners supporting Patriots in Action</h2>
+          <h2>Nationwide partners supporting The County Banner</h2>
           <p>
-            These partners support the broader Patriots in Action network across counties, states, events, media, rewards, and merchandise.
+            These partners support the broader The County Banner network across counties, states, events, media, rewards, and merchandise.
           </p>
           <PartnerList partners={nationwidePartners} />
         </div>
@@ -765,7 +765,7 @@ function SiteContactPage() {
 
   return (
     <Shell route="contact">
-      <PageHero eyebrow="Contact" title="Contact Patriots in Action" subtitle="Reach out about candidate profiles, interviews, voter outreach, events, partnerships, or county-level action." />
+      <PageHero eyebrow="Contact" title="Contact The County Banner" subtitle="Reach out about candidate profiles, interviews, voter outreach, events, partnerships, or county-level action." />
       <section className="section split top-align">
         <div className="panel">
           <h2>How can we help?</h2>
@@ -892,7 +892,7 @@ function StatePage() {
 
   return (
     <Shell route="state" suppressAdRails>
-      <PageHero eyebrow={state.abbr} title={`${state.name} Patriot Networks`} subtitle="Select a county to open its local Patriots in Action site." />
+      <PageHero eyebrow={state.abbr} title={`${state.name} Patriot Networks`} subtitle="Select a county to open its local The County Banner site." />
       <CountyDirectoryNotice stateName={state.name} />
       <section className="directory-search" aria-label={`Search ${state.name} counties`}>
         <label className="field">
@@ -1019,7 +1019,7 @@ function StateCandidatesPage() {
 
   return (
     <Shell route="state">
-      <PageHero eyebrow="Candidate Directory" title={`${state.name} candidates running for office`} subtitle="Browse statewide, district, county, city, and precinct candidates connected to Patriots in Action." />
+      <PageHero eyebrow="Candidate Directory" title={`${state.name} candidates running for office`} subtitle="Browse statewide, district, county, city, and precinct candidates connected to The County Banner." />
       <CandidateDirectorySponsors />
       <CandidateFilters
         jurisdictions={jurisdictionOptions}
@@ -1054,7 +1054,7 @@ function StateCandidatesPage() {
         </div>
         <CandidateGrid candidates={remainingStatewideCandidates} emptyText={`No statewide ${state.name} candidates have been added yet.`} />
       </section>
-      {allCandidates.length ? <p className="source-note">Candidate data is modeled after the public Patriots in Action candidates directory.</p> : null}
+      {allCandidates.length ? <p className="source-note">Candidate data is modeled after the public The County Banner candidates directory.</p> : null}
     </Shell>
   );
 }
@@ -1130,7 +1130,7 @@ function CountyHome({ county }: { county: CountySite }) {
         <div>
           <div className="county-hero-flag">
             <StateFlag state={county.state} size="md" />
-            <p className="eyebrow">Powered by Patriots In Action</p>
+            <p className="eyebrow">Powered by The County Banner</p>
           </div>
           <h1>{county.displayName} Patriots</h1>
           <p className="eyebrow hero-subtitle-eyebrow">{county.displayName} Hub For Action</p>
@@ -1142,14 +1142,14 @@ function CountyHome({ county }: { county: CountySite }) {
             </a>
           ) : null}
           <p>{heroDescription}</p>
-          <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
+          <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots In Action is the Cure.</em></p>
           <div className="actions">
             <a className="button primary" href={county.links.rewards}>Join Patriot Rewards</a>
             <Link className="button red" to="/tx/candidates">Explore Your Candidates</Link>
             <Link className="button" to={`${countyPath(county)}/events`}>Community Calendar</Link>
             <Link className="button" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
           </div>
-          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
+          <img className="hero-patriot-mark" src={site.brand.patriot} alt="The County Banner patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -1191,13 +1191,13 @@ function CountyAboutCompact({ county }: { county: CountySite }) {
 function CountyAbout({ county }: { county: CountySite }) {
   return (
     <>
-      <PageHero eyebrow={county.displayName} title="Making our founders proud." subtitle="Patriots in Action helps local voters find the information, relationships, and next steps they need to take action where it matters most." />
+      <PageHero eyebrow={county.displayName} title="Making our founders proud." subtitle="The County Banner helps local voters find the information, relationships, and next steps they need to take action where it matters most." />
       <CountyShowUpMeter county={county} />
       <section className="section">
         <div className="card-grid three">
           <InfoCard title="Know Your Local Ground" body={`Use the ${county.displayName} page to find voter resources, elected officials, candidates, precinct information, local news, events, and community links in one place.`} />
           <InfoCard title="Turn Concern Into Action" body="Follow what is happening locally, share candidate profiles and interviews, submit community events, and invite neighbors into practical civic action." />
-          <InfoCard title="Build County Power" body="Connect with the Patriots in Action community, discover trusted partners, and help restore accountability by showing up where local decisions are made." />
+          <InfoCard title="Build County Power" body="Connect with The County Banner community, discover trusted partners, and help restore accountability by showing up where local decisions are made." />
         </div>
       </section>
       <CustomBlocks county={county} page="about" />
@@ -1309,7 +1309,7 @@ function CountyEvents({ county }: { county: CountySite }) {
         <EventCalendar county={county} />
         <div className="panel">
           <h2>Submit an Event</h2>
-          <p>Share your local meeting, fundraiser, training, or civic action event with the Patriots in Action team.</p>
+          <p>Share your local meeting, fundraiser, training, or civic action event with The County Banner team.</p>
           <Link className="button primary" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
         </div>
       </section>
@@ -1320,7 +1320,7 @@ function CountyEvents({ county }: { county: CountySite }) {
 function CountyTv({ county }: { county: CountySite }) {
   return (
     <>
-      <PageHero eyebrow="Patriots in Action TV" title="Interviews & updates" subtitle="Videos from the Patriots in Action Vimeo channel." />
+      <PageHero eyebrow="Patriots in Action TV" title="Interviews & updates" subtitle="Videos from The County Banner Vimeo channel." />
       <CountyShowUpMeter county={county} />
       <VimeoFeed />
     </>
@@ -1334,7 +1334,7 @@ function CountyPartners({ county }: { county: CountySite }) {
     <>
       <PageHero
         eyebrow="Partners"
-        title="Partner with Patriots in Action"
+        title="Partner with The County Banner"
         subtitle="Preferred partners, founding partners, merchandise, and Patriot Rewards."
       />
       <CountyShowUpMeter county={county} />
@@ -1351,8 +1351,8 @@ function CountyPartners({ county }: { county: CountySite }) {
         </div>
         <div className="panel">
           <p className="eyebrow">Sitewide Partners</p>
-          <h2>Nationwide partners supporting Patriots in Action</h2>
-          <p>These partners support the broader Patriots in Action network across counties, states, events, media, rewards, and merchandise.</p>
+          <h2>Nationwide partners supporting The County Banner</h2>
+          <p>These partners support the broader The County Banner network across counties, states, events, media, rewards, and merchandise.</p>
           <PartnerList partners={nationwidePartners} />
           <div className="actions">
             <Link className="button primary" to="/partners">See All Partners</Link>
@@ -1712,7 +1712,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
       </div>
       <div className="news-sponsor-row">
         <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={5} />
-        <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
+        <a className="button primary" href={site.links.piaEvents}>Find The County Banner Events</a>
       </div>
     </section>
   );
@@ -2033,7 +2033,7 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
       <div className="section-heading">
         <p className="eyebrow">Patriot Network</p>
         <h2>{county.displayName} Community Feed</h2>
-        <p>Updates from the {county.displayName} space on Patriots in Action.</p>
+        <p>Updates from the {county.displayName} space on The County Banner.</p>
       </div>
       {status ? <p className="status">{status}</p> : null}
       {fetchError ? (
@@ -2490,7 +2490,7 @@ function Footer() {
         <div>
           <img src={site.brand.footerLogo} alt={site.name} />
           <p>{site.tagline}</p>
-          <p>Patriots Connect, LLC, DBA Patriots in Action, is an independent, privately owned business and is not sponsored by, controlled by, or officially associated with any political party or candidate.</p>
+          <p>Patriots Connect, LLC, DBA The County Banner, is an independent, privately owned business and is not sponsored by, controlled by, or officially associated with any political party or candidate.</p>
         </div>
         <div>
           <h3>Stay informed</h3>
@@ -2909,7 +2909,7 @@ function TermsPage() {
       <PageHero
         eyebrow={site.name}
         title="Terms & Conditions"
-        subtitle="Terms for use of Patriots in Action online services, including mobile communications disclosures."
+        subtitle="Terms for use of The County Banner online services, including mobile communications disclosures."
       />
       <section className="section narrow legal-content">
         <p>
@@ -2917,7 +2917,7 @@ function TermsPage() {
         </p>
         <p>
           These Terms and Conditions (&ldquo;Terms&rdquo;) apply to your access to and use of the websites and other online
-          services (collectively, the &ldquo;Services&rdquo;) provided by Patriots Connect, LLC, DBA Patriots in Action
+          services (collectively, the &ldquo;Services&rdquo;) provided by Patriots Connect, LLC, DBA The County Banner
           (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) at {site.url.replace("https://", "")}. By accessing and
           using the Services, you agree to these Terms. If you do not agree to these Terms, do not use the Services.
         </p>
@@ -3011,7 +3011,7 @@ function PrivacyPage() {
           <strong>Effective date:</strong> June 22, 2026
         </p>
         <p>
-          Patriots Connect, LLC, DBA Patriots in Action (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
+          Patriots Connect, LLC, DBA The County Banner (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
           committed to protecting the privacy of visitors and users (&ldquo;you&rdquo; or &ldquo;your&rdquo;) of our nationwide
           county civic network website at {site.url.replace("https://", "")}. This Privacy Policy outlines our practices
           regarding the collection, use, and disclosure of personal information through our website. By accessing and using our
@@ -3044,14 +3044,14 @@ function PrivacyPage() {
           <li>Communicate with you, respond to your inquiries, and provide information about our civic network and county pages;</li>
           <li>
             Send updates, newsletters, fundraising and volunteer communications, partner and sponsorship information, and other
-            Patriots in Action-related information;
+            The County Banner-related information;
           </li>
           <li>Analyze and improve our website&apos;s performance, content, and user experience;</li>
           <li>Comply with legal obligations and enforce our rights and agreements.</li>
         </ul>
         <h4>b) Text messaging opt-in data</h4>
         <p>
-          Your phone number and related data collected for text messaging services will be used to send you Patriots in Action
+          Your phone number and related data collected for text messaging services will be used to send you The County Banner
           text messages and updates you have consented to receive.
         </p>
 
@@ -3118,7 +3118,7 @@ function NotFound() {
 
   return (
     <Shell route="static">
-      <PageHero eyebrow="404" title="Page not found" subtitle="We could not find that Patriots in Action page." />
+      <PageHero eyebrow="404" title="Page not found" subtitle="We could not find that The County Banner page." />
       <Link className="button primary" to="/counties">Find a County</Link>
     </Shell>
   );

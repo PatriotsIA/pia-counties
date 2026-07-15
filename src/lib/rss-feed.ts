@@ -96,7 +96,7 @@ async function fetchArticleImage(link: string) {
       signal: AbortSignal.timeout(2500),
       headers: {
         Accept: "text/html,application/xhtml+xml",
-        "User-Agent": "PatriotsInActionFeeds/1.0",
+        "User-Agent": "TheCountyBannerFeeds/1.0",
       },
     });
 
@@ -194,7 +194,7 @@ async function googleNewsDecodeParams(id: string) {
   const response = await fetch(`https://news.google.com/articles/${id}`, {
     signal: AbortSignal.timeout(2500),
     headers: {
-      "User-Agent": "PatriotsInActionFeeds/1.0",
+      "User-Agent": "TheCountyBannerFeeds/1.0",
     },
   });
 

@@ -1,5 +1,5 @@
 export const site = {
-  name: "Patriots in Action",
+  name: "The County Banner",
   url: "https://patriotsinaction.com",
   tagline: "Empowering citizens. Preserving Liberty.",
   description:

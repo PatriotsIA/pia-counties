@@ -193,7 +193,7 @@ async function fetchFeedXml(feedUrl: string) {
   const feedResponse = await fetch(feedUrl, {
     headers: {
       Accept: "application/rss+xml, application/xml, text/xml",
-      "User-Agent": "PatriotsInActionFeeds/1.0",
+      "User-Agent": "TheCountyBannerFeeds/1.0",
     },
   });
 

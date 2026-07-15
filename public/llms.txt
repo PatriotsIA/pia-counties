@@ -1,8 +1,8 @@
-# Patriots in Action
+# The County Banner
 
 A nationwide county-by-county civic network for local events, trusted resources, community updates, and practical action.
 
-Patriots in Action is a nationwide and local civic hub with county pages for voter resources, elected official lookups, candidate profiles, local news, events, community updates, Patriots in Action TV, and practical civic action.
+The County Banner is a nationwide and local civic hub with county pages for voter resources, elected official lookups, candidate profiles, local news, events, community updates, PIA TV, and practical civic action.
 
 Important URLs:
 - Home: https://patriotsinaction.com/

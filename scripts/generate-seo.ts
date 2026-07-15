@@ -91,7 +91,7 @@ const llms = `# ${site.name}
 
 ${site.description}
 
-${site.name} is a nationwide and local civic hub with county pages for voter resources, elected official lookups, candidate profiles, local news, events, community updates, Patriots in Action TV, and practical civic action.
+${site.name} is a nationwide and local civic hub with county pages for voter resources, elected official lookups, candidate profiles, local news, events, community updates, PIA TV, and practical civic action.
 
 Important URLs:
 - Home: ${absoluteUrl("/")}
