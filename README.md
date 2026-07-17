@@ -1,6 +1,6 @@
-# Patriots in Action Counties
+# The County Banner Counties
 
-Simple nationwide React app for data-driven Patriots in Action county sites.
+Simple nationwide React app for data-driven The County Banner county sites.
 
 ## Routes
 
@@ -51,6 +51,26 @@ The app tries RSS2JSON first and falls back to AllOrigins raw RSS if RSS2JSON is
 - `VITE_RSS_CACHE_TTL_MINUTES` controls browser cache freshness. The default is 60 minutes.
 
 County calendar pages use `/api/calendar`, which proxies allowlisted ICS URLs from county data. Potter County has the current community calendar configured.
+
+## Mighty Networks proxy API
+
+County community feeds and calendars are fetched through a separate Mighty Networks proxy API. The browser must only receive the proxy URL; `MIGHTY_API_KEY` and `MIGHTY_NETWORK_ID` belong exclusively in the proxy service's environment.
+
+Set this public build-time variable in both the local frontend `.env` and AWS Amplify:
+
+```bash
+VITE_MIGHTY_API_BASE=https://your-mighty-api.example.com
+```
+
+The configured API must expose:
+
+- `GET /health`
+- `GET /spaces/:spaceId/feed?per_page=40`
+- `GET /spaces/:spaceId/events?per_page=100`
+
+The deployed API must return an `Access-Control-Allow-Origin` header for the Amplify site's exact origin (and any local origins used during development). A successful health check alone is not sufficient: browser requests will fail without CORS.
+
+After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite embeds these values at build time. Do not configure the obsolete `VITE_MIGHTY_PROXY` variable.
 
 The TV page uses `/api/vimeo-showcase` to proxy videos from the Patriots in Action Vimeo user feed. Set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the deployment for the proxy.
 
