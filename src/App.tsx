@@ -2015,13 +2015,12 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
   const hasMore = visibleCount < posts.length;
 
   function postTitle(post: (typeof posts)[number]) {
-    return post.title || post.summary || "Community update";
-  }
-
-  function postText(post: (typeof posts)[number]) {
-    const html = post.summary || post.description || "";
-    const plain = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-    return plain;
+    const text = (post.title || post.summary || "Community update")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const words = text.split(" ");
+    return words.length > 10 ? `${words.slice(0, 10).join(" ")}…` : text;
   }
 
   function postImage(post: (typeof posts)[number]) {
@@ -2047,11 +2046,10 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
       <div className="feed-list scroll-feed" style={{ maxWidth: "960px", margin: "0 auto" }} onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 6))}>
         {visible.map((post) => (
           <a className="feed-item" href={post.permalink || county.links.community} key={`mn-${post.id}`} target="_blank" rel="noreferrer">
-            {postImage(post) ? <img src={postImage(post) as string} alt="" /> : null}
+            <img src={postImage(post) as string} alt="" />
             <div>
               <strong>{postTitle(post)}</strong>
               <span>{formatFeedDate(post.updated_at || post.created_at || "")}</span>
-              {postText(post) ? <p>{postText(post)}</p> : null}
             </div>
           </a>
         ))}
