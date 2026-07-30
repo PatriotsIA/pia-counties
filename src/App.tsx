@@ -598,6 +598,7 @@ function HomePage() {
         </div>
         <HeroMedia />
       </section>
+      <ElectionCountdown />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">From Awareness To Action</p>
@@ -651,6 +652,75 @@ function FoundingPartnerCallout({ county }: { county?: CountySite }) {
         <Link className="button" to={isCounty ? `${countyPath(county!)}/partners` : "/partners"}>
           {isCounty ? "See County Partners" : "See Partner Opportunities"}
         </Link>
+      </div>
+    </section>
+  );
+}
+
+function electionDay(year: number) {
+  const novemberFirst = new Date(year, 10, 1);
+  const firstMonday = 1 + ((1 - novemberFirst.getDay() + 7) % 7);
+  return new Date(year, 10, firstMonday + 1);
+}
+
+function nextElectionYear(remainder: number) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let year = today.getFullYear();
+  while (year % 4 !== remainder || electionDay(year) < today) {
+    year += 1;
+  }
+
+  return year;
+}
+
+function daysUntil(date: Date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.ceil((date.getTime() - today.getTime()) / 86_400_000);
+}
+
+function formatElectionDate(date: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function ElectionCountdown() {
+  const midtermDate = electionDay(nextElectionYear(2));
+  const presidentialDate = electionDay(nextElectionYear(0));
+  const elections = [
+    {
+      label: `${presidentialDate.getFullYear()} Presidential Election`,
+      date: presidentialDate,
+      days: daysUntil(presidentialDate),
+    },
+    {
+      label: `${midtermDate.getFullYear()} Midterm Elections`,
+      date: midtermDate,
+      days: daysUntil(midtermDate),
+    },
+  ];
+
+  return (
+    <section className="election-countdown" aria-labelledby="election-countdown-heading">
+      <div className="election-countdown-inner">
+        <p className="eyebrow">Election Countdown</p>
+        <h2 id="election-countdown-heading">Every day is a chance to make a difference.</h2>
+        <div className="election-countdown-grid">
+          {elections.map((election) => (
+            <article className="election-countdown-card" key={election.label}>
+              <h3>{election.label}</h3>
+              <p>{formatElectionDate(election.date)}</p>
+              <strong>{election.days.toLocaleString()}</strong>
+              <span>Days</span>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -1153,6 +1223,7 @@ function CountyHome({ county }: { county: CountySite }) {
         </div>
         <HeroMedia />
       </section>
+      <ElectionCountdown />
       <CountyShowUpMeter county={county} className="county-show-up-section-home" />
       <CountyAboutCompact county={county} />
       <FoundingPartnerCallout county={county} />
@@ -1213,6 +1284,7 @@ function CountyElections({ county }: { county: CountySite }) {
         title="Important civic information"
         subtitle="County, state, and federal voting resources and leader lookups for your community."
       />
+      <ElectionCountdown />
       <CountyShowUpMeter county={county} />
       <section className="section">
         <div className="section-heading">
