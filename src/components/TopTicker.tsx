@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
+import itmTradingAd from "../../../the-county-post/ad-assets/ad-itmtrading.JPG";
 
 type WeatherSponsor = {
   name: string;
@@ -45,6 +46,18 @@ type WeatherResponse = {
   };
 };
 
+type MetalQuote = {
+  price: number;
+  currency: string;
+  change_abs: number;
+};
+
+type PreciousMetalsResponse = {
+  data: Record<"gold" | "silver" | "platinum" | "palladium", MetalQuote>;
+};
+
+const itmTradingUrl = "https://www.itmtrading.com/";
+
 const marketSymbols = [
   { proName: "AMEX:SPY", title: "S&P 500" },
   { proName: "NASDAQ:QQQ", title: "Nasdaq 100" },
@@ -64,6 +77,7 @@ export function TopTicker({ county, weatherSponsor }: { county?: CountySite; wea
       <div className="market-weather-bar market-weather-bar-ticker-only">
         <TradingViewTicker />
       </div>
+      <PreciousMetalsTicker />
       {county ? (
         <div className="market-weather-weather-bar">
           <CountyWeather county={county} weatherSponsor={weatherSponsor} />
@@ -104,6 +118,81 @@ function TradingViewTicker() {
   }, []);
 
   return <div className="tradingview-widget-container market-ticker-widget" ref={containerRef} />;
+}
+
+function PreciousMetalsTicker() {
+  const [quotes, setQuotes] = useState<PreciousMetalsResponse["data"]>();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadQuotes = () => {
+      fetch("https://aurumrates.com/api/v1/spot", { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error("Metal prices unavailable");
+          return response.json() as Promise<PreciousMetalsResponse>;
+        })
+        .then((data) => setQuotes(data.data))
+        .catch(() => {
+          if (!controller.signal.aborted) setQuotes(undefined);
+        });
+    };
+
+    loadQuotes();
+    const refresh = window.setInterval(loadQuotes, 30 * 60 * 1000);
+    return () => {
+      controller.abort();
+      window.clearInterval(refresh);
+    };
+  }, []);
+
+  const metals = [
+    ["gold", "Gold"],
+    ["silver", "Silver"],
+    ["platinum", "Platinum"],
+    ["palladium", "Palladium"],
+  ] as const;
+
+  return (
+    <aside className="precious-metals-ticker" aria-label="Precious metals prices">
+      <div className="precious-metals-quotes">
+        {metals.map(([key, label]) => {
+          const quote = quotes?.[key];
+          const change = quote?.change_abs;
+
+          return (
+            <a
+              key={key}
+              className="precious-metal-quote"
+              href={itmTradingUrl}
+              target="_blank"
+              rel="noreferrer sponsored"
+              aria-label={`${label} price, presented by ITM Trading`}
+            >
+              <span>{label}</span>
+              <strong>{quote ? formatMetalPrice(quote.price) : "Loading…"}</strong>
+              {change !== undefined ? (
+                <small className={change >= 0 ? "positive" : "negative"}>
+                  {change >= 0 ? "+" : "−"}{formatMetalPrice(Math.abs(change))}
+                </small>
+              ) : null}
+            </a>
+          );
+        })}
+      </div>
+      <a className="precious-metals-sponsor" href={itmTradingUrl} target="_blank" rel="noreferrer sponsored">
+        <span>Presented by ITM Trading</span>
+        <img src={itmTradingAd} alt="ITM Trading" />
+      </a>
+    </aside>
+  );
+}
+
+function formatMetalPrice(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weatherSponsor?: WeatherSponsor }) {
