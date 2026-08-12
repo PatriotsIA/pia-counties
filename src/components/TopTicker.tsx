@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
-import itmTradingAd from "../../../the-county-post/ad-assets/ad-itmtrading.JPG";
+import itmTradingAd from "../../ads/ad-itmtrading.JPG";
 
 type WeatherSponsor = {
   name: string;
