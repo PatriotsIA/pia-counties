@@ -441,6 +441,102 @@ nav a {
   font-weight: 800;
 }
 
+.home-county-finder {
+  position: relative;
+  z-index: 2;
+  margin: 2.4rem 0;
+  padding: 1rem;
+  border: 1px solid rgba(112, 12, 20, 0.45);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 38%),
+    linear-gradient(135deg, #a61524, #c62b31 55%, #981525);
+  box-shadow: var(--patriot-glow);
+  color: #fff;
+  text-align: center;
+}
+
+.home-county-finder h2 {
+  margin: 0 0 0.65rem;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.home-county-finder form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.home-county-finder input {
+  min-width: 0;
+  flex: 1;
+  height: 2.45rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(17, 27, 71, 0.7);
+  border-radius: 0;
+  color: var(--navy);
+  font: inherit;
+}
+
+.home-county-finder button {
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 0;
+  background: rgba(17, 27, 71, 0.88);
+  color: #fff;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.home-county-finder button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.home-county-finder-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  max-height: 320px;
+  margin-top: 0.75rem;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.home-county-finder-results a,
+.home-county-finder-results p {
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.home-county-finder-results a:hover,
+.home-county-finder-results a:focus-visible {
+  background: #fff;
+  outline: 2px solid var(--navy);
+  outline-offset: 1px;
+}
+
+.home-county-finder-results strong,
+.home-county-finder-results span {
+  display: block;
+}
+
+.home-county-finder-results span {
+  margin-top: 0.12rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 .election-countdown {
   width: 100%;
   margin: 2.4rem 0;
@@ -2653,6 +2749,18 @@ nav a {
 
   .election-countdown {
     padding-inline: 1rem;
+  }
+
+  .home-county-finder form {
+    flex-direction: column;
+  }
+
+  .home-county-finder button {
+    min-height: 2.45rem;
+  }
+
+  .home-county-finder-results {
+    grid-template-columns: 1fr;
   }
 
   .election-countdown-grid {

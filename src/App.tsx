@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -598,6 +598,7 @@ function HomePage() {
         </div>
         <HeroMedia />
       </section>
+      <CountyFinder />
       <ElectionCountdown />
       <section className="section">
         <div className="section-heading">
@@ -653,6 +654,80 @@ function FoundingPartnerCallout({ county }: { county?: CountySite }) {
           {isCounty ? "See County Partners" : "See Partner Opportunities"}
         </Link>
       </div>
+    </section>
+  );
+}
+
+function CountyFinder() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+  const normalizedQuery = query.trim().toLowerCase();
+  const hasQuery = Boolean(normalizedQuery);
+  const stateMatches = useMemo(
+    () =>
+      hasQuery
+        ? states
+            .filter((state) => [state.name, state.abbr, state.slug].some((value) => value.toLowerCase().includes(normalizedQuery)))
+            .slice(0, 5)
+        : [],
+    [hasQuery, normalizedQuery],
+  );
+  const countyMatches = useMemo(
+    () =>
+      hasQuery
+        ? counties
+            .filter((county) =>
+              [county.displayName, county.name, county.primaryCity, county.state.name, county.state.abbr, county.slug].some((value) =>
+                value?.toLowerCase().includes(normalizedQuery),
+              ),
+            )
+            .slice(0, 10)
+        : [],
+    [hasQuery, normalizedQuery],
+  );
+  const bestState = stateMatches.find(
+    (state) => state.name.toLowerCase() === normalizedQuery || state.abbr.toLowerCase() === normalizedQuery,
+  );
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (bestState) {
+      navigate(statePath(bestState));
+    } else if (countyMatches[0]) {
+      navigate(countyPath(countyMatches[0]));
+    }
+  }
+
+  return (
+    <section className="home-county-finder" aria-labelledby="home-county-finder-heading">
+      <h2 id="home-county-finder-heading">Find a County</h2>
+      <form onSubmit={submitSearch}>
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search by county or state (e.g., Orange, TX)"
+          type="search"
+          aria-label="Search for a county or state"
+        />
+        <button type="submit" disabled={!bestState && !countyMatches.length}>Search</button>
+      </form>
+      {hasQuery ? (
+        <div className="home-county-finder-results">
+          {stateMatches.map((state) => (
+            <Link key={state.abbr} to={statePath(state)}>
+              <strong>{state.name}</strong>
+              <span>State · {state.abbr}</span>
+            </Link>
+          ))}
+          {countyMatches.map((county) => (
+            <Link key={county.fips} to={countyPath(county)}>
+              <strong>{county.displayName}</strong>
+              <span>County · {county.state.name}</span>
+            </Link>
+          ))}
+          {!stateMatches.length && !countyMatches.length ? <p>No counties or states match that search.</p> : null}
+        </div>
+      ) : null}
     </section>
   );
 }
