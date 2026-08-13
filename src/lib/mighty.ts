@@ -23,7 +23,8 @@ export type MightyEvent = MightyPost & {
   ends_at?: string | null;
 };
 
-const mightyBase = import.meta.env.VITE_MIGHTY_API_BASE || "";
+const configuredMightyBase = import.meta.env.VITE_MIGHTY_API_BASE?.replace(/\/+$/, "");
+const mightyBase = import.meta.env.DEV && configuredMightyBase ? "/api/mighty" : configuredMightyBase;
 
 function requireBaseUrl() {
   if (!mightyBase) throw new Error("Mighty API base URL is not configured.");

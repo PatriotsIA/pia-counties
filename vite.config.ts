@@ -218,8 +218,20 @@ function feedVariantUrls(feedUrl: string) {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const vimeoToken = env.PIA_VIMEO_ACCESS_TOKEN || env.VIMEO_ACCESS_TOKEN;
+  const mightyApiBase = env.VITE_MIGHTY_API_BASE?.replace(/\/+$/, "");
 
   return {
     plugins: [vimeoApiDevMiddleware(vimeoToken), calendarApiDevMiddleware(), rssApiDevMiddleware(), react()],
+    server: mightyApiBase
+      ? {
+          proxy: {
+            "/api/mighty": {
+              target: mightyApiBase,
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/api\/mighty/, ""),
+            },
+          },
+        }
+      : undefined,
   };
 });

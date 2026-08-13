@@ -9,6 +9,7 @@ import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
 import { getCandidateById, getCandidatesForCounty, getCandidatesForState, getPinnedCandidates, isPinnedCandidate, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
+import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -2003,7 +2004,7 @@ function isSportsFeedItem(item: NewsFeedItem) {
 
 function EventCalendar({ county, compact = false, page = "events" }: { county: CountySite; compact?: boolean; page?: CountyPageKey }) {
   const feedUrl = county.calendar.icsUrl;
-  const mightySpaceId = county.mightySpaceId;
+  const mightySpaceId = getCountyMightySpaceId(county);
   const hasMightyApi = Boolean(mightySpaceId && mightyIsConfigured());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
@@ -2012,9 +2013,13 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
 
   useEffect(() => {
     let active = true;
+    setMightyError(false);
 
     async function loadFromMighty() {
-      if (!hasMightyApi || !mightySpaceId) return false;
+      if (!hasMightyApi || !mightySpaceId) {
+        setMightyError(true);
+        return false;
+      }
       try {
         setMightyError(false);
         const items = await fetchMightyEvents(mightySpaceId, 100);
@@ -2095,12 +2100,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
         ) : null}
       </div>
       {mightyError ? (
-        <div className="panel" style={{ marginBottom: "1rem" }}>
-          <p>The community calendar can&rsquo;t be loaded right now.</p>
-          <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
-            Join your county&apos;s Patriot Network to see the calendar
-          </a>
-        </div>
+        <CountyMightySetupCallout county={county} />
       ) : null}
       {displayedStatus ? <p>{displayedStatus}</p> : null}
       <div className="event-list">
@@ -2118,8 +2118,19 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
   );
 }
 
+function CountyMightySetupCallout({ county }: { county: CountySite }) {
+  return (
+    <div className="panel county-mighty-setup-callout">
+      <p>Live in This County and Want to get Involved &amp; Informed? Contact us to Get Your County&apos;s Community Calendar &amp; Community Feed set up.</p>
+      <Link className="button primary" to={`${countyPath(county)}/contact`}>
+        Contact {county.displayName}
+      </Link>
+    </div>
+  );
+}
+
 function CountyCommunityFeed({ county }: { county: CountySite }) {
-  const mightySpaceId = county.mightySpaceId;
+  const mightySpaceId = getCountyMightySpaceId(county);
   const hasMightyApi = Boolean(mightySpaceId && mightyIsConfigured());
   const [posts, setPosts] = useState<Awaited<ReturnType<typeof fetchMightyFeed>>>([]);
   const [status, setStatus] = useState(hasMightyApi ? "Loading Patriot Network feed..." : "");
@@ -2131,7 +2142,8 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
 
     if (!hasMightyApi || !mightySpaceId) {
       setPosts([]);
-      setStatus("Join The Patriot Network to see county community posts.");
+      setStatus("");
+      setFetchError(true);
       return () => {
         active = false;
       };
@@ -2183,30 +2195,29 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
       </div>
       {status ? <p className="status">{status}</p> : null}
       {fetchError ? (
-        <div className="panel" style={{ maxWidth: "720px", margin: "0 auto 1rem" }}>
-          <p>The community feed can&rsquo;t be loaded right now.</p>
-          <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
-            Join your county&apos;s Patriot Network to see the feed
-          </a>
-        </div>
+        <CountyMightySetupCallout county={county} />
       ) : null}
-      <div className="feed-list scroll-feed" style={{ maxWidth: "960px", margin: "0 auto" }} onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 6))}>
-        {visible.map((post) => (
-          <a className="feed-item" href={post.permalink || county.links.community} key={`mn-${post.id}`} target="_blank" rel="noreferrer">
-            <img src={postImage(post) as string} alt="" />
-            <div>
-              <strong>{postTitle(post)}</strong>
-              <span>{formatFeedDate(post.updated_at || post.created_at || "")}</span>
-            </div>
-          </a>
-        ))}
-        {hasMore ? <p className="feed-more">Scroll for more</p> : posts.length ? <p className="feed-more">Join The Patriot Network to See More</p> : null}
-      </div>
-      <div className="actions" style={{ justifyContent: "center", marginTop: "1rem" }}>
-        <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
-          Join The Patriot Network
-        </a>
-      </div>
+      {!fetchError ? (
+        <>
+          <div className="feed-list scroll-feed" style={{ maxWidth: "960px", margin: "0 auto" }} onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 6))}>
+            {visible.map((post) => (
+              <a className="feed-item" href={post.permalink || county.links.community} key={`mn-${post.id}`} target="_blank" rel="noreferrer">
+                <img src={postImage(post) as string} alt="" />
+                <div>
+                  <strong>{postTitle(post)}</strong>
+                  <span>{formatFeedDate(post.updated_at || post.created_at || "")}</span>
+                </div>
+              </a>
+            ))}
+            {hasMore ? <p className="feed-more">Scroll for more</p> : posts.length ? <p className="feed-more">Join The Patriot Network to See More</p> : null}
+          </div>
+          <div className="actions" style={{ justifyContent: "center", marginTop: "1rem" }}>
+            <a className="button primary" href={county.links.community} target="_blank" rel="noreferrer">
+              Join The Patriot Network
+            </a>
+          </div>
+        </>
+      ) : null}
     </section>
   );
 }

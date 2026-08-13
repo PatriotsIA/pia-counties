@@ -1,5 +1,6 @@
 import { getCountyByState } from "@nickgraffis/us-counties";
 import { buildCountyFeedUrl } from "../lib/county-feed-urls";
+import { getCountyCalendarFeedUrl } from "./calendarFeeds";
 import { site } from "./site";
 import { getStateBySlug, stateFromAbbr, states, type StateSite } from "./states";
 
@@ -46,6 +47,7 @@ export type CountySite = {
   intro: string;
   calendar: {
     icsUrl?: string;
+    icsUrls?: string[];
     proxyUrl?: string;
   };
   feeds: {
@@ -93,6 +95,7 @@ const civicResourceLinks = {
 function createCountySite(county: UsCounty, state: StateSite): CountySite {
   const slug = slugify(county.name);
   const displayName = `${county.name} County`;
+  const calendarIcsUrl = state.slug === "texas" ? getCountyCalendarFeedUrl(state.slug, slug) : undefined;
 
   return {
     name: county.name,
@@ -106,7 +109,12 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
     heroSubtitle: "Making our founders proud.",
     intro:
       "Your voice matters locally and nationally. Knowing who represents you helps you stay informed, engaged, and ready to make a difference for your community and country.",
-    calendar: {},
+    calendar: calendarIcsUrl
+      ? {
+          icsUrl: calendarIcsUrl,
+          proxyUrl: `/api/calendar?state=${state.slug}&county=${slug}`,
+        }
+      : {},
     feeds: {
       localNewsUrl: buildCountyFeedUrl("localNews", county.name, state),
       localSportsUrl: buildCountyFeedUrl("localSports", county.name, state),
