@@ -219,17 +219,31 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const vimeoToken = env.PIA_VIMEO_ACCESS_TOKEN || env.VIMEO_ACCESS_TOKEN;
   const mightyApiBase = env.VITE_MIGHTY_API_BASE?.replace(/\/+$/, "");
+  const candidateApiBase = env.VITE_CANDIDATE_API_BASE?.replace(/\/+$/, "");
 
   return {
     plugins: [vimeoApiDevMiddleware(vimeoToken), calendarApiDevMiddleware(), rssApiDevMiddleware(), react()],
-    server: mightyApiBase
+    server: mightyApiBase || candidateApiBase
       ? {
           proxy: {
-            "/api/mighty": {
-              target: mightyApiBase,
-              changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api\/mighty/, ""),
-            },
+            ...(mightyApiBase
+              ? {
+                  "/api/mighty": {
+                    target: mightyApiBase,
+                    changeOrigin: true,
+                    rewrite: (path: string) => path.replace(/^\/api\/mighty/, ""),
+                  },
+                }
+              : {}),
+            ...(candidateApiBase
+              ? {
+                  "/api/candidate-api": {
+                    target: candidateApiBase,
+                    changeOrigin: true,
+                    rewrite: (path: string) => path.replace(/^\/api\/candidate-api/, ""),
+                  },
+                }
+              : {}),
           },
         }
       : undefined,

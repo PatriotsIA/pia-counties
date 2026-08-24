@@ -72,6 +72,24 @@ The deployed API must return an `Access-Control-Allow-Origin` header for the Amp
 
 After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite embeds these values at build time. Do not configure the obsolete `VITE_MIGHTY_PROXY` variable.
 
+## Candidate profile API
+
+Candidate submissions, moderation, and runtime directory updates use the separately deployed `pia-candidate-api`. Set the stack output values locally and in AWS Amplify:
+
+```bash
+VITE_CANDIDATE_API_BASE=https://your-api-id.execute-api.us-east-1.amazonaws.com
+VITE_CANDIDATE_COGNITO_REGION=us-east-1
+VITE_CANDIDATE_COGNITO_CLIENT_ID=your-public-spa-client-id
+```
+
+- `/candidate-form` submits a pending profile to the public API.
+- `/candidate-review` requires a Cognito user in the API's `admins` group and supports editing, approval, and denial.
+- Reviewer tokens are kept in memory rather than persistent browser storage; refreshing or leaving the isolated review page requires signing in again.
+- When configured and reachable, the API's approved profiles are authoritative for the candidate directory. The checked-in candidate data remains available before API configuration and as an outage fallback.
+- These two operational routes are intentionally absent from navigation and sitemap generation; browser metadata marks them `noindex`.
+
+The API's CORS origins must include the exact frontend origin. Cognito client IDs are public identifiers, but passwords, AWS credentials, SES credentials, and API secrets must never be stored in frontend environment variables.
+
 The TV page uses `/api/vimeo-showcase` to proxy videos from the Patriots in Action Vimeo user feed. Set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the deployment for the proxy.
 
 The files in `api/` are Vercel-style serverless functions. A plain AWS Amplify static hosting deployment will not serve those routes, so `/api/calendar` and `/api/vimeo-showcase` return 404 unless you also deploy an API backend. For Amplify hosting, either:

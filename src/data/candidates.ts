@@ -20,6 +20,13 @@ export type Candidate = {
   image?: string;
   videoEmbedUrl?: string;
   videoTitle?: string;
+  bio?: string;
+  electionYear?: number;
+  incumbent?: boolean;
+  facebookUrl?: string;
+  xUrl?: string;
+  instagramUrl?: string;
+  youtubeUrl?: string;
 };
 
 export const candidates: Candidate[] = [
@@ -905,31 +912,31 @@ export function getPinnedCandidates(catalog: Candidate[] = candidates) {
     .filter((candidate): candidate is Candidate => Boolean(candidate));
 }
 
-export function getCandidatesForState(stateSlug?: string) {
+export function getCandidatesForState(stateSlug?: string, catalog: Candidate[] = candidates) {
   const state = getStateBySlug(stateSlug);
   if (!state) return [];
   return sortCandidates(
-    candidates.filter((candidate) => candidate.stateSlug === state.slug || candidate.stateSlug === state.abbr.toLowerCase()),
+    catalog.filter((candidate) => candidate.stateSlug === state.slug || candidate.stateSlug === state.abbr.toLowerCase()),
   );
 }
 
-export function getCandidatesForCounty(county: CountySite) {
+export function getCandidatesForCounty(county: CountySite, catalog: Candidate[] = candidates) {
   return sortCandidates(
-    candidates.filter((candidate) => candidate.stateSlug === county.state.slug && candidate.countySlug === county.slug),
+    catalog.filter((candidate) => candidate.stateSlug === county.state.slug && candidate.countySlug === county.slug),
   );
 }
 
-export function getCandidateById(candidateId?: string) {
+export function getCandidateById(candidateId?: string, catalog: Candidate[] = candidates) {
   if (!candidateId) return undefined;
-  return candidates.find((candidate) => candidate.id === candidateId.toLowerCase());
+  return catalog.find((candidate) => candidate.id === candidateId.toLowerCase());
 }
 
-export function getStatewideCandidates(stateSlug?: string) {
-  return getCandidatesForState(stateSlug).filter((candidate) => candidate.scope === "statewide");
+export function getStatewideCandidates(stateSlug?: string, catalog: Candidate[] = candidates) {
+  return getCandidatesForState(stateSlug, catalog).filter((candidate) => candidate.scope === "statewide");
 }
 
-export function getLocalCandidatesForState(stateSlug?: string) {
-  return getCandidatesForState(stateSlug).filter((candidate) => candidate.scope !== "statewide");
+export function getLocalCandidatesForState(stateSlug?: string, catalog: Candidate[] = candidates) {
+  return getCandidatesForState(stateSlug, catalog).filter((candidate) => candidate.scope !== "statewide");
 }
 
 function sortCandidates(items: Candidate[]) {

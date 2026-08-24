@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { candidates } from "../src/data/candidates";
+import { loadEnv } from "vite";
+import { candidates, type Candidate } from "../src/data/candidates";
 import { counties, states, type CountyPageKey } from "../src/data/counties";
 import { site } from "../src/data/site";
 
@@ -12,6 +13,31 @@ type UrlEntry = {
 
 const countyPages: CountyPageKey[] = ["home", "about", "elections", "candidates", "news", "events", "tv", "partners", "contact"];
 const today = new Date().toISOString().slice(0, 10);
+
+async function candidateCatalog() {
+  const env = { ...loadEnv(process.env.NODE_ENV || "production", process.cwd(), ""), ...process.env };
+  const apiBase = String(env.VITE_CANDIDATE_API_BASE || "").replace(/\/+$/, "");
+  if (!apiBase) return candidates;
+
+  try {
+    const remote: Candidate[] = [];
+    let cursor: string | undefined;
+    do {
+      const url = new URL(`${apiBase}/v1/candidates`);
+      url.searchParams.set("limit", "100");
+      if (cursor) url.searchParams.set("cursor", cursor);
+      const response = await fetch(url, { signal: AbortSignal.timeout(8_000) });
+      if (!response.ok) throw new Error(`status ${response.status}`);
+      const body = await response.json() as { data?: Candidate[]; nextCursor?: string };
+      remote.push(...(body.data || []));
+      cursor = body.nextCursor;
+    } while (cursor);
+    return remote.filter((candidate) => candidate?.id && candidate.name && candidate.office);
+  } catch (error) {
+    console.warn(`Candidate API was unavailable during SEO generation; using static candidates (${error instanceof Error ? error.message : "unknown error"}).`);
+    return candidates;
+  }
+}
 
 function statePath(state: { abbr: string }) {
   return `/${state.abbr.toLowerCase()}`;
@@ -63,7 +89,7 @@ const countyUrls = counties.flatMap((county) =>
   ),
 );
 
-const candidateUrls = candidates.map((candidate) => urlEntry(`/candidates/${candidate.id}`, "monthly", "0.74"));
+const candidateUrls = (await candidateCatalog()).map((candidate) => urlEntry(`/candidates/${candidate.id}`, "monthly", "0.74"));
 const urls = [...staticUrls, ...stateUrls, ...countyUrls, ...candidateUrls];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
+import { CandidateCatalogProvider } from "./components/CandidateCatalogProvider";
+import { CandidateReviewConsole } from "./components/CandidateReviewConsole";
+import { CandidateSubmissionForm } from "./components/CandidateSubmissionForm";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { countyNewsMidRowAdIds } from "./data/ads";
 import { CountyShowUpMeter } from "./components/CountyShowUpMeter";
@@ -21,6 +24,7 @@ import { filterFeedItemsByRegion } from "./lib/county-feed-filter";
 import { resolveNewsMarketCity } from "./lib/county-news-market";
 import type { NewsFeedItem } from "./lib/rss-feed";
 import { fetchSpaceEvents as fetchMightyEvents, fetchSpaceFeed as fetchMightyFeed, mightyIsConfigured } from "./lib/mighty";
+import { useCandidateCatalog } from "./lib/candidate-catalog-context";
 import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
 import cbtPartnerImage from "../NewAds/CBT4.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
@@ -285,10 +289,22 @@ type SeoData = {
 
 function SeoTracker() {
   const location = useLocation();
+  const { candidates: candidateCatalog, loading: candidatesLoading } = useCandidateCatalog();
 
   useEffect(() => {
-    applySeoData(seoDataForPath(location.pathname));
-  }, [location.pathname]);
+    if (location.pathname === "/candidate-form" || location.pathname === "/candidate-review") {
+      document.title = location.pathname === "/candidate-review" ? "Candidate Review" : "Candidate Profile Submission";
+      setMeta("robots", "noindex,nofollow,noarchive");
+      setMeta("description", "");
+      setStructuredData([]);
+      return;
+    }
+    if (candidatesLoading && /^\/candidates\/[^/]+$/.test(location.pathname)) {
+      setMeta("robots", "noindex,nofollow");
+      return;
+    }
+    applySeoData(seoDataForPath(location.pathname, candidateCatalog));
+  }, [candidateCatalog, candidatesLoading, location.pathname]);
 
   return null;
 }
@@ -369,7 +385,7 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
   ];
 }
 
-function seoDataForPath(pathname: string): SeoData {
+function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
   if (pathname === "/") {
     return {
       title: "Nationwide & Local Civic Hub",
@@ -422,7 +438,7 @@ function seoDataForPath(pathname: string): SeoData {
 
   const candidateMatch = pathname.match(/^\/candidates\/([^/]+)$/);
   if (candidateMatch) {
-    const candidate = getCandidateById(candidateMatch[1]);
+    const candidate = getCandidateById(candidateMatch[1], candidateCatalog);
     if (candidate) {
       return {
         title: `${candidate.name} Candidate Profile`,
@@ -541,11 +557,13 @@ function AnalyticsTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    initGoogleTagManager();
-  }, []);
+    if (location.pathname !== "/candidate-review") initGoogleTagManager();
+  }, [location.pathname]);
 
   useEffect(() => {
-    trackPageView(`${location.pathname}${location.search}`, document.title);
+    if (location.pathname !== "/candidate-review") {
+      trackPageView(`${location.pathname}${location.search}`, document.title);
+    }
   }, [location.pathname, location.search]);
 
   return null;
@@ -553,18 +571,20 @@ function AnalyticsTracker() {
 
 function App() {
   return (
-    <>
+    <CandidateCatalogProvider>
       <ScrollToTop />
       <AnalyticsTracker />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/counties" element={<DirectoryPage />} />
         <Route path="/tv" element={<MainTvPage />} />
-      <Route path="/rewards" element={<RewardsPage />} />
+        <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/candidate-form" element={<CandidateFormPage />} />
+        <Route path="/candidate-review" element={<CandidateReviewPage />} />
         <Route path="/candidates/:candidateId" element={<CandidateProfilePage />} />
         <Route path="/:stateSlug/candidates" element={<StateCandidatesPage />} />
         <Route path="/:stateSlug" element={<StatePage />} />
@@ -573,7 +593,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <SeoTracker />
-    </>
+    </CandidateCatalogProvider>
   );
 }
 
@@ -1136,14 +1156,45 @@ function StateVotingResources({ state }: { state: { name: string; abbr: string; 
   );
 }
 
+function CandidateFormPage() {
+  usePageTitle("Submit a Candidate Profile");
+  return (
+    <Shell route="static" suppressAdRails>
+      <CandidateSubmissionForm />
+    </Shell>
+  );
+}
+
+function CandidateReviewPage() {
+  const { refresh } = useCandidateCatalog();
+  usePageTitle("Candidate Review");
+  return (
+    <div className="candidate-admin-shell">
+      <header className="site-header">
+        <div className="container header-inner">
+          <a className="brand" href="/">
+            <img src={site.brand.icon} alt="" />
+            <span>{site.name}</span>
+          </a>
+          <span className="candidate-admin-label">Secure Candidate Administration</span>
+        </div>
+      </header>
+      <main className="container candidate-admin-main">
+        <CandidateReviewConsole onApproved={refresh} />
+      </main>
+    </div>
+  );
+}
+
 function StateCandidatesPage() {
   const { stateSlug } = useParams();
   const state = getStateBySlug(stateSlug);
+  const { candidates: candidateCatalog, loading: candidatesLoading } = useCandidateCatalog();
   const [candidateSearch, setCandidateSearch] = useState("");
   const [jurisdictionFilter, setJurisdictionFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
   const [candidateSort, setCandidateSort] = useState("name");
-  const allCandidates = getCandidatesForState(stateSlug);
+  const allCandidates = getCandidatesForState(stateSlug, candidateCatalog);
   const jurisdictionOptions = candidateJurisdictionOptions(allCandidates);
   const scopeOptions = candidateScopeOptions(allCandidates);
   const filteredCandidates = filterAndSortCandidates(allCandidates, {
@@ -1182,6 +1233,7 @@ function StateCandidatesPage() {
         onSortChange={setCandidateSort}
       />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
+      {candidatesLoading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
       {!allCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       {pinnedCandidates.length && !hasJurisdictionFilter ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       <section className="section">
@@ -1207,10 +1259,18 @@ function StateCandidatesPage() {
 
 function CandidateProfilePage() {
   const { candidateId } = useParams();
-  const candidate = getCandidateById(candidateId);
+  const { candidates: candidateCatalog, loading } = useCandidateCatalog();
+  const candidate = getCandidateById(candidateId, candidateCatalog);
   const state = getStateBySlug(candidate?.stateSlug);
 
   usePageTitle(candidate ? `${candidate.name} Candidate Profile` : "Candidate Not Found");
+  if (!candidate && loading) {
+    return (
+      <Shell route="static" suppressAdRails>
+        <section className="section"><p className="status">Loading candidate profile…</p></section>
+      </Shell>
+    );
+  }
   if (!candidate) return <NotFound />;
 
   const backPath = candidate.countySlug && state
@@ -1395,14 +1455,16 @@ function stateConstitutionUrl(stateName: string) {
 }
 
 function CountyCandidates({ county }: { county: CountySite }) {
-  const countyCandidates = getCandidatesForCounty(county).filter((candidate) => !isPinnedCandidate(candidate.id));
-  const pinnedCandidates = getPinnedCandidates(getCandidatesForState(county.state.slug));
+  const { candidates: candidateCatalog, loading } = useCandidateCatalog();
+  const countyCandidates = getCandidatesForCounty(county, candidateCatalog).filter((candidate) => !isPinnedCandidate(candidate.id));
+  const pinnedCandidates = getPinnedCandidates(getCandidatesForState(county.state.slug, candidateCatalog));
   return (
     <>
       <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
       <CountyShowUpMeter county={county} />
       <CandidateDirectorySponsors county={county} />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
+      {loading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
       {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       {!countyCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       <section className="section">
@@ -2950,6 +3012,12 @@ function CandidateProfile({ candidate, backPath }: { candidate: Candidate; backP
           ) : (
             <div className="candidate-profile-empty-video">No candidate video has been added yet.</div>
           )}
+          {candidate.bio ? (
+            <div className="candidate-profile-bio">
+              <h2>About {candidate.name}</h2>
+              {candidate.bio.split(/\n{2,}/).map((paragraph, index) => <p key={`${candidate.id}-bio-${index}`}>{paragraph}</p>)}
+            </div>
+          ) : null}
         </div>
         <aside className="candidate-profile-sidebar">
           {candidate.image ? <img className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}
@@ -3003,13 +3071,19 @@ function CandidateDetails({ candidate, showProfileLink = false }: { candidate: C
     { label: "Running For", value: candidate.office },
     { label: "Jurisdiction", value: candidateJurisdiction(candidate) },
     { label: "Party", value: candidate.party },
+    { label: "Election Year", value: candidate.electionYear ? String(candidate.electionYear) : undefined },
+    { label: "Incumbent", value: candidate.incumbent ? "Yes" : undefined },
     { label: "Ballotpedia Profile", value: candidate.ballotpediaUrl, linkText: candidate.name },
     { label: "Email", value: candidate.email, href: candidate.email ? `mailto:${candidate.email}` : undefined },
     { label: "Phone", value: candidate.phone, href: candidate.phone ? `tel:${candidate.phone.replace(/\D+/g, "")}` : undefined },
     { label: "Website", value: candidate.websiteUrl, linkText: "Website" },
+    { label: "Facebook", value: candidate.facebookUrl, linkText: "Facebook" },
+    { label: "X / Twitter", value: candidate.xUrl, linkText: "X / Twitter" },
+    { label: "Instagram", value: candidate.instagramUrl, linkText: "Instagram" },
+    { label: "YouTube", value: candidate.youtubeUrl, linkText: "YouTube" },
   );
 
-  if (showProfileLink) rows.splice(3, 0, { label: "Profile Link", value: candidateProfilePath(candidate), linkText: "Direct profile" });
+  if (showProfileLink) rows.splice(5, 0, { label: "Profile Link", value: candidateProfilePath(candidate), linkText: "Direct profile" });
 
   const visibleRows = rows.filter((row): row is CandidateDetailRow & { value: string } => Boolean(row.value));
 
@@ -3069,7 +3143,7 @@ function TermsPage() {
       />
       <section className="section narrow legal-content">
         <p>
-          <strong>Last revised:</strong> June 22, 2026
+          <strong>Last revised:</strong> August 24, 2026
         </p>
         <p>
           These Terms and Conditions (&ldquo;Terms&rdquo;) apply to your access to and use of the websites and other online
@@ -3128,9 +3202,14 @@ function TermsPage() {
 
         <h3>User submissions</h3>
         <p>
-          Contact form messages, county information updates, event submissions, candidate-related requests, and other content
+          Contact form messages, county information updates, event submissions, candidate profile submissions, and other content
           you provide may be reviewed, edited for clarity, or declined. Do not submit confidential information you are not
           authorized to share.
+        </p>
+        <p>
+          By submitting a candidate profile, you represent that the information is accurate and that you are authorized to
+          provide it. Approved profile information—including campaign contact details you designate as public—may be published
+          in the candidate directory. Submission does not guarantee approval or publication.
         </p>
 
         <h3>Third-party services</h3>
@@ -3164,7 +3243,7 @@ function PrivacyPage() {
       />
       <section className="section narrow legal-content">
         <p>
-          <strong>Effective date:</strong> June 22, 2026
+          <strong>Effective date:</strong> August 24, 2026
         </p>
         <p>
           Patriots Connect, LLC, DBA Patriots in Action (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is
@@ -3179,7 +3258,12 @@ function PrivacyPage() {
         <p>
           We may collect personal information you voluntarily provide, such as your name, email address, postal address, phone
           number, and any other information you submit through our website&apos;s forms—including contact forms, county event
-          submissions, county information updates, and partner or sponsorship inquiries.
+          submissions, candidate profile submissions, county information updates, and partner or sponsorship inquiries.
+        </p>
+        <p>
+          Candidate profile submissions contain public profile information and private submitter information. If approved, the
+          candidate&apos;s campaign biography, portrait, campaign contact details, and links may be published in the directory.
+          Submitter contact details used for verification and review are not included in the public candidate API.
         </p>
         <h4>b) Text messaging opt-in data</h4>
         <p>
@@ -3198,6 +3282,7 @@ function PrivacyPage() {
         <p>We may use the personal information you provide to:</p>
         <ul>
           <li>Communicate with you, respond to your inquiries, and provide information about our civic network and county pages;</li>
+          <li>Review, verify, edit, approve, deny, and publish candidate directory profiles;</li>
           <li>
             Send updates, newsletters, fundraising and volunteer communications, partner and sponsorship information, and other
             Patriots in Action-related information;

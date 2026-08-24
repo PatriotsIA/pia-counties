@@ -720,6 +720,15 @@ nav a {
   line-height: 1.6;
 }
 
+.show-up-meter .show-up-meter-attribution {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .show-up-meter .eyebrow {
   margin-bottom: 0.35rem;
   color: var(--red);
@@ -2305,6 +2314,199 @@ nav a {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 0 0 5px rgba(21, 56, 111, 0.22), 0 0 28px rgba(21, 56, 111, 0.18);
 }
 
+.candidate-intake,
+.candidate-review-console,
+.candidate-review-login {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.candidate-admin-shell {
+  min-height: 100vh;
+  background: var(--cream);
+}
+
+.candidate-admin-main {
+  padding-top: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: 3rem;
+}
+
+.candidate-admin-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.candidate-profile-form fieldset {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 1.1rem;
+  border: 1px solid rgba(21, 56, 111, 0.16);
+  border-radius: 18px;
+}
+
+.candidate-profile-form legend {
+  padding: 0 0.45rem;
+  color: var(--navy);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.candidate-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.checkbox-row input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.12rem;
+  accent-color: var(--blue);
+}
+
+.candidate-form-consents {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgba(21, 56, 111, 0.06);
+}
+
+.candidate-review-header,
+.candidate-review-toolbar,
+.candidate-review-status,
+.candidate-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.candidate-review-header {
+  margin-bottom: 1.25rem;
+}
+
+.candidate-review-header h1 {
+  margin: 0.2rem 0;
+  color: var(--navy);
+}
+
+.candidate-review-header p {
+  margin: 0;
+}
+
+.candidate-review-toolbar {
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.candidate-review-toolbar .field {
+  width: min(240px, 100%);
+}
+
+.candidate-review-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.34fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.candidate-review-list {
+  display: grid;
+  overflow: auto;
+  max-height: 75vh;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.candidate-review-list-item {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(21, 56, 111, 0.14);
+  border-radius: 14px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.candidate-review-list-item:hover,
+.candidate-review-list-item.active {
+  border-color: var(--blue);
+  box-shadow: 0 8px 24px rgba(21, 56, 111, 0.12);
+}
+
+.candidate-review-list-item span,
+.candidate-review-list-item small {
+  color: var(--muted);
+}
+
+.candidate-review-status {
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: rgba(21, 56, 111, 0.07);
+}
+
+.candidate-review-actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.candidate-review-login {
+  display: grid;
+  min-height: 55vh;
+  place-items: center;
+}
+
+.candidate-review-login .form-card {
+  width: min(460px, 100%);
+}
+
+.candidate-profile-bio {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.candidate-profile-bio h2 {
+  margin-top: 0;
+  color: var(--navy);
+}
+
+.candidate-profile-bio p:last-child {
+  margin-bottom: 0;
+}
+
 .candidate-filters {
   display: grid;
   grid-template-columns: minmax(240px, 1.3fr) repeat(3, minmax(160px, 0.7fr));
@@ -2960,6 +3162,8 @@ nav a {
   .feed-grid,
   .feed-item,
   .candidate-filters,
+  .candidate-form-grid,
+  .candidate-review-layout,
   .candidate-directory-notice,
   .candidate-directory-empty-banner,
   .directory-search,
@@ -3016,9 +3220,24 @@ nav a {
   }
 
   .candidate-profile-header,
+  .candidate-review-header,
+  .candidate-review-toolbar,
   .video-modal-header {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .candidate-review-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .candidate-review-actions .button {
+    width: 100%;
+  }
+
+  .candidate-admin-label {
+    display: none;
   }
 
   .patriot-network-community-banner {
