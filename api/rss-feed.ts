@@ -14,7 +14,8 @@ type VercelResponse = {
   json: (body: unknown) => void;
 };
 
-const allowedFeedHosts = new Set(["news.google.com"]);
+const allowedFeedHosts = new Set(["news.google.com", "vimeo.com", "www.vimeo.com"]);
+const feedFetchTimeoutMs = 8_000;
 
 function setCorsHeaders(response: VercelResponse) {
   response.setHeader("Access-Control-Allow-Origin", "*");
@@ -58,7 +59,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     const items = await buildNewsFeedItemsFromXmls(xmls);
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
-    response.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=900");
+    response.setHeader("Cache-Control", "public, s-maxage=900, stale-while-revalidate=86400");
     response.json({ items });
   } catch {
     response.status(502).json({ error: "RSS feed could not be loaded." });
@@ -74,6 +75,7 @@ async function fetchFeedXmls(feedUrl: string) {
 
 async function fetchFeedXml(feedUrl: string) {
   const feedResponse = await fetch(feedUrl, {
+    signal: AbortSignal.timeout(feedFetchTimeoutMs),
     headers: {
       Accept: "application/rss+xml, application/xml, text/xml",
       "User-Agent": "PatriotsInActionFeeds/1.0",

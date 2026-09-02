@@ -41,14 +41,22 @@ Optional environment variables:
 
 ## Feeds
 
-County news widgets fetch Google News RSS on demand from the browser through public RSS/CORS providers. This keeps Amplify builds fast because the app only loads feeds for the county page a visitor opens instead of generating nationwide feed files during deployment.
+County news and Vimeo widgets fetch RSS on demand through the first-party `/api/rss-feed` endpoint. The endpoint validates feed hosts, merges Google News date windows, and returns cacheable JSON without exposing visitors to third-party proxy limits or browser CORS failures.
 
-The app tries RSS2JSON first and falls back to AllOrigins raw RSS if RSS2JSON is unavailable. Optional frontend environment variables:
+When the frontend is hosted separately from the API, set `VITE_API_BASE_URL` to the serverless API origin. This is required for a static AWS Amplify frontend:
 
-- `VITE_RSS_PROVIDER_URL` overrides the provider endpoint. It must accept `rss_url` and return RSS2JSON-compatible JSON.
-- `VITE_RSS2JSON_API_KEY` adds an RSS2JSON API key.
-- `VITE_RSS_RAW_PROXY_URL` overrides the fallback raw RSS proxy. It must accept `url` and return RSS XML with browser CORS headers.
-- `VITE_RSS_CACHE_TTL_MINUTES` controls browser cache freshness. The default is 60 minutes.
+```bash
+VITE_API_BASE_URL=https://your-api.example.com
+```
+
+If no API base is configured and the same-origin endpoint is unavailable, the browser makes one RSS2JSON request per feed. This compatibility fallback is not suitable as the production architecture. AllOrigins is disabled by default because its public endpoint is unreliable and frequently blocks browser CORS requests.
+
+Optional frontend environment variables:
+
+- `VITE_RSS_PROVIDER_URL` overrides the compatibility RSS2JSON endpoint. It must accept `rss_url` and return RSS2JSON-compatible JSON.
+- `VITE_RSS2JSON_API_KEY` adds an RSS2JSON API key to that compatibility request.
+- `VITE_RSS_RAW_PROXY_URL` explicitly enables a final raw RSS proxy fallback. It must accept `url` and return RSS XML with browser CORS headers.
+- `VITE_RSS_CACHE_TTL_MINUTES` controls browser cache freshness. The default is 360 minutes.
 
 County calendar pages use `/api/calendar`, which proxies allowlisted ICS URLs from county data. Potter County has the current community calendar configured.
 
@@ -72,9 +80,9 @@ The deployed API must return an `Access-Control-Allow-Origin` header for the Amp
 
 After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite embeds these values at build time. Do not configure the obsolete `VITE_MIGHTY_PROXY` variable.
 
-The TV page uses `/api/vimeo-showcase` to proxy videos from the Patriots in Action Vimeo user feed. Set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the deployment for the proxy.
+The RSS proxy accepts the Patriots in Action Vimeo RSS host as well as Google News. The optional `/api/vimeo-showcase` route uses Vimeo's authenticated API; set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the API deployment before using that route.
 
-The files in `api/` are Vercel-style serverless functions. A plain AWS Amplify static hosting deployment will not serve those routes, so `/api/calendar` and `/api/vimeo-showcase` return 404 unless you also deploy an API backend. For Amplify hosting, either:
+The files in `api/` are Vercel-style serverless functions. A plain AWS Amplify static hosting deployment will not serve those routes, so `/api/rss-feed`, `/api/calendar`, and `/api/vimeo-showcase` are unavailable unless you also deploy an API backend. For Amplify hosting, either:
 
 - deploy the `api/` functions to a serverless host and set `VITE_API_BASE_URL` in Amplify to that backend origin, for example `https://your-api.example.com`
 - or create equivalent AWS Lambda/API Gateway routes and set `VITE_API_BASE_URL` to that API Gateway/custom domain

@@ -13,6 +13,7 @@ import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
+import { apiUrl, hasApiBaseUrl } from "./lib/api";
 import { fetchCalendarFeed, parseIcsEvents, type CalendarEvent } from "./lib/calendar";
 import { sendCountyFormEmail, sendSiteContactEmail } from "./lib/email";
 import { fetchRssFeedItems, RSS_FEED_MIN_ITEMS } from "./lib/rss-client";
@@ -2166,6 +2167,7 @@ function isPropertyTaxFeedItem(item: NewsFeedItem) {
 
 function EventCalendar({ county, compact = false, page = "events" }: { county: CountySite; compact?: boolean; page?: CountyPageKey }) {
   const feedUrl = county.calendar.icsUrl;
+  const calendarProxyUrl = county.calendar.proxyUrl;
   const mightySpaceId = getCountyMightySpaceId(county);
   const hasMightyApi = Boolean(mightySpaceId && mightyIsConfigured());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -2225,7 +2227,19 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       }
 
       try {
-        const text = await fetchCalendarFeed(feedUrl);
+        let text: string;
+        if (calendarProxyUrl && (hasApiBaseUrl || import.meta.env.DEV)) {
+          const response = await fetch(apiUrl(calendarProxyUrl), {
+            signal: AbortSignal.timeout(12_000),
+          });
+          if (!response.ok) throw new Error(`Calendar API failed with ${response.status}`);
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("text/html")) throw new Error("Calendar API returned HTML.");
+          text = await response.text();
+        } else {
+          text = await fetchCalendarFeed(feedUrl);
+        }
+
         if (!active) return;
         const parsed = parseIcsEvents(text);
         setEvents(parsed);
@@ -2243,7 +2257,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
     return () => {
       active = false;
     };
-  }, [feedUrl, hasMightyApi, mightySpaceId]);
+  }, [calendarProxyUrl, feedUrl, hasMightyApi, mightySpaceId]);
 
   const visible = compact ? events.slice(0, 3) : events.slice(0, 12);
   const displayedStatus = status;

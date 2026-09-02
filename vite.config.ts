@@ -135,7 +135,8 @@ function calendarApiDevMiddleware(): Plugin {
   };
 }
 
-const allowedFeedHosts = new Set(["news.google.com"]);
+const allowedFeedHosts = new Set(["news.google.com", "vimeo.com", "www.vimeo.com"]);
+const feedFetchTimeoutMs = 8_000;
 
 function normalizeRssFeedUrl(value: string | null) {
   if (!value) return undefined;
@@ -191,6 +192,7 @@ async function fetchFeedXmls(feedUrl: string) {
 
 async function fetchFeedXml(feedUrl: string) {
   const feedResponse = await fetch(feedUrl, {
+    signal: AbortSignal.timeout(feedFetchTimeoutMs),
     headers: {
       Accept: "application/rss+xml, application/xml, text/xml",
       "User-Agent": "PatriotsInActionFeeds/1.0",

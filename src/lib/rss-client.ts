@@ -1,4 +1,5 @@
 import type { NewsFeedItem } from "./rss-feed";
+import { apiUrl, hasApiBaseUrl } from "./api";
 
 type Rss2JsonItem = {
   title?: string;
@@ -36,23 +37,35 @@ type CachedFeed = {
 };
 
 const DEFAULT_PROVIDER_URL = "https://api.rss2json.com/v1/api.json";
-const DEFAULT_RAW_PROXY_URL = "https://api.allorigins.win/raw";
+const rawProxyUrl = (import.meta.env.VITE_RSS_RAW_PROXY_URL || "").trim();
 const MAX_ITEMS = 40;
-const CACHE_TTL_MS = minutesEnv("VITE_RSS_CACHE_TTL_MINUTES", 60) * 60 * 1000;
+const REQUEST_TIMEOUT_MS = 12_000;
+const CACHE_TTL_MS = minutesEnv("VITE_RSS_CACHE_TTL_MINUTES", 360) * 60 * 1000;
+const inFlightRequests = new Map<string, Promise<NewsFeedItem[]>>();
 export const RSS_FEED_MIN_ITEMS = 3;
 
 export async function fetchRssFeedItems(feedUrl: string) {
   const cached = readCachedFeed(feedUrl);
   if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.items;
 
-  try {
-    const items = await fetchProviderItems(feedUrl);
-    writeCachedFeed(feedUrl, items);
-    return items;
-  } catch (error) {
-    if (cached) return cached.items;
-    throw error;
-  }
+  const pending = inFlightRequests.get(feedUrl);
+  if (pending) return pending;
+
+  const request = fetchProviderItems(feedUrl)
+    .then((items) => {
+      writeCachedFeed(feedUrl, items);
+      return items;
+    })
+    .catch((error) => {
+      if (cached) return cached.items;
+      throw error;
+    })
+    .finally(() => {
+      inFlightRequests.delete(feedUrl);
+    });
+
+  inFlightRequests.set(feedUrl, request);
+  return request;
 }
 
 export type RssFeedFetchResult = {
@@ -87,33 +100,38 @@ export async function fetchRssFeedItemsWithFallback(
 async function fetchProviderItems(feedUrl: string) {
   try {
     return await fetchLocalApiItems(feedUrl);
-  } catch {
+  } catch (apiError) {
+    if (hasApiBaseUrl) throw apiError;
+
     try {
-      return await fetchMergedRss2JsonItems(feedUrl);
-    } catch {
-      return fetchMergedRawRssItems(feedUrl);
+      return await fetchRss2JsonItems(feedUrl);
+    } catch (providerError) {
+      if (!rawProxyUrl) throw providerError;
+      return fetchRawRssItems(feedUrl);
     }
   }
 }
 
 async function fetchLocalApiItems(feedUrl: string) {
-  const url = new URL("/api/rss-feed", window.location.origin);
+  const url = new URL(apiUrl("/api/rss-feed"), window.location.origin);
   url.searchParams.set("url", feedUrl);
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   if (!response.ok) throw new Error(`Local RSS API failed with ${response.status}`);
-  const json = (await response.json()) as LocalFeedResponse;
-  return newestItems(json.items || []);
-}
 
-async function fetchMergedRss2JsonItems(feedUrl: string) {
-  const results = await Promise.allSettled(feedVariantUrls(feedUrl).map(fetchRss2JsonItems));
-  const items = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
-  if (!items.length) throw new Error("RSS provider returned no items.");
-  return newestItems(dedupeItems(items));
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    throw new Error("Local RSS API returned a non-JSON response.");
+  }
+
+  const json = (await response.json()) as LocalFeedResponse;
+  if (!Array.isArray(json.items)) throw new Error("Local RSS API returned an invalid payload.");
+  return newestItems(json.items);
 }
 
 async function fetchRss2JsonItems(feedUrl: string) {
-  const response = await fetch(providerRequestUrl(feedUrl));
+  const response = await fetch(providerRequestUrl(feedUrl), {
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
   if (!response.ok) throw new Error(`RSS provider failed with ${response.status}`);
 
   const json = (await response.json()) as Rss2JsonResponse;
@@ -125,50 +143,15 @@ async function fetchRss2JsonItems(feedUrl: string) {
     .slice(0, MAX_ITEMS);
 }
 
-async function fetchMergedRawRssItems(feedUrl: string) {
-  const results = await Promise.allSettled(feedVariantUrls(feedUrl).map(fetchRawRssItems));
-  const items = results.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
-  if (!items.length) throw new Error("RSS raw proxy returned no items.");
-  return newestItems(dedupeItems(items));
-}
-
 async function fetchRawRssItems(feedUrl: string) {
-  const response = await fetch(rawProxyRequestUrl(feedUrl));
+  const response = await fetch(rawProxyRequestUrl(feedUrl), {
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
   if (!response.ok) throw new Error(`RSS raw proxy failed with ${response.status}`);
 
   return parseRssXml(await response.text())
     .sort((first, second) => publishedTimestamp(second) - publishedTimestamp(first))
     .slice(0, MAX_ITEMS);
-}
-
-function feedVariantUrls(feedUrl: string) {
-  try {
-    const url = new URL(feedUrl);
-    if (url.hostname !== "news.google.com" || !url.pathname.startsWith("/rss/search")) return [feedUrl];
-
-    const query = url.searchParams.get("q") || "";
-    if (/\bwhen:\S+/i.test(query)) return [feedUrl];
-
-    return ["7d", "30d"].map((dateWindow) => {
-      const next = new URL(url);
-      next.searchParams.set("q", `${query} when:${dateWindow}`);
-      return next.toString();
-    }).concat(feedUrl);
-  } catch {
-    return [feedUrl];
-  }
-}
-
-function dedupeItems(items: NewsFeedItem[]) {
-  const deduped = new Map<string, NewsFeedItem>();
-  items.forEach((item) => {
-    const key = item.link || item.id;
-    const existing = deduped.get(key);
-    if (!existing || publishedTimestamp(item) > publishedTimestamp(existing)) {
-      deduped.set(key, item);
-    }
-  });
-  return [...deduped.values()];
 }
 
 function newestItems(items: NewsFeedItem[]) {
@@ -188,7 +171,8 @@ function providerRequestUrl(feedUrl: string) {
 }
 
 function rawProxyRequestUrl(feedUrl: string) {
-  const url = new URL(import.meta.env.VITE_RSS_RAW_PROXY_URL || DEFAULT_RAW_PROXY_URL);
+  if (!rawProxyUrl) throw new Error("No raw RSS proxy is configured.");
+  const url = new URL(rawProxyUrl);
   url.searchParams.set("url", feedUrl);
   return url.toString();
 }
