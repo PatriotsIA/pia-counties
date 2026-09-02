@@ -16,7 +16,7 @@ import { initGoogleTagManager, trackPageView } from "./lib/analytics";
 import { fetchCalendarFeed, parseIcsEvents, type CalendarEvent } from "./lib/calendar";
 import { sendCountyFormEmail, sendSiteContactEmail } from "./lib/email";
 import { fetchRssFeedItems, RSS_FEED_MIN_ITEMS } from "./lib/rss-client";
-import { buildMarketFeedUrl, type CountyFeedKind } from "./lib/county-feed-urls";
+import { buildMarketFeedUrl, buildStateElectionFeedUrl, type CountyFeedKind } from "./lib/county-feed-urls";
 import { filterFeedItemsByRegion } from "./lib/county-feed-filter";
 import { resolveNewsMarketCity } from "./lib/county-news-market";
 import type { NewsFeedItem } from "./lib/rss-feed";
@@ -1595,12 +1595,24 @@ type RssFeedWidgetProps = {
   supplementalFeedUrl?: string;
   fallbackFeedUrl?: string;
   fallbackMarketCity?: string;
+  secondaryFallbackFeedUrl?: string;
+  secondaryFallbackLabel?: string;
   emptyText: string;
   presentedBy?: (typeof preferredPartners)[number];
-  topic?: "general" | "obituaries" | "sports";
+  topic?:
+    | "general"
+    | "obituaries"
+    | "sports"
+    | "elections"
+    | "bondIssues"
+    | "countyMoney"
+    | "propertyTaxes";
 };
 
-type CountyRssFeedWidgetProps = Omit<RssFeedWidgetProps, "fallbackFeedUrl" | "fallbackMarketCity" | "county"> & {
+type CountyRssFeedWidgetProps = Omit<
+  RssFeedWidgetProps,
+  "fallbackFeedUrl" | "fallbackMarketCity" | "secondaryFallbackFeedUrl" | "secondaryFallbackLabel" | "county"
+> & {
   county: CountySite;
   feedKind: CountyFeedKind;
 };
@@ -1630,6 +1642,8 @@ function CountyRssFeedWidget({ county, feedKind, feedUrl, ...props }: CountyRssF
       feedUrl={feedUrl}
       fallbackFeedUrl={fallbackFeedUrl}
       fallbackMarketCity={fallbackMarketCity}
+      secondaryFallbackFeedUrl={feedKind === "elections" ? buildStateElectionFeedUrl(county.state) : undefined}
+      secondaryFallbackLabel={feedKind === "elections" ? `${county.state.name} statewide election news` : undefined}
     />
   );
 }
@@ -1637,6 +1651,10 @@ function CountyRssFeedWidget({ county, feedKind, feedUrl, ...props }: CountyRssF
 function countyFeedLabel(topic: RssFeedWidgetProps["topic"]) {
   if (topic === "obituaries") return "obituary results";
   if (topic === "sports") return "sports coverage";
+  if (topic === "elections") return "election coverage";
+  if (topic === "bondIssues") return "bond-issue coverage";
+  if (topic === "countyMoney") return "county finance coverage";
+  if (topic === "propertyTaxes") return "property-tax coverage";
   return "local news";
 }
 
@@ -1649,6 +1667,8 @@ function RssFeedWidget({
   supplementalFeedUrl,
   fallbackFeedUrl,
   fallbackMarketCity,
+  secondaryFallbackFeedUrl,
+  secondaryFallbackLabel,
   emptyText,
   presentedBy,
   topic = "general",
@@ -1684,6 +1704,7 @@ function RssFeedWidget({
       let topicItems: NewsFeedItem[] = [];
       let nextUsedFallback = false;
       let nextActiveFeedUrl = feedUrl;
+      let nextFallbackLabel = "";
 
       try {
         const parsed = await fetchMergedFeedItems(feedUrl, supplementalFeedUrl);
@@ -1704,6 +1725,7 @@ function RssFeedWidget({
             topicItems = fallbackTopicItems;
             nextUsedFallback = true;
             nextActiveFeedUrl = fallbackFeedUrl;
+            nextFallbackLabel = fallbackMarketCity || "";
           }
         } catch {
           if (!topicItems.length) {
@@ -1718,6 +1740,25 @@ function RssFeedWidget({
         }
       }
 
+      if (
+        topicItems.length < RSS_FEED_MIN_ITEMS &&
+        secondaryFallbackFeedUrl &&
+        secondaryFallbackFeedUrl !== nextActiveFeedUrl
+      ) {
+        try {
+          const secondaryParsed = await fetchRssFeedItems(secondaryFallbackFeedUrl);
+          const secondaryTopicItems = applyFeedFilters(secondaryParsed, true);
+          if (secondaryTopicItems.length > topicItems.length) {
+            topicItems = secondaryTopicItems;
+            nextUsedFallback = true;
+            nextActiveFeedUrl = secondaryFallbackFeedUrl;
+            nextFallbackLabel = secondaryFallbackLabel || "";
+          }
+        } catch {
+          // Keep the best county or nearby results already loaded.
+        }
+      }
+
       if (!active) return;
 
       setItems(topicItems);
@@ -1726,8 +1767,8 @@ function RssFeedWidget({
       setVisibleCount(5);
       if (topicItems.length) {
         setStatus(
-          nextUsedFallback && fallbackMarketCity
-            ? `Limited ${countyFeedLabel(topic)} for this county. Showing nearby coverage from ${fallbackMarketCity}.`
+          nextUsedFallback && nextFallbackLabel
+            ? `Limited ${countyFeedLabel(topic)} for this county. Showing broader coverage from ${nextFallbackLabel}.`
             : "",
         );
       } else {
@@ -1747,7 +1788,17 @@ function RssFeedWidget({
     return () => {
       active = false;
     };
-  }, [county, emptyText, fallbackFeedUrl, fallbackMarketCity, feedUrl, supplementalFeedUrl, topic]);
+  }, [
+    county,
+    emptyText,
+    fallbackFeedUrl,
+    fallbackMarketCity,
+    feedUrl,
+    secondaryFallbackFeedUrl,
+    secondaryFallbackLabel,
+    supplementalFeedUrl,
+    topic,
+  ]);
 
   const orderedItems = [...items].sort((first, second) => feedItemTimestamp(second) - feedItemTimestamp(first));
   const visibleItems = orderedItems.slice(0, visibleCount);
@@ -1795,7 +1846,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
       <div className="section-heading">
         <p className="eyebrow">County Newsroom</p>
         <h2>Local news feeds for {county.displayName}</h2>
-        <p>Follow local articles, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
+        <p>Follow local articles, elections, public money, property taxes, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
       </div>
       <div className="feed-layout">
         <div className="feed-pair">
@@ -1829,6 +1880,50 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             page={page}
             route="county"
             slot="county-news-mid-inline"
+          />
+        </div>
+        <div className="feed-pair">
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="elections"
+            eyebrow="Election Watch"
+            title="County Elections"
+            description={`Election, candidate, ballot, voting, and precinct coverage focused on ${county.displayName}.`}
+            feedUrl={county.feeds.electionsUrl}
+            emptyText="No county election results are available yet."
+            topic="elections"
+          />
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="bondIssues"
+            eyebrow="Bond Watch"
+            title="Local Bond Issues"
+            description={`Bond elections, referendums, and public-debt proposals affecting ${county.displayName}.`}
+            feedUrl={county.feeds.bondIssuesUrl}
+            emptyText="No local bond-issue results are available yet."
+            topic="bondIssues"
+          />
+        </div>
+        <div className="feed-pair">
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="countyMoney"
+            eyebrow="County Money"
+            title="Budgets & Spending"
+            description={`County budget, spending, funding, revenue, and public-finance coverage for ${county.displayName}.`}
+            feedUrl={county.feeds.countyMoneyUrl}
+            emptyText="No county budget or spending results are available yet."
+            topic="countyMoney"
+          />
+          <CountyRssFeedWidget
+            county={county}
+            feedKind="propertyTaxes"
+            eyebrow="Property Taxes"
+            title="Taxes, Rates & Appraisals"
+            description={`Property-tax rates, appraisals, assessors, and homestead coverage for ${county.displayName}.`}
+            feedUrl={county.feeds.propertyTaxesUrl}
+            emptyText="No county property-tax results are available yet."
+            topic="propertyTaxes"
           />
         </div>
         <div className="feed-pair">
@@ -1918,6 +2013,10 @@ function mergeFeedItems(groups: NewsFeedItem[][]) {
 function filterFeedItemsByTopic(items: NewsFeedItem[], topic: RssFeedWidgetProps["topic"]) {
   if (topic === "obituaries") return items.filter(isObituaryFeedItem);
   if (topic === "sports") return items.filter(isSportsFeedItem);
+  if (topic === "elections") return items.filter(isElectionFeedItem);
+  if (topic === "bondIssues") return items.filter(isBondIssueFeedItem);
+  if (topic === "countyMoney") return items.filter(isCountyMoneyFeedItem);
+  if (topic === "propertyTaxes") return items.filter(isPropertyTaxFeedItem);
   return items.filter((item) => !isObituaryFeedItem(item));
 }
 
@@ -1999,6 +2098,69 @@ function isSportsFeedItem(item: NewsFeedItem) {
     "ncaa",
     "regional meet",
     "state meet",
+  ].some((keyword) => text.includes(keyword));
+}
+
+function isElectionFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  return [
+    "election",
+    "early voting",
+    "ballot",
+    "candidate",
+    "polling place",
+    "polling location",
+    "precinct",
+    "primary",
+    "runoff",
+    "race",
+    "vote",
+    "campaign",
+    "filed to run",
+    "running for",
+    "re-election",
+    "reelection",
+    "voter registration",
+  ].some((keyword) => text.includes(keyword));
+}
+
+function isBondIssueFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  return [
+    "bond",
+    "referendum",
+    "debt issuance",
+    "general obligation",
+  ].some((keyword) => text.includes(keyword));
+}
+
+function isCountyMoneyFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  return [
+    "budget",
+    "spending",
+    "finance",
+    "financial",
+    "audit",
+    "appropriation",
+    "revenue",
+    "expenditure",
+    "funding",
+    "public funds",
+  ].some((keyword) => text.includes(keyword));
+}
+
+function isPropertyTaxFeedItem(item: NewsFeedItem) {
+  const text = feedSearchText(item);
+  return [
+    "property tax",
+    "tax rate",
+    "appraisal",
+    "assessed value",
+    "assessment",
+    "tax assessor",
+    "homestead exemption",
+    "millage",
   ].some((keyword) => text.includes(keyword));
 }
 

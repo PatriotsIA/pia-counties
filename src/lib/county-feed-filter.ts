@@ -19,6 +19,11 @@ export function isFeedItemRelevantToCounty(item: NewsFeedItem, context: CountyFe
   const conflictingStates = getOtherStatesWithCountyName(context.county.name, targetState.abbr);
   const hasTargetState = mentionsState(text, targetState);
   const hasCountyReference = mentionsCountyName(text, context.county.name);
+  const localCity = (context.usedFallback ? context.marketCity : context.county.primaryCity)?.toLowerCase();
+
+  if (localCity && text.includes(localCity) && !conflictingStates.some((state) => mentionsState(text, state))) {
+    return true;
+  }
 
   for (const otherState of conflictingStates) {
     if (!mentionsState(text, otherState)) continue;
@@ -32,11 +37,6 @@ export function isFeedItemRelevantToCounty(item: NewsFeedItem, context: CountyFe
   }
 
   if (hasTargetState) return true;
-
-  const localCity = (context.usedFallback ? context.marketCity : context.county.primaryCity)?.toLowerCase();
-  if (localCity && text.includes(localCity) && !conflictingStates.some((state) => mentionsState(text, state))) {
-    return true;
-  }
 
   if (conflictingStates.length > 0) {
     return !conflictingStates.some((state) => mentionsState(text, state));

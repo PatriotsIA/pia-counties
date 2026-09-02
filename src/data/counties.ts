@@ -56,6 +56,10 @@ export type CountySite = {
     localVideoUrl: string;
     nationalNewsUrl: string;
     obituariesUrl: string;
+    electionsUrl: string;
+    bondIssuesUrl: string;
+    countyMoneyUrl: string;
+    propertyTaxesUrl: string;
   };
   links: {
     community: string;
@@ -121,6 +125,10 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
       localVideoUrl: buildCountyFeedUrl("localVideo", county.name, state),
       nationalNewsUrl: site.links.nationalNews,
       obituariesUrl: buildCountyFeedUrl("obituaries", county.name, state),
+      electionsUrl: buildCountyFeedUrl("elections", county.name, state),
+      bondIssuesUrl: buildCountyFeedUrl("bondIssues", county.name, state),
+      countyMoneyUrl: buildCountyFeedUrl("countyMoney", county.name, state),
+      propertyTaxesUrl: buildCountyFeedUrl("propertyTaxes", county.name, state),
     },
     links: {
       community: site.links.community,
