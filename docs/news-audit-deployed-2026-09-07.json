@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-09-07T22:48:41.846Z",
+  "base": "https://ntqzmx2vo55fnwkqfwggcmdkny0jzlco.lambda-url.us-east-2.on.aws",
+  "origin": "https://patriotsinaction.com",
+  "targets": 3245,
+  "populated": 3245,
+  "empty": 0,
+  "failed": 0,
+  "p50Ms": 154,
+  "p95Ms": 361,
+  "maxMs": 12398
+}
