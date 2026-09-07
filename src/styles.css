@@ -2470,6 +2470,7 @@ nav a {
 }
 
 .candidate-review-status {
+  flex-wrap: wrap;
   padding: 0.8rem 1rem;
   border-radius: 14px;
   background: rgba(21, 56, 111, 0.07);
@@ -2488,6 +2489,49 @@ nav a {
 
 .candidate-review-login .form-card {
   width: min(460px, 100%);
+}
+
+.candidate-preview-dialog {
+  width: min(1200px, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+.candidate-preview-dialog::backdrop {
+  background: rgba(17, 27, 71, 0.65);
+}
+
+.candidate-preview-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.candidate-preview-header h2 {
+  margin: 0 0 0.35rem;
+  color: var(--navy);
+}
+
+.candidate-preview-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.candidate-preview-dialog a[aria-disabled="true"] {
+  color: var(--muted);
+  cursor: default;
 }
 
 .candidate-profile-bio {

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import type { Candidate } from "../data/candidates";
+import { CandidateProfile } from "./CandidateProfile";
 import {
   candidateScopes,
   clearCandidateReviewerSession,
@@ -256,71 +258,112 @@ function CandidateReviewEditor({
   onApprove: () => void;
   onDeny: () => void;
 }) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [preview, setPreview] = useState<Candidate>();
+
+  function previewProfile() {
+    if (formRef.current) setPreview(reviewCandidate(new FormData(formRef.current), record));
+  }
+
   return (
-    <form id="candidate-review-editor" className="form-card candidate-profile-form" onSubmit={onSubmit}>
-      <div className="candidate-review-status">
-        <strong>Status: {record.status}</strong>
-        <span>Revision {record.revision || 1}</span>
-      </div>
-      <fieldset>
-        <legend>Public candidate profile</legend>
-        <div className="candidate-form-grid">
-          <ReviewField name="id" label="Profile ID / URL slug" value={record.id} readOnly />
-          <ReviewField name="name" label="Candidate name" value={record.name} required />
-          <ReviewField name="office" label="Office sought" value={record.office} required />
-          <ReviewField name="stateSlug" label="State slug" value={record.stateSlug} required />
-          <label className="field">
-            <span>Race scope</span>
-            <select name="scope" defaultValue={record.scope}>
-              {candidateScopes.map((scope) => <option key={scope.value} value={scope.value}>{scope.label}</option>)}
-            </select>
+    <>
+      <form ref={formRef} id="candidate-review-editor" className="form-card candidate-profile-form" onSubmit={onSubmit}>
+        <div className="candidate-review-status">
+          <strong>Status: {record.status}</strong>
+          <span>Revision {record.revision || 1}</span>
+          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={loading}>Preview Profile</button>
+        </div>
+        <fieldset>
+          <legend>Public candidate profile</legend>
+          <div className="candidate-form-grid">
+            <ReviewField name="id" label="Profile ID / URL slug" value={record.id} readOnly />
+            <ReviewField name="name" label="Candidate name" value={record.name} required />
+            <ReviewField name="office" label="Office sought" value={record.office} required />
+            <ReviewField name="stateSlug" label="State slug" value={record.stateSlug} required />
+            <label className="field">
+              <span>Race scope</span>
+              <select name="scope" defaultValue={record.scope}>
+                {candidateScopes.map((scope) => <option key={scope.value} value={scope.value}>{scope.label}</option>)}
+              </select>
+            </label>
+            <ReviewField name="countySlug" label="County slug" value={record.countySlug} />
+            <ReviewField name="countyName" label="County name" value={record.countyName} />
+            <ReviewField name="district" label="District / precinct / city" value={record.district} />
+            <ReviewField name="party" label="Party" value={record.party} />
+            <ReviewField name="electionYear" label="Election year" type="number" value={record.electionYear} />
+            <ReviewField name="email" label="Public email" type="email" value={record.email} />
+            <ReviewField name="phone" label="Public phone" value={record.phone} />
+            <ReviewField name="websiteUrl" label="Website URL" type="url" value={record.websiteUrl} />
+            <ReviewField name="profileUrl" label="Existing profile URL" type="url" value={record.profileUrl} />
+            <ReviewField name="ballotpediaUrl" label="Ballotpedia URL" type="url" value={record.ballotpediaUrl} />
+            <ReviewField name="image" label="Portrait URL" type="url" value={record.image} />
+            <ReviewField name="videoEmbedUrl" label="Video embed URL" type="url" value={record.videoEmbedUrl} />
+            <ReviewField name="videoTitle" label="Video title" value={record.videoTitle} />
+            <ReviewField name="facebookUrl" label="Facebook URL" type="url" value={record.facebookUrl} />
+            <ReviewField name="xUrl" label="X / Twitter URL" type="url" value={record.xUrl} />
+            <ReviewField name="instagramUrl" label="Instagram URL" type="url" value={record.instagramUrl} />
+            <ReviewField name="youtubeUrl" label="YouTube URL" type="url" value={record.youtubeUrl} />
+          </div>
+          <label className="checkbox-row">
+            <input type="checkbox" name="incumbent" defaultChecked={record.incumbent} />
+            <span>Incumbent</span>
           </label>
-          <ReviewField name="countySlug" label="County slug" value={record.countySlug} />
-          <ReviewField name="countyName" label="County name" value={record.countyName} />
-          <ReviewField name="district" label="District / precinct / city" value={record.district} />
-          <ReviewField name="party" label="Party" value={record.party} />
-          <ReviewField name="electionYear" label="Election year" type="number" value={record.electionYear} />
-          <ReviewField name="email" label="Public email" type="email" value={record.email} />
-          <ReviewField name="phone" label="Public phone" value={record.phone} />
-          <ReviewField name="websiteUrl" label="Website URL" type="url" value={record.websiteUrl} />
-          <ReviewField name="profileUrl" label="Existing profile URL" type="url" value={record.profileUrl} />
-          <ReviewField name="ballotpediaUrl" label="Ballotpedia URL" type="url" value={record.ballotpediaUrl} />
-          <ReviewField name="image" label="Portrait URL" type="url" value={record.image} />
-          <ReviewField name="videoEmbedUrl" label="Video embed URL" type="url" value={record.videoEmbedUrl} />
-          <ReviewField name="videoTitle" label="Video title" value={record.videoTitle} />
-          <ReviewField name="facebookUrl" label="Facebook URL" type="url" value={record.facebookUrl} />
-          <ReviewField name="xUrl" label="X / Twitter URL" type="url" value={record.xUrl} />
-          <ReviewField name="instagramUrl" label="Instagram URL" type="url" value={record.instagramUrl} />
-          <ReviewField name="youtubeUrl" label="YouTube URL" type="url" value={record.youtubeUrl} />
-        </div>
-        <label className="checkbox-row">
-          <input type="checkbox" name="incumbent" defaultChecked={record.incumbent} />
-          <span>Incumbent</span>
-        </label>
-        <ReviewField name="bio" label="Biography" textarea value={record.bio} />
-      </fieldset>
+          <ReviewField name="bio" label="Biography" textarea value={record.bio} />
+        </fieldset>
 
-      <fieldset>
-        <legend>Private submission details</legend>
-        <div className="candidate-form-grid">
-          <ReviewField name="submitterName" label="Submitter" value={record.submitterName} readOnly />
-          <ReviewField name="submitterEmail" label="Submitter email" value={record.submitterEmail} readOnly />
-          <ReviewField name="submitterPhone" label="Submitter phone" value={record.submitterPhone} readOnly />
-          <ReviewField name="submitterRole" label="Submitter role" value={record.submitterRole} readOnly />
-        </div>
-      </fieldset>
+        <fieldset>
+          <legend>Private submission details</legend>
+          <div className="candidate-form-grid">
+            <ReviewField name="submitterName" label="Submitter" value={record.submitterName} readOnly />
+            <ReviewField name="submitterEmail" label="Submitter email" value={record.submitterEmail} readOnly />
+            <ReviewField name="submitterPhone" label="Submitter phone" value={record.submitterPhone} readOnly />
+            <ReviewField name="submitterRole" label="Submitter role" value={record.submitterRole} readOnly />
+          </div>
+        </fieldset>
 
-      <ReviewField name="moderationReason" label="Review notes / denial reason" textarea value={record.moderationReason} />
-      <div className="candidate-review-actions">
-        <button className="button" type="submit" disabled={loading}>Save Changes</button>
-        {record.status === "pending" ? (
-          <>
-            <button className="button primary" type="button" onClick={onApprove} disabled={loading}>Approve &amp; Publish</button>
-            <button className="button red" type="button" onClick={onDeny} disabled={loading}>Deny</button>
-          </>
-        ) : null}
-      </div>
-    </form>
+        <ReviewField name="moderationReason" label="Review notes / denial reason" textarea value={record.moderationReason} />
+        <div className="candidate-review-actions">
+          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={loading}>Preview Profile</button>
+          <button className="button" type="submit" disabled={loading}>Save Changes</button>
+          {record.status === "pending" ? (
+            <>
+              <button className="button primary" type="button" onClick={onApprove} disabled={loading}>Approve &amp; Publish</button>
+              <button className="button red" type="button" onClick={onDeny} disabled={loading}>Deny</button>
+            </>
+          ) : null}
+        </div>
+      </form>
+      {preview ? <CandidateProfilePreview candidate={preview} onClose={() => setPreview(undefined)} /> : null}
+    </>
+  );
+}
+
+function CandidateProfilePreview({ candidate, onClose }: { candidate: Candidate; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) dialog.showModal();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      // Removing the dialog closes it. Calling close during StrictMode's
+      // effect replay would fire onClose and dismiss a newly opened preview.
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <dialog ref={dialogRef} className="candidate-preview-dialog" aria-labelledby="candidate-preview-title" aria-describedby="candidate-preview-description" onClose={onClose}>
+      <header className="candidate-preview-header">
+        <div>
+          <h2 id="candidate-preview-title">Profile preview</h2>
+          <p id="candidate-preview-description">The published profile layout with your current edits.</p>
+        </div>
+        <button className="button" type="button" autoFocus onClick={() => dialogRef.current?.close()}>Close Preview</button>
+      </header>
+      <CandidateProfile candidate={candidate} backPath="/counties" preview />
+    </dialog>
   );
 }
 
@@ -345,10 +388,19 @@ function ReviewField({
 }
 
 function reviewPayload(values: FormData, record: CandidateReviewRecord): Partial<CandidateReviewRecord> {
+  return {
+    ...reviewCandidate(values, record),
+    moderationReason: String(values.get("moderationReason") || "").trim() || undefined,
+    revision: record.revision,
+  };
+}
+
+function reviewCandidate(values: FormData, record: CandidateReviewRecord): Candidate {
   const read = (name: string) => String(values.get(name) || "").trim();
   const optional = (name: string) => read(name) || undefined;
   const electionYear = Number.parseInt(read("electionYear"), 10);
   return {
+    id: record.id,
     name: read("name"),
     office: read("office"),
     stateSlug: read("stateSlug"),
@@ -372,7 +424,5 @@ function reviewPayload(values: FormData, record: CandidateReviewRecord): Partial
     xUrl: optional("xUrl"),
     instagramUrl: optional("instagramUrl"),
     youtubeUrl: optional("youtubeUrl"),
-    moderationReason: optional("moderationReason"),
-    revision: record.revision,
   };
 }

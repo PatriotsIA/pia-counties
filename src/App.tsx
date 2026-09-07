@@ -3,6 +3,9 @@ import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, usePa
 import { AdSlot } from "./components/AdSlot";
 import { CountyNewsFeed, StateNewsFeeds } from "./components/NewsFeed";
 import { CandidateCatalogProvider } from "./components/CandidateCatalogProvider";
+import { CandidateProfile, CandidateDetails, CandidateProjectDisclaimer, ShareCandidateProfileButton } from "./components/CandidateProfile";
+import { candidateProjectCandidateIds, candidateProjectUrl } from "./data/candidate-project";
+import { candidateJurisdiction, candidateProfilePath } from "./lib/candidate-profile";
 import { CandidateReviewConsole } from "./components/CandidateReviewConsole";
 import { CandidateSubmissionForm } from "./components/CandidateSubmissionForm";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -49,10 +52,6 @@ const countyPages: { key: CountyPageKey; label: string }[] = [
   { key: "contact", label: "Contact" },
 ];
 
-const candidateProjectUrl = "https://secure.anedot.com/patriots-for-action/donate";
-const candidateProjectDisclaimer =
-  "You are leaving Patriots in Action and will be redirected to Patriots For Action PAC's secure Anedot donation page. Contributions are not tax-deductible. Not authorized by any candidate's committee. Texas Ethics Commission Filer ID 00090846.";
-const candidateProjectCandidateIds = new Set(["mayes-middleton", "jim-wright", "thomas-smith"]);
 const heroHeadline = "Patriots in Action";
 const heroKicker = "A Nationwide and Ultra Local Hub for Action";
 const heroDescription =
@@ -250,10 +249,6 @@ function countyWeatherSponsor(county: CountySite) {
   const partners = [...countyPartners(county), ...nationwidePartners].filter((partner) => partner.href);
   const index = Number.parseInt(county.fips, 10) % partners.length;
   return partners[index];
-}
-
-function candidateProfilePath(candidate: Candidate) {
-  return `/candidates/${candidate.id}`;
 }
 
 function statePath(state: { abbr: string }) {
@@ -2621,10 +2616,6 @@ function candidateSortValue(candidate: Candidate, sort: string) {
   return candidate.name;
 }
 
-function candidateJurisdiction(candidate: Candidate) {
-  return candidate.countyName || candidate.district || (candidate.scope === "statewide" ? "Statewide" : "");
-}
-
 function candidateScopeLabel(scope: string) {
   return scope.charAt(0).toUpperCase() + scope.slice(1);
 }
@@ -2678,14 +2669,6 @@ function isInteractiveTarget(target: EventTarget | null) {
   return target instanceof Element && Boolean(target.closest("a, button, input, select, textarea, iframe"));
 }
 
-function CandidateProjectDisclaimer() {
-  return (
-    <p>
-      {candidateProjectDisclaimer} <Link to="/terms">Terms</Link> and <Link to="/privacy">Privacy Policy</Link>.
-    </p>
-  );
-}
-
 function CandidateVideoPreview({ candidate }: { candidate: Candidate }) {
   const navigate = useNavigate();
 
@@ -2698,127 +2681,6 @@ function CandidateVideoPreview({ candidate }: { candidate: Candidate }) {
       />
       <span>Watch Interview</span>
     </button>
-  );
-}
-
-function CandidateProfile({ candidate, backPath }: { candidate: Candidate; backPath: string }) {
-  return (
-    <article className="candidate-profile">
-      <div className="candidate-profile-header">
-        <div>
-          <p className="eyebrow">Candidate Profile</p>
-          <h1>{candidate.name}</h1>
-          <p>For {candidate.office}</p>
-        </div>
-        <div className="actions">
-          <Link className="button" to={backPath}>Back to Candidates</Link>
-          <ShareCandidateProfileButton candidate={candidate} />
-        </div>
-      </div>
-      <div className="candidate-profile-grid">
-        <div className="candidate-profile-main">
-          {candidate.videoEmbedUrl ? (
-            <iframe
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              src={candidate.videoEmbedUrl}
-              title={candidate.videoTitle || `${candidate.name} video`}
-            />
-          ) : candidate.image ? (
-            <img src={candidate.image} alt={candidate.name} />
-          ) : (
-            <div className="candidate-profile-empty-video">No candidate video has been added yet.</div>
-          )}
-          {candidate.bio ? (
-            <div className="candidate-profile-bio">
-              <h2>About {candidate.name}</h2>
-              {candidate.bio.split(/\n{2,}/).map((paragraph, index) => <p key={`${candidate.id}-bio-${index}`}>{paragraph}</p>)}
-            </div>
-          ) : null}
-        </div>
-        <aside className="candidate-profile-sidebar">
-          {candidate.image ? <img className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}
-          <CandidateDetails candidate={candidate} showProfileLink />
-          {candidateProjectCandidateIds.has(candidate.id) ? (
-            <div className="candidate-support">
-              <a className="button red" href={candidateProjectUrl}>Help This Candidate Get Their Message Out</a>
-              <CandidateProjectDisclaimer />
-            </div>
-          ) : null}
-        </aside>
-      </div>
-    </article>
-  );
-}
-
-function ShareCandidateProfileButton({ candidate }: { candidate: Candidate }) {
-  const [status, setStatus] = useState("");
-  const path = candidateProfilePath(candidate);
-
-  async function handleShare() {
-    const url = new URL(path, window.location.origin).toString();
-
-    try {
-      await navigator.clipboard.writeText(url);
-      setStatus("Copied");
-      window.setTimeout(() => setStatus(""), 1800);
-    } catch {
-      setStatus("");
-    }
-  }
-
-  return (
-    <button className="button" type="button" onClick={handleShare}>
-      {status || "Share Candidate Profile"}
-    </button>
-  );
-}
-
-type CandidateDetailRow = {
-  label: string;
-  value?: string;
-  href?: string;
-  linkText?: string;
-};
-
-function CandidateDetails({ candidate, showProfileLink = false }: { candidate: Candidate; showProfileLink?: boolean }) {
-  const rows: CandidateDetailRow[] = [];
-
-  rows.push(
-    { label: "Running For", value: candidate.office },
-    { label: "Jurisdiction", value: candidateJurisdiction(candidate) },
-    { label: "Party", value: candidate.party },
-    { label: "Election Year", value: candidate.electionYear ? String(candidate.electionYear) : undefined },
-    { label: "Incumbent", value: candidate.incumbent ? "Yes" : undefined },
-    { label: "Ballotpedia Profile", value: candidate.ballotpediaUrl, linkText: candidate.name },
-    { label: "Email", value: candidate.email, href: candidate.email ? `mailto:${candidate.email}` : undefined },
-    { label: "Phone", value: candidate.phone, href: candidate.phone ? `tel:${candidate.phone.replace(/\D+/g, "")}` : undefined },
-    { label: "Website", value: candidate.websiteUrl, linkText: "Website" },
-    { label: "Facebook", value: candidate.facebookUrl, linkText: "Facebook" },
-    { label: "X / Twitter", value: candidate.xUrl, linkText: "X / Twitter" },
-    { label: "Instagram", value: candidate.instagramUrl, linkText: "Instagram" },
-    { label: "YouTube", value: candidate.youtubeUrl, linkText: "YouTube" },
-  );
-
-  if (showProfileLink) rows.splice(5, 0, { label: "Profile Link", value: candidateProfilePath(candidate), linkText: "Direct profile" });
-
-  const visibleRows = rows.filter((row): row is CandidateDetailRow & { value: string } => Boolean(row.value));
-
-  return (
-    <dl className="candidate-details">
-      {visibleRows.map((row) => (
-        <div key={row.label}>
-          <dt>{row.label}</dt>
-          <dd>
-            {row.href || row.value?.startsWith("http") || row.value?.startsWith("/") ? (
-              <a href={row.href || row.value}>{row.linkText || row.value}</a>
-            ) : (
-              row.value
-            )}
-          </dd>
-        </div>
-      ))}
-    </dl>
   );
 }
 
