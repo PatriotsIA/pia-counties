@@ -1,0 +1,111 @@
+import { test, expect, type Page } from "@playwright/test";
+
+async function isolateExternalServices(page: Page) {
+  await page.route("**/*", async (route) => {
+    const url = new URL(route.request().url());
+    if (["127.0.0.1", "localhost", "news.fixture"].includes(url.hostname)) return route.continue();
+    if (url.hostname.startsWith("cognito-idp.")) return route.fulfill({ json: { AuthenticationResult: { IdToken: "fixture-reviewer-id-token", AccessToken: "fixture-access-token", ExpiresIn: 3600 } } });
+    return route.abort();
+  });
+  await page.route("**/api/rss-feed?**", (route) => route.fulfill({ json: { items: [] } }));
+}
+
+function newsPayload(url: string) {
+  const parts = new URL(url).pathname.split("/");
+  const county = parts[3] === "counties";
+  const topic = parts[county ? 6 : 5];
+  const place = county ? parts[5] : parts[4];
+  return { scope: { level: county ? "county" : "state", stateSlug: parts[4], ...(county ? { countySlug: parts[5] } : {}) }, topic,
+    items: Array.from({ length: 12 }, (_, i) => ({ id: `${place}-${topic}-${i}`, title: `${place} ${topic} story ${i+1}`, link: `https://publisher.example/${place}/${topic}/${i}`, source: "Local Publisher", publishedAt: new Date().toISOString(), mediaType: i === 0 ? "video" : "article" })),
+    meta: { fetchedAt: new Date().toISOString(), cacheTtlSeconds: 300, sourcesUsed: ["county:primary"], hasMore: false } };
+}
+
+test("candidate submission, private review, approval and public directory use the real API handler", async ({ page, request }) => {
+  await isolateExternalServices(page);
+  await page.goto("/candidate-form");
+  await page.getByLabel("Candidate display name").fill("Alex Integration");
+  await page.getByLabel("Office sought").fill("County Commissioner");
+  await page.getByLabel("County, if applicable").selectOption("potter");
+  await page.getByLabel("Your name", { exact: true }).fill("Private Campaign Staff");
+  await page.getByLabel("Your email", { exact: true }).fill("private-campaign@example.com");
+  await page.getByLabel("I attest").check();
+  await page.getByLabel("I consent").check();
+  await page.getByRole("button", { name: "Submit Candidate Profile", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText("Your candidate profile was received");
+  const publicBefore = await request.get("http://127.0.0.1:8791/v1/candidates");
+  expect((await publicBefore.json()).data).toEqual([]);
+  await page.goto("/candidate-review");
+  await page.getByLabel("Email or username").fill("reviewer@example.com");
+  await page.getByLabel("Password", { exact: true }).fill("Fixture Password 123!");
+  await page.getByRole("button", { name: "Sign In", exact: true }).click();
+  await expect(page.getByLabel("Candidate name", { exact: true })).toHaveValue("Alex Integration");
+  await page.getByLabel("Biography", { exact: true }).fill("Reviewed candidate biography.");
+  await page.getByRole("button", { name: "Approve & Publish" }).click();
+  await expect(page.getByRole("status")).toContainText("Candidate approved");
+  const publicAfter = await request.get("http://127.0.0.1:8791/v1/candidates");
+  const body = await publicAfter.json();
+  expect(body.data).toHaveLength(1);
+  expect(JSON.stringify(body)).not.toContain("private-campaign@example.com");
+  const id = body.data[0].id;
+  await page.goto(`/candidates/${id}`);
+  await expect(page.getByRole("heading", { name: "Alex Integration", exact: true })).toBeVisible();
+  await expect(page.getByText("Reviewed candidate biography.")).toBeVisible();
+  await page.goto("/tx/potter/candidates");
+  await expect(page.getByRole("heading", { name: "Alex Integration", exact: true })).toBeVisible();
+  await page.goto("/tx/candidates");
+  await expect(page.getByRole("heading", { name: "Alex Integration", exact: true })).toBeVisible();
+});
+
+test("all county widgets share the API, retain headlines during a topic failure, and retry", async ({ page }) => {
+  await isolateExternalServices(page);
+  const calls: string[] = [];
+  let failSports = true;
+  await page.route("https://news.fixture/**", (route) => {
+    calls.push(route.request().url());
+    if (new URL(route.request().url()).pathname.endsWith("/sports") && failSports) return route.fulfill({ status: 503, json: { error: "Unavailable" } });
+    return route.fulfill({ json: newsPayload(route.request().url()) });
+  });
+  await page.goto("/tx/potter/news");
+  const general = page.getByRole("article", { name: "County & City News", exact: true });
+  await expect(general.getByText("potter general story 1", { exact: true })).toBeVisible();
+  const sports = page.getByRole("article", { name: "High School & College Sports", exact: true });
+  await expect(sports.getByRole("alert")).toBeVisible();
+  failSports = false;
+  await sports.getByRole("button", { name: "Retry news feed" }).click();
+  await expect(sports.getByText("potter sports story 1", { exact: true })).toBeVisible();
+  expect(calls.filter((url) => new URL(url).pathname.endsWith("/general"))).toHaveLength(1);
+  expect(new Set(calls.map((url) => new URL(url).pathname.split("/").at(-1)))).toEqual(new Set(["general", "obituaries", "politics", "municipal-bonds", "budgets-levies", "property-taxes", "sports"]));
+  await general.getByRole("button", { name: "Load more stories" }).click();
+  await expect(general.getByText("potter general story 10", { exact: true })).toBeAttached();
+});
+
+test("state feeds and county navigation select the correct geography on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await isolateExternalServices(page);
+  await page.route("https://news.fixture/**", (route) => route.fulfill({ json: newsPayload(route.request().url()) }));
+  await page.goto("/texas");
+  await expect(page).toHaveURL(/\/tx$/);
+  await expect(page.getByText("texas general story 1", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Randall County Canyon", exact: true }).click();
+  await expect(page.getByRole("article", { name: "County & City News", exact: true }).getByText("randall general story 1", { exact: true })).toBeVisible();
+  await expect(page.getByText("potter general story 1", { exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("changing form state clears the county and errors preserve entered information", async ({ page }) => {
+  await isolateExternalServices(page);
+  await page.goto("/candidate-form");
+  await page.getByLabel("County, if applicable").selectOption("potter");
+  await page.getByLabel("State", { exact: true }).selectOption("alaska");
+  await expect(page.getByLabel("County, if applicable")).toHaveValue("");
+  await page.getByLabel("Race scope").selectOption("statewide");
+  await page.getByLabel("Candidate display name").fill("Sam Statewide");
+  await page.getByLabel("Office sought").fill("Governor");
+  await page.getByLabel("Your name", { exact: true }).fill("Sam");
+  await page.getByLabel("Your email", { exact: true }).fill("sam@example.com");
+  await page.getByLabel("I attest").check(); await page.getByLabel("I consent").check();
+  await page.route("**/v1/candidates/submissions", (route) => route.fulfill({ status: 503, json: { error: "Please try again" } }));
+  await page.getByRole("button", { name: "Submit Candidate Profile", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("Please try again");
+  await expect(page.getByLabel("Candidate display name")).toHaveValue("Sam Statewide");
+});

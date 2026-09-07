@@ -1,0 +1,44 @@
+{
+  "summary": {
+    "checkedAt": "2026-09-07T21:28:37.653Z",
+    "base": "https://ntqzmx2vo55fnwkqfwggcmdkny0jzlco.lambda-url.us-east-2.on.aws",
+    "origin": "https://patriotsinaction.com",
+    "targets": 3239,
+    "populated": 3238,
+    "empty": 1,
+    "failed": 0,
+    "p50Ms": 6323,
+    "p95Ms": 16845,
+    "maxMs": 30053
+  },
+  "coverage": "Live baseline before deployment: 3137 unique county routes and 102 state feeds. Six colliding city routes are covered by the prepared changes and local tests.",
+  "emptyFeeds": [
+    {
+      "path": "/v1/feeds/counties/louisiana/west-carroll/general",
+      "status": 200,
+      "count": 0,
+      "ms": 10653,
+      "cors": true,
+      "scope": true,
+      "fetchedAt": "2026-09-07T20:24:28.996Z"
+    }
+  ],
+  "parishFix": {
+    "execution": "Local updated backend against live providers, not deployed",
+    "primaryCount": 3,
+    "totalWithNearby": 21,
+    "durationMs": 11304
+  },
+  "specialtySample": {
+    "checkedAt": "2026-09-07T20:30:50.821Z",
+    "base": "https://ntqzmx2vo55fnwkqfwggcmdkny0jzlco.lambda-url.us-east-2.on.aws",
+    "origin": "https://patriotsinaction.com",
+    "targets": 14,
+    "populated": 14,
+    "empty": 0,
+    "failed": 0,
+    "p50Ms": 6628,
+    "p95Ms": 11964,
+    "maxMs": 11964
+  }
+}

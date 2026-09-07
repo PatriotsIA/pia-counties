@@ -5,3 +5,7 @@ public/feeds/
 .env
 .env.*
 !.env.example
+
+coverage/
+test-results/
+playwright-report/

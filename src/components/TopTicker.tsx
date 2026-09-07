@@ -205,6 +205,8 @@ function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weathe
   useEffect(() => {
     let active = true;
 
+    void Promise.resolve().then(() => {
+      if (!active) return;
     if (!county) {
       setWeather({ label: "Choose a county for local weather", loading: false });
       return;
@@ -218,6 +220,8 @@ function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weathe
       .catch(() => {
         if (active) setWeather({ label: locationName, condition: "Weather unavailable", loading: false });
       });
+
+    });
 
     return () => {
       active = false;

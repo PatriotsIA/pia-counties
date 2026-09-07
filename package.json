@@ -8,29 +8,38 @@
     "generate:seo": "tsx scripts/generate-seo.ts",
     "build": "npm run generate:seo && tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "audit:news": "node --import tsx scripts/audit-news.ts",
+    "check:deployment": "node --import tsx scripts/check-deployment.ts"
   },
   "dependencies": {
-    "@emailjs/browser": "latest",
-    "@nickgraffis/us-counties": "latest",
-    "ical.js": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-router-dom": "latest"
+    "@emailjs/browser": "^4.4.1",
+    "@nickgraffis/us-counties": "^0.0.2",
+    "ical.js": "^2.2.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
-    "@eslint/js": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "@vitejs/plugin-react": "latest",
-    "eslint": "latest",
-    "eslint-plugin-react-hooks": "latest",
-    "eslint-plugin-react-refresh": "latest",
-    "globals": "latest",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^25.6.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
     "tsx": "^4.22.0",
-    "typescript": "latest",
-    "typescript-eslint": "latest",
-    "vite": "latest"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0 <23"
   }
 }

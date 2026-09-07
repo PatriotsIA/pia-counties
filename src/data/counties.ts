@@ -1,5 +1,5 @@
 import { getCountyByState } from "@nickgraffis/us-counties";
-import { buildCountyFeedUrl } from "../lib/county-feed-urls";
+import { countySlug, countyDisplayName } from "./county-geography";
 import { getCountyCalendarFeedUrl } from "./calendarFeeds";
 import { site } from "./site";
 import { getStateBySlug, stateFromAbbr, states, type StateSite } from "./states";
@@ -50,17 +50,6 @@ export type CountySite = {
     icsUrls?: string[];
     proxyUrl?: string;
   };
-  feeds: {
-    localNewsUrl: string;
-    localSportsUrl: string;
-    localVideoUrl: string;
-    nationalNewsUrl: string;
-    obituariesUrl: string;
-    electionsUrl: string;
-    bondIssuesUrl: string;
-    countyMoneyUrl: string;
-    propertyTaxesUrl: string;
-  };
   links: {
     community: string;
     merch: string;
@@ -97,8 +86,8 @@ const civicResourceLinks = {
 } as const;
 
 function createCountySite(county: UsCounty, state: StateSite): CountySite {
-  const slug = slugify(county.name);
-  const displayName = `${county.name} County`;
+  const slug = countySlug(county.name, county.FIPS);
+  const displayName = countyDisplayName(county.name, state.slug, county.FIPS);
   const calendarIcsUrl = state.slug === "texas" ? getCountyCalendarFeedUrl(state.slug, slug) : undefined;
 
   return {
@@ -119,17 +108,6 @@ function createCountySite(county: UsCounty, state: StateSite): CountySite {
           proxyUrl: `/api/calendar?state=${state.slug}&county=${slug}`,
         }
       : {},
-    feeds: {
-      localNewsUrl: buildCountyFeedUrl("localNews", county.name, state),
-      localSportsUrl: buildCountyFeedUrl("localSports", county.name, state),
-      localVideoUrl: buildCountyFeedUrl("localVideo", county.name, state),
-      nationalNewsUrl: site.links.nationalNews,
-      obituariesUrl: buildCountyFeedUrl("obituaries", county.name, state),
-      electionsUrl: buildCountyFeedUrl("elections", county.name, state),
-      bondIssuesUrl: buildCountyFeedUrl("bondIssues", county.name, state),
-      countyMoneyUrl: buildCountyFeedUrl("countyMoney", county.name, state),
-      propertyTaxesUrl: buildCountyFeedUrl("propertyTaxes", county.name, state),
-    },
     links: {
       community: site.links.community,
       merch: site.links.merch,
@@ -197,7 +175,6 @@ function withOverrides(county: CountySite): CountySite {
     ...county,
     ...override,
     calendar: { ...county.calendar, ...override.calendar },
-    feeds: { ...county.feeds, ...override.feeds },
     links: { ...county.links, ...override.links },
     customBlocks: { ...county.customBlocks, ...override.customBlocks },
   };

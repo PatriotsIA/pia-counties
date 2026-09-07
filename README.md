@@ -41,24 +41,9 @@ Optional environment variables:
 
 ## Feeds
 
-County news and Vimeo widgets fetch RSS on demand through the first-party `/api/rss-feed` endpoint. The endpoint validates feed hosts, merges Google News date windows, and returns cacheable JSON without exposing visitors to third-party proxy limits or browser CORS failures.
+County and state stories come from the shared `county-post-news-api`. Set `VITE_NEWS_API_URL` in the frontend environment and in Amplify. See [deployment and validation](docs/deployment.md) for topic mapping, caching, CORS and the nationwide audit. The app no longer fetches Google News or Census market lookups for county/state news.
 
-When the frontend is hosted separately from the API, set `VITE_API_BASE_URL` to the serverless API origin. This is required for a static AWS Amplify frontend:
-
-```bash
-VITE_API_BASE_URL=https://your-api.example.com
-```
-
-If no API base is configured and the same-origin endpoint is unavailable, the browser makes one RSS2JSON request per feed. This compatibility fallback is not suitable as the production architecture. AllOrigins is disabled by default because its public endpoint is unreliable and frequently blocks browser CORS requests.
-
-Optional frontend environment variables:
-
-- `VITE_RSS_PROVIDER_URL` overrides the compatibility RSS2JSON endpoint. It must accept `rss_url` and return RSS2JSON-compatible JSON.
-- `VITE_RSS2JSON_API_KEY` adds an RSS2JSON API key to that compatibility request.
-- `VITE_RSS_RAW_PROXY_URL` explicitly enables a final raw RSS proxy fallback. It must accept `url` and return RSS XML with browser CORS headers.
-- `VITE_RSS_CACHE_TTL_MINUTES` controls browser cache freshness. The default is 360 minutes.
-
-County calendar pages use `/api/calendar`, which proxies allowlisted ICS URLs from county data. Potter County has the current community calendar configured.
+Vimeo still uses the separate first-party `/api/rss-feed` route. Calendar and optional authenticated Vimeo routes use `VITE_API_BASE_URL`; that variable must point to a deployment of this project's API functions, not the County Post news service.
 
 ## Mighty Networks proxy API
 
@@ -81,6 +66,24 @@ The deployed API must return an `Access-Control-Allow-Origin` header for the Amp
 After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite embeds these values at build time. Do not configure the obsolete `VITE_MIGHTY_PROXY` variable.
 
 The RSS proxy accepts the Patriots in Action Vimeo RSS host as well as Google News. The optional `/api/vimeo-showcase` route uses Vimeo's authenticated API; set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the API deployment before using that route.
+## Candidate profile API
+
+Candidate submissions, moderation, and runtime directory updates use the separately deployed `pia-candidate-api`. Set the stack output values locally and in AWS Amplify:
+
+```bash
+VITE_CANDIDATE_API_BASE=https://your-api-id.execute-api.us-east-1.amazonaws.com
+VITE_CANDIDATE_COGNITO_REGION=us-east-1
+VITE_CANDIDATE_COGNITO_CLIENT_ID=your-public-spa-client-id
+```
+
+- `/candidate-form` submits a pending profile to the public API.
+- `/candidate-review` requires a Cognito user in the API's `admins` group and supports editing, approval, and denial.
+- Reviewer tokens are kept in memory rather than persistent browser storage; refreshing or leaving the isolated review page requires signing in again.
+- When configured and reachable, the API's approved profiles are authoritative for the candidate directory. The checked-in candidate data remains available before API configuration and as an outage fallback.
+- These two operational routes are intentionally absent from navigation and sitemap generation; browser metadata marks them `noindex`.
+
+The API's CORS origins must include the exact frontend origin. Cognito client IDs are public identifiers, but passwords, AWS credentials, SES credentials, and API secrets must never be stored in frontend environment variables.
+
 
 The files in `api/` are Vercel-style serverless functions. A plain AWS Amplify static hosting deployment will not serve those routes, so `/api/rss-feed`, `/api/calendar`, and `/api/vimeo-showcase` are unavailable unless you also deploy an API backend. For Amplify hosting, either:
 
@@ -99,3 +102,7 @@ npm run dev
 npm run lint
 npm run build
 ```
+
+## Project workflow skill
+
+The maintained skill is [pia-counties-delivery](skills/pia-counties-delivery/SKILL.md). It captures the cross-repository candidate contract, shared-feed routing and release checks.
