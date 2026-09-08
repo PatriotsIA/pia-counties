@@ -948,6 +948,6 @@ function sortCandidates(items: Candidate[]) {
 export function getCandidateOfficeLevel(candidate: Candidate): "local" | "state" | "federal" {
   if (candidate.officeLevel) return candidate.officeLevel;
   if (/\b(u\.?s\.?\s*(senat|representative|house)|united states|congress|president of the united states)/i.test(candidate.office)) return "federal";
-  if (candidate.scope === "statewide" || /\b(state (senat|representative|house)|srec)\b/i.test(candidate.office)) return "state";
+  if (candidate.scope === "statewide" || /\b(state (senate|senator|representative|house|republican executive committee)|(?:texas )?house district|senate district|srec|(?:texas\s+)?\d+(?:st|nd|rd|th)\s+district court)\b/i.test(candidate.office)) return "state";
   return "local";
 }

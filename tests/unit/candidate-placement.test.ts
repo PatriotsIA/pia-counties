@@ -10,4 +10,5 @@ it("matches approved catalog entries by state, statewide scope, and primary or a
   expect(getCandidatesForState("tx", catalog)).toHaveLength(5);
   expect(getCandidateOfficeLevel({ ...base, office: "U.S. Senator", scope: "statewide" })).toBe("federal");
   expect(getCandidateOfficeLevel({ ...base, office: "Governor", scope: "statewide" })).toBe("state");
+  for (const office of ["State Senate 5", "House District 143", "Texas House District 86", "State Republican Executive Committee, Senate District 31", "Judge of the Texas 231st District Court"]) expect(getCandidateOfficeLevel({ ...base, office, scope: "district" })).toBe("state");
 });
