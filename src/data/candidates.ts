@@ -8,6 +8,8 @@ export type Candidate = {
   office: string;
   stateSlug: string;
   scope: CandidateScope;
+  officeLevel?: "local" | "state" | "federal";
+  countySlugs?: string[];
   countySlug?: string;
   countyName?: string;
   district?: string;
@@ -922,7 +924,7 @@ export function getCandidatesForState(stateSlug?: string, catalog: Candidate[] =
 
 export function getCandidatesForCounty(county: CountySite, catalog: Candidate[] = candidates) {
   return sortCandidates(
-    catalog.filter((candidate) => candidate.stateSlug === county.state.slug && candidate.countySlug === county.slug),
+    catalog.filter((candidate) => getStateBySlug(candidate.stateSlug)?.slug === county.state.slug && (candidate.scope === "statewide" || candidate.countySlug === county.slug || candidate.countySlugs?.includes(county.slug))),
   );
 }
 
@@ -941,4 +943,11 @@ export function getLocalCandidatesForState(stateSlug?: string, catalog: Candidat
 
 function sortCandidates(items: Candidate[]) {
   return [...items].sort((first, second) => first.name.localeCompare(second.name));
+}
+
+export function getCandidateOfficeLevel(candidate: Candidate): "local" | "state" | "federal" {
+  if (candidate.officeLevel) return candidate.officeLevel;
+  if (/\b(u\.?s\.?\s*(senat|representative|house)|united states|congress|president of the united states)/i.test(candidate.office)) return "federal";
+  if (candidate.scope === "statewide" || /\b(state (senat|representative|house)|srec)\b/i.test(candidate.office)) return "state";
+  return "local";
 }

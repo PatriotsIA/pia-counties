@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import type { Candidate } from "../data/candidates";
+import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
+import { getCountiesForState, getStateBySlug, states } from "../data/counties";
+import { CandidatePhotoField } from "./CandidatePhotoField";
+import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
 import { CandidateProfile } from "./CandidateProfile";
+import { CandidatePasswordChange } from "./CandidatePasswordChange";
 import {
   candidateScopes,
+  candidateOfficeLevels,
   clearCandidateReviewerSession,
   completeCandidateReviewerMfa,
   fetchCandidateSubmissions,
@@ -132,6 +137,7 @@ export function CandidateReviewConsole({ onApproved }: { onApproved?: () => Prom
         <button className="button" type="button" onClick={logout}>Sign Out</button>
       </header>
 
+      <CandidatePasswordChange session={session} />
       <div className="candidate-review-toolbar">
         <label className="field">
           <span>Submission status</span>
@@ -260,6 +266,9 @@ function CandidateReviewEditor({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<Candidate>();
+  const [stateSlug, setStateSlug] = useState(getStateBySlug(record.stateSlug)?.slug || record.stateSlug);
+  const [uploading, setUploading] = useState(false);
+  const busy = loading || uploading;
 
   function previewProfile() {
     if (formRef.current) setPreview(reviewCandidate(new FormData(formRef.current), record));
@@ -267,27 +276,29 @@ function CandidateReviewEditor({
 
   return (
     <>
-      <form ref={formRef} id="candidate-review-editor" className="form-card candidate-profile-form" onSubmit={onSubmit}>
+      <form ref={formRef} id="candidate-review-editor" className="form-card candidate-profile-form" onSubmit={(event) => { if (busy) event.preventDefault(); else onSubmit(event); }}>
         <div className="candidate-review-status">
           <strong>Status: {record.status}</strong>
           <span>Revision {record.revision || 1}</span>
-          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={loading}>Preview Profile</button>
+          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={busy}>Preview Profile</button>
         </div>
+        {record.source === "research" ? <p className="status">Research draft prepared for your review. Sources are in the private review notes; no candidate attestation or publication consent was collected.</p> : null}
+        <p>Fields marked <span className="required-mark">*</span> are required.</p>
         <fieldset>
           <legend>Public candidate profile</legend>
           <div className="candidate-form-grid">
             <ReviewField name="id" label="Profile ID / URL slug" value={record.id} readOnly />
             <ReviewField name="name" label="Candidate name" value={record.name} required />
             <ReviewField name="office" label="Office sought" value={record.office} required />
-            <ReviewField name="stateSlug" label="State slug" value={record.stateSlug} required />
+            <label className="field"><span>State <span className="required-mark" aria-hidden="true">*</span></span><select aria-label="State" name="stateSlug" value={stateSlug} onChange={(event) => setStateSlug(event.target.value)} required>{states.map((state) => <option key={state.slug} value={state.slug}>{state.name}</option>)}</select></label>
+            <label className="field"><span>Office level <span className="required-mark" aria-hidden="true">*</span></span><select aria-label="Office level" name="officeLevel" defaultValue={getCandidateOfficeLevel(record)} required>{candidateOfficeLevels.map((level) => <option key={level.value} value={level.value}>{level.label}</option>)}</select></label>
             <label className="field">
               <span>Race scope</span>
               <select name="scope" defaultValue={record.scope}>
                 {candidateScopes.map((scope) => <option key={scope.value} value={scope.value}>{scope.label}</option>)}
               </select>
             </label>
-            <ReviewField name="countySlug" label="County slug" value={record.countySlug} />
-            <ReviewField name="countyName" label="County name" value={record.countyName} />
+            <label className="field"><span>County</span><select name="countySlug" key={stateSlug} defaultValue={stateSlug === getStateBySlug(record.stateSlug)?.slug ? record.countySlug || "" : ""}><option value="">Not county-specific</option>{getCountiesForState(stateSlug).map((county) => <option key={county.fips} value={county.slug}>{county.displayName}</option>)}</select></label>
             <ReviewField name="district" label="District / precinct / city" value={record.district} />
             <ReviewField name="party" label="Party" value={record.party} />
             <ReviewField name="electionYear" label="Election year" type="number" value={record.electionYear} />
@@ -296,7 +307,7 @@ function CandidateReviewEditor({
             <ReviewField name="websiteUrl" label="Website URL" type="url" value={record.websiteUrl} />
             <ReviewField name="profileUrl" label="Existing profile URL" type="url" value={record.profileUrl} />
             <ReviewField name="ballotpediaUrl" label="Ballotpedia URL" type="url" value={record.ballotpediaUrl} />
-            <ReviewField name="image" label="Portrait URL" type="url" value={record.image} />
+            <CandidatePhotoField initialValue={record.image} label="Portrait URL" onBusy={setUploading} />
             <ReviewField name="videoEmbedUrl" label="Video embed URL" type="url" value={record.videoEmbedUrl} />
             <ReviewField name="videoTitle" label="Video title" value={record.videoTitle} />
             <ReviewField name="facebookUrl" label="Facebook URL" type="url" value={record.facebookUrl} />
@@ -304,6 +315,7 @@ function CandidateReviewEditor({
             <ReviewField name="instagramUrl" label="Instagram URL" type="url" value={record.instagramUrl} />
             <ReviewField name="youtubeUrl" label="YouTube URL" type="url" value={record.youtubeUrl} />
           </div>
+          <CandidateCountyCoverage key={stateSlug} stateSlug={stateSlug} selected={stateSlug === getStateBySlug(record.stateSlug)?.slug ? record.countySlugs : []} />
           <label className="checkbox-row">
             <input type="checkbox" name="incumbent" defaultChecked={record.incumbent} />
             <span>Incumbent</span>
@@ -323,12 +335,12 @@ function CandidateReviewEditor({
 
         <ReviewField name="moderationReason" label="Review notes / denial reason" textarea value={record.moderationReason} />
         <div className="candidate-review-actions">
-          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={loading}>Preview Profile</button>
-          <button className="button" type="submit" disabled={loading}>Save Changes</button>
+          <button className="button" type="button" aria-haspopup="dialog" onClick={previewProfile} disabled={busy}>Preview Profile</button>
+          <button className="button" type="submit" disabled={busy}>Save Changes</button>
           {record.status === "pending" ? (
             <>
-              <button className="button primary" type="button" onClick={onApprove} disabled={loading}>Approve &amp; Publish</button>
-              <button className="button red" type="button" onClick={onDeny} disabled={loading}>Deny</button>
+              <button className="button primary" type="button" onClick={onApprove} disabled={busy}>Approve &amp; Publish</button>
+              <button className="button red" type="button" onClick={onDeny} disabled={busy}>Deny</button>
             </>
           ) : null}
         </div>
@@ -379,10 +391,10 @@ function ReviewField({
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="field">
-      <span>{label}</span>
+      <span>{label} {props.required ? <span className="required-mark" aria-hidden="true">*</span> : null}</span>
       {textarea
         ? <textarea name={props.name} defaultValue={String(value || "")} rows={5} />
-        : <input {...props} defaultValue={value ?? ""} />}
+        : <input {...props} aria-label={label} defaultValue={value ?? ""} />}
     </label>
   );
 }
@@ -406,7 +418,9 @@ function reviewCandidate(values: FormData, record: CandidateReviewRecord): Candi
     stateSlug: read("stateSlug"),
     scope: read("scope") as CandidateReviewRecord["scope"],
     countySlug: optional("countySlug"),
-    countyName: optional("countyName"),
+    countyName: getCountiesForState(read("stateSlug")).find((county) => county.slug === read("countySlug"))?.displayName,
+    officeLevel: read("officeLevel") as Candidate["officeLevel"],
+    countySlugs: values.getAll("countySlugs").map(String),
     district: optional("district"),
     party: optional("party"),
     electionYear: Number.isFinite(electionYear) ? electionYear : undefined,

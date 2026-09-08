@@ -10,6 +10,7 @@ type ApiPage<T> = { data: T[]; nextCursor?: string };
 type ApiItem<T> = { data: T };
 
 type CandidateRecordResponse = {
+  source?: "submission" | "seed" | "research";
   submissionId: string;
   candidate: Candidate;
   submitter?: {
@@ -43,6 +44,7 @@ export type CandidateSubmission = Omit<Candidate, "id"> & {
 export type CandidateReviewStatus = "pending" | "approved" | "denied";
 
 export type CandidateReviewRecord = CandidateSubmission & {
+  source?: "submission" | "seed" | "research";
   submissionId: string;
   id: string;
   status: CandidateReviewStatus;
@@ -194,6 +196,20 @@ export async function signOutCandidateReviewer(session: CandidateReviewerSession
   }
 }
 
+export async function changeCandidateReviewerPassword(session: CandidateReviewerSession, currentPassword: string, newPassword: string) {
+  if (!session.accessToken || !cognitoRegion) throw new Error("Sign in again before changing your password.");
+  const response = await fetch(`https://cognito-idp.${cognitoRegion}.amazonaws.com/`, {
+    signal: AbortSignal.timeout(20_000),
+    method: "POST",
+    headers: { "Content-Type": "application/x-amz-json-1.1", "X-Amz-Target": "AWSCognitoIdentityProviderService.ChangePassword" },
+    body: JSON.stringify({ AccessToken: session.accessToken, PreviousPassword: currentPassword, ProposedPassword: newPassword }),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body?.message || "Your password could not be changed.");
+  // ChangePassword updates the credential in place. Keep the authenticated
+  // session and the reviewer's unsaved form; do not perform global sign-out.
+}
+
 function storeAuthenticationResult(
   result: { IdToken?: string; AccessToken?: string; RefreshToken?: string; ExpiresIn?: number },
   username: string,
@@ -304,6 +320,7 @@ async function adminRequest<T = unknown>(
 function flattenCandidateRecord(record: CandidateRecordResponse): CandidateReviewRecord {
   return {
     ...record.candidate,
+    source: record.source,
     submissionId: record.submissionId,
     status: record.status,
     createdAt: record.createdAt,
@@ -355,6 +372,8 @@ export async function updateCandidateSubmission(
   if (!payload.revision) throw new Error("The candidate revision is missing. Refresh and try again.");
   const requiredFields = ["name", "office", "stateSlug", "scope"] as const;
   const optionalFields = [
+    "officeLevel",
+    "countySlugs",
     "countySlug",
     "countyName",
     "district",
@@ -425,3 +444,42 @@ export const candidateScopes: Array<{ value: CandidateScope; label: string }> = 
   { value: "precinct", label: "Precinct" },
   { value: "city", label: "City" },
 ];
+
+export const candidateOfficeLevels = [
+  { value: "local", label: "Local / county / city" },
+  { value: "state", label: "State" },
+  { value: "federal", label: "Federal / national" },
+] as const;
+
+export async function uploadCandidatePhoto(file: File): Promise<string> {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("Choose a JPG, PNG, or WebP photo.");
+  if (!file.size || file.size > 5 * 1024 * 1024) throw new Error("Choose a photo no larger than 5 MB.");
+  const bitmap = await createImageBitmap(file).catch(() => { throw new Error("This image could not be opened. Choose another photo."); });
+  let blob: Blob | null;
+  try {
+    if (!bitmap.width || !bitmap.height || bitmap.width * bitmap.height > 64_000_000) throw new Error("Choose a photo smaller than 64 megapixels.");
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Your browser cannot prepare this photo.");
+    context.fillStyle = "#ffffff"; context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+  } finally { bitmap.close(); }
+  if (!blob || blob.size > 2 * 1024 * 1024) throw new Error("This photo is still too large. Choose a smaller image.");
+  const dataBase64 = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1]);
+    reader.onerror = () => reject(new Error("This photo could not be read."));
+    reader.readAsDataURL(blob);
+  });
+  const response = await fetch(`${requireApiBase()}/v1/candidates/photos`, {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+    signal: AbortSignal.timeout(30_000), body: JSON.stringify({ contentType: "image/jpeg", dataBase64 }),
+  });
+  const body = await readJson<ApiItem<{ path: string }>>(response);
+  if (!/^\/v1\/candidates\/photos\/[a-f0-9-]{36}\.(jpg|png|webp)$/.test(body.data?.path || "")) throw new Error("The uploaded photo could not be confirmed. Please try again.");
+  return `${configuredApiBase}${body.data.path}`;
+}

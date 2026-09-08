@@ -72,7 +72,7 @@ function urlEntry(pathname: string, changefreq: UrlEntry["changefreq"], priority
 const staticUrls: UrlEntry[] = [
   urlEntry("/", "weekly", "1.0"),
   urlEntry("/counties", "weekly", "0.95"),
-  urlEntry("/tx/candidates", "weekly", "0.9"),
+  urlEntry("/candidates", "weekly", "0.9"),
   urlEntry("/tv", "weekly", "0.8"),
   urlEntry("/rewards", "monthly", "0.75"),
   urlEntry("/contact", "monthly", "0.7"),
@@ -128,7 +128,7 @@ ${site.name} is a nationwide and local civic hub with county pages for voter res
 Important URLs:
 - Home: ${absoluteUrl("/")}
 - County finder: ${absoluteUrl("/counties")}
-- Texas candidates: ${absoluteUrl("/tx/candidates")}
+- National candidates: ${absoluteUrl("/candidates")}
 - PIA TV: ${absoluteUrl("/tv")}
 - Contact: ${absoluteUrl("/contact")}
 - Privacy: ${absoluteUrl("/privacy")}

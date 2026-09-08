@@ -5,7 +5,7 @@ import { CountyNewsFeed, StateNewsFeeds } from "./components/NewsFeed";
 import { CandidateCatalogProvider } from "./components/CandidateCatalogProvider";
 import { CandidateProfile, CandidateDetails, CandidateProjectDisclaimer, ShareCandidateProfileButton } from "./components/CandidateProfile";
 import { candidateProjectCandidateIds, candidateProjectUrl } from "./data/candidate-project";
-import { candidateJurisdiction, candidateProfilePath } from "./lib/candidate-profile";
+import { candidateJurisdictions, candidateJurisdiction, candidateProfilePath } from "./lib/candidate-profile";
 import { CandidateReviewConsole } from "./components/CandidateReviewConsole";
 import { CandidateSubmissionForm } from "./components/CandidateSubmissionForm";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -14,7 +14,7 @@ import { CountyShowUpMeter } from "./components/CountyShowUpMeter";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { PresentedByPartner } from "./components/PresentedByPartner";
 import { TopTicker } from "./components/TopTicker";
-import { getCandidateById, getCandidatesForCounty, getCandidatesForState, getPinnedCandidates, isPinnedCandidate, type Candidate } from "./data/candidates";
+import { getCandidateOfficeLevel, getCandidateById, getCandidatesForCounty, getCandidatesForState, getPinnedCandidates, isPinnedCandidate, type Candidate } from "./data/candidates";
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
@@ -430,6 +430,8 @@ function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoDat
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
 
+  if (pathname === "/candidates") return { title: "National Candidate Directory", description: "Browse federal, state, and local candidate profiles across the United States.", canonicalPath: "/candidates" };
+
   const candidateMatch = pathname.match(/^\/candidates\/([^/]+)$/);
   if (candidateMatch) {
     const candidate = getCandidateById(candidateMatch[1], candidateCatalog);
@@ -579,6 +581,7 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/candidate-form" element={<CandidateFormPage />} />
         <Route path="/candidate-review" element={<CandidateReviewPage />} />
+        <Route path="/candidates" element={<NationalCandidatesPage />} />
         <Route path="/candidates/:candidateId" element={<CandidateProfilePage />} />
         <Route path="/:stateSlug/candidates" element={<StateCandidatesPage />} />
         <Route path="/:stateSlug" element={<StatePage />} />
@@ -605,7 +608,7 @@ function HomePage() {
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
             <Link className="button primary" to="/counties">Find Your County</Link>
-            <Link className="button red" to="/tx/candidates">Explore Your Candidates</Link>
+            <Link className="button red" to="/candidates">Explore Your Candidates</Link>
             <a className="button" href={site.links.community}>Join Our Community</a>
             <a className="button red" href={site.links.merch} target="_blank" rel="noreferrer">Shop Merchandise</a>
           </div>
@@ -1181,6 +1184,27 @@ function CandidateReviewPage() {
   );
 }
 
+function NationalCandidatesPage() {
+  const { candidates: catalog, loading } = useCandidateCatalog();
+  const [search, setSearch] = useState("");
+  const [state, setState] = useState("all");
+  const [level, setLevel] = useState("all");
+  usePageTitle("National Candidate Directory");
+  const candidates = catalog.filter((candidate) => (state === "all" || getStateBySlug(candidate.stateSlug)?.slug === state) && (level === "all" || getCandidateOfficeLevel(candidate) === level) && `${candidate.name} ${candidate.office} ${candidate.countyName || ""} ${getStateBySlug(candidate.stateSlug)?.name || ""}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
+  return <Shell route="directory">
+    <PageHero eyebrow="Candidate Directory" title="National candidate directory" subtitle="Explore federal, state, and local candidates across the United States." />
+    <CandidateDirectorySponsors />
+    <section className="candidate-filters" aria-label="Filter candidates">
+      <label className="field"><span>Search candidates</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+      <label className="field"><span>State</span><select aria-label="State" value={state} onChange={(event) => setState(event.target.value)}><option value="all">All states</option>{states.map((state) => <option key={state.slug} value={state.slug}>{state.name}</option>)}</select></label>
+      <label className="field"><span>Office level</span><select aria-label="Office level" value={level} onChange={(event) => setLevel(event.target.value)}><option value="all">All offices</option><option value="federal">Federal / national</option><option value="state">State</option><option value="local">Local / county / city</option></select></label>
+      <p className="candidate-filter-count">{candidates.length} of {catalog.length} candidates shown</p>
+    </section>
+    {loading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
+    <CandidateGrid candidates={candidates} emptyText="No candidate profiles match these filters." showCounty />
+  </Shell>;
+}
+
 function StateCandidatesPage() {
   const { stateSlug } = useParams();
   const state = getStateBySlug(stateSlug);
@@ -1198,8 +1222,9 @@ function StateCandidatesPage() {
     scope: scopeFilter,
     sort: candidateSort,
   });
-  const statewideCandidates = filteredCandidates.filter((candidate) => candidate.scope === "statewide");
-  const localCandidates = filteredCandidates.filter((candidate) => candidate.scope !== "statewide");
+  const statewideCandidates = filteredCandidates.filter((candidate) => getCandidateOfficeLevel(candidate) === "state");
+  const federalCandidates = filteredCandidates.filter((candidate) => getCandidateOfficeLevel(candidate) === "federal");
+  const localCandidates = filteredCandidates.filter((candidate) => getCandidateOfficeLevel(candidate) === "local");
   const pinnedCandidates = getPinnedCandidates(filteredCandidates);
   const remainingStatewideCandidates = statewideCandidates.filter((candidate) => !isPinnedCandidate(candidate.id));
   const remainingLocalCandidates = localCandidates.filter((candidate) => !isPinnedCandidate(candidate.id));
@@ -1230,7 +1255,7 @@ function StateCandidatesPage() {
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
       {candidatesLoading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
       {!allCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
-      {pinnedCandidates.length && !hasJurisdictionFilter ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
+      {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local and District Races</p>
@@ -1241,12 +1266,13 @@ function StateCandidatesPage() {
       </section>
       <section className="section">
         <div className="section-heading">
-          <p className="eyebrow">Statewide Races</p>
-          <h2>{remainingStatewideCandidates.length ? `${remainingStatewideCandidates.length} statewide candidates` : "Statewide candidates coming soon"}</h2>
-          <p>{hasJurisdictionFilter ? `Statewide candidates are included with ${jurisdictionFilter} results because they appear on ballots across ${state.name}.` : "The source directory includes candidate names and offices, with room to add profile pages and campaign links later."}</p>
+          <p className="eyebrow">State Offices</p>
+          <h2>{remainingStatewideCandidates.length ? `${remainingStatewideCandidates.length} state candidates` : "State candidates coming soon"}</h2>
+          <p>{hasJurisdictionFilter ? `Statewide candidates are included with ${jurisdictionFilter} results because they appear on ballots across ${state.name}.` : "Candidates for state offices, including statewide and legislative district races."}</p>
         </div>
         <CandidateGrid candidates={remainingStatewideCandidates} emptyText={`No statewide ${state.name} candidates have been added yet.`} />
       </section>
+      <section className="section"><div className="section-heading"><p className="eyebrow">Federal Offices</p><h2>Federal candidates in {state.name}</h2></div><CandidateGrid candidates={federalCandidates.filter((candidate) => !isPinnedCandidate(candidate.id))} emptyText="No federal candidate profiles have been added yet." showCounty /></section>
       {allCandidates.length ? <p className="source-note">Candidate data is modeled after the public Patriots in Action candidates directory.</p> : null}
     </Shell>
   );
@@ -1346,7 +1372,7 @@ function CountyHome({ county }: { county: CountySite }) {
           <p className="hero-tagline"><em>Patriot inaction is the cause. Patriots in Action is the Cure.</em></p>
           <div className="actions">
             <a className="button primary" href={county.links.rewards}>Join Patriot Rewards</a>
-            <Link className="button red" to="/tx/candidates">Explore Your Candidates</Link>
+            <Link className="button red" to={`${countyPath(county)}/candidates`}>Explore Your Candidates</Link>
             <Link className="button" to={`${countyPath(county)}/events`}>Community Calendar</Link>
             <Link className="button" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
           </div>
@@ -1452,10 +1478,10 @@ function stateConstitutionUrl(stateName: string) {
 function CountyCandidates({ county }: { county: CountySite }) {
   const { candidates: candidateCatalog, loading } = useCandidateCatalog();
   const countyCandidates = getCandidatesForCounty(county, candidateCatalog).filter((candidate) => !isPinnedCandidate(candidate.id));
-  const pinnedCandidates = getPinnedCandidates(getCandidatesForState(county.state.slug, candidateCatalog));
+  const pinnedCandidates = getPinnedCandidates(getCandidatesForCounty(county, candidateCatalog));
   return (
     <>
-      <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Candidates running for local offices connected to ${county.displayName}, ${county.state.name}.`} />
+      <PageHero eyebrow="Candidate Directory" title={`${county.displayName} candidates`} subtitle={`Local, state, and federal candidates whose profiles cover ${county.displayName}, ${county.state.name}.`} />
       <CountyShowUpMeter county={county} />
       <CandidateDirectorySponsors county={county} />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
@@ -1465,8 +1491,8 @@ function CountyCandidates({ county }: { county: CountySite }) {
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Local Ballot Watch</p>
-          <h2>{countyCandidates.length ? `${countyCandidates.length} local candidates` : "Candidate profiles coming soon"}</h2>
-          <p>Find candidates connected to county, city, court, and precinct races. Statewide candidates are listed in the state directory.</p>
+          <h2>{countyCandidates.length ? `${countyCandidates.length} candidates covering this county` : "Candidate profiles coming soon"}</h2>
+          <p>County, city, precinct, and district candidates are matched by their county coverage. Statewide candidates appear throughout their state.</p>
         </div>
         <CandidateGrid
           candidates={countyCandidates}
@@ -1474,7 +1500,7 @@ function CountyCandidates({ county }: { county: CountySite }) {
         />
         <div className="actions">
           <Link className="button" to={`${statePath(county.state)}/candidates`}>View {county.state.name} Candidates</Link>
-          <a className="button primary" href="https://patriotsinaction.com/candidates/">Open PIA Candidate Directory</a>
+          <Link className="button primary" to="/candidates">View National Candidate Directory</Link>
         </div>
       </section>
     </>
@@ -2313,7 +2339,7 @@ function Shell({
             <Link to="/rewards">Rewards</Link>
             <Link to="/partners">Partners</Link>
             <a href={site.links.community}>Community</a>
-            <Link to="/tx/candidates">Candidates</Link>
+            <Link to="/candidates">Candidates</Link>
             <Link to="/tv">PIA TV</Link>
             <Link to="/contact">Contact</Link>
             <a href={site.links.merch} target="_blank" rel="noreferrer">Merch</a>
@@ -2580,7 +2606,7 @@ function CandidateFilters({
 }
 
 function candidateJurisdictionOptions(candidates: Candidate[]) {
-  return [...new Set(candidates.map(candidateJurisdiction).filter(Boolean))].sort((first, second) => first.localeCompare(second));
+  return [...new Set(candidates.flatMap(candidateJurisdictions))].sort((first, second) => first.localeCompare(second));
 }
 
 function candidateScopeOptions(candidates: Candidate[]) {
@@ -2602,7 +2628,7 @@ function filterAndSortCandidates(candidates: Candidate[], options: CandidateFilt
         candidate.scope,
         candidate.party,
       ].some((value) => value?.toLowerCase().includes(query));
-      const matchesJurisdiction = options.jurisdiction === "all" || candidate.scope === "statewide" || candidateJurisdiction(candidate) === options.jurisdiction;
+      const matchesJurisdiction = options.jurisdiction === "all" || candidate.scope === "statewide" || candidateJurisdictions(candidate).includes(options.jurisdiction);
       const matchesScope = options.scope === "all" || candidate.scope === options.scope;
       return matchesSearch && matchesJurisdiction && matchesScope;
     })

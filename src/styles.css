@@ -3302,3 +3302,13 @@ nav a {
     width: 100%;
   }
 }
+
+.candidate-password-settings { margin: 1rem 0; }
+.candidate-password-settings .form-card { margin-top: 1rem; }
+.candidate-photo-field { min-width: 0; display: grid; gap: .75rem; }
+.candidate-photo-thumbnail { width: 140px; height: 160px; object-fit: cover; border-radius: .5rem; }
+.candidate-county-coverage { margin: 1rem 0; }
+.candidate-county-coverage summary { cursor: pointer; font-weight: 700; }
+.candidate-county-options { max-height: 220px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .5rem; padding: .5rem; border: 1px solid #ccd1dc; border-radius: .5rem; }
+.required-mark { color: #a31b2c; font-weight: 700; }
+.candidate-photo-field input[type=file] { max-width: 100%; }

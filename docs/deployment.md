@@ -81,3 +81,15 @@ npm run audit:news -- --base-url=https://<news-api> --state=texas --county=potte
 Use bounded audit concurrency. Ignored `coverage/` contains resumable JSONL checkpoints and complete reports. `check:deployment --live` is read-only and rejects missing/placeholder configuration and an unseeded catalog.
 
 Deploy backends before frontend consumers, retain existing stack parameters and original API URLs, and follow the existing main-branch CodePipeline/Amplify jobs to completion. Keep deployed changes committed so future pipeline runs cannot revert a manual update. Roll back frontend and backend code independently while preserving the candidate table and original IDs.
+
+## September 7 profile workflow update
+
+Admins can use **Change Password** while reviewing candidates. The active Cognito session and unsaved candidate edits remain intact after success. Current/new/confirmation fields enforce the pool's password requirements. Use a temporary invitation-suppressed reviewer for live verification; never reset a staff member's credential as a test.
+
+The submission form marks required fields with an asterisk and includes `erik@patriotsinaction.com` for questions and technical difficulties. Submission and review both accept JPG/PNG/WebP photo uploads (originals up to 5 MiB), resize them in the browser, and store the API's durable image URL. Save/approve/submit wait for uploads to finish. The private, encrypted S3 bucket belongs to Mighty and images are served through its candidate API; see Mighty `docs/candidates.md` for byte limits and permissions.
+
+The national directory is `/candidates`, with state and office-level filters. State directories distinguish federal offices from state offices. County directories match the candidate's canonical state and primary/additional county coverage; statewide races appear in every county of that state. Featured candidates obey the same county matching. Districts without county coverage remain visible nationally and in their state until coverage is entered. `officeLevel` is independent of race `scope`, and legacy profiles infer an office level until edited. All directories and profile previews use the same approved catalog and public profile layout.
+
+Research profiles are created only through Mighty's authenticated draft route and remain pending until an admin approves them. Sources and verification notes stay in the private review notes. No candidate consent or attestation is fabricated, and creating a research draft sends no email. Use current election certification for district coverage; older congressional biographies can describe prior boundaries.
+
+This update passes 10 frontend unit tests, 5 browser workflows, and 21 backend tests, plus frontend lint/build, backend typecheck/build, SAM lint and SAM build. Browser fixtures exercise the real API handler without AWS or mail. Live AWS checks remain a separate release step.

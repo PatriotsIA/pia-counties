@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { Candidate } from "../data/candidates";
+import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
+import { getCountiesForState, getStateBySlug } from "../data/counties";
 import { candidateProjectCandidateIds, candidateProjectDisclaimer, candidateProjectUrl } from "../data/candidate-project";
 import { candidateJurisdiction, candidateProfilePath } from "../lib/candidate-profile";
 
@@ -96,6 +97,9 @@ export function CandidateDetails({ candidate, showProfileLink = false, preview =
   const rows: CandidateDetailRow[] = [];
 
   rows.push(
+    { label: "State", value: getStateBySlug(candidate.stateSlug)?.name },
+    { label: "Office Level", value: { local: "Local", state: "State", federal: "Federal / national" }[getCandidateOfficeLevel(candidate)] },
+    { label: "County Coverage", value: candidate.scope === "statewide" ? "All counties in the state" : getCountiesForState(candidate.stateSlug).filter((county) => county.slug === candidate.countySlug || candidate.countySlugs?.includes(county.slug)).map((county) => county.displayName).join(", ") || undefined },
     { label: "Running For", value: candidate.office },
     { label: "Jurisdiction", value: candidateJurisdiction(candidate) },
     { label: "Party", value: candidate.party },
