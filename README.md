@@ -68,16 +68,17 @@ After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite
 The RSS proxy accepts the Patriots in Action Vimeo RSS host as well as Google News. The optional `/api/vimeo-showcase` route uses Vimeo's authenticated API; set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the API deployment before using that route.
 ## Candidate profile API
 
-Candidate submissions, moderation, and runtime directory updates use the separately deployed `pia-candidate-api`. Set the stack output values locally and in AWS Amplify:
+Candidate submissions, moderation, profile change requests, and runtime directory updates use the candidate service in the existing `mighty-api-production` stack (source: sibling `mighty-api`, `src/candidates`). Set the stack output values locally and in AWS Amplify:
 
 ```bash
-VITE_CANDIDATE_API_BASE=https://your-api-id.execute-api.us-east-1.amazonaws.com
-VITE_CANDIDATE_COGNITO_REGION=us-east-1
+VITE_CANDIDATE_API_BASE=https://your-api-id.execute-api.us-east-2.amazonaws.com/prod
+VITE_CANDIDATE_COGNITO_REGION=us-east-2
 VITE_CANDIDATE_COGNITO_CLIENT_ID=your-public-spa-client-id
 ```
 
-- `/candidate-form` submits a pending profile to the public API.
-- `/candidate-review` requires a Cognito user in the API's `admins` group and supports editing, approval, and denial.
+- `/candidate-form` accepts a new pending profile or a request to update a published/pending profile; each public profile links here with **Request Changes**.
+- `/candidate-review` requires a Cognito user in the API's `admins` group. It supports review/apply/deny for change requests, normal publication review, and searchable direct editing of all published profiles.
+- See [Candidate profile change requests](docs/candidate-profile-updates.md) for user/reviewer instructions, pending-draft privacy, conflicts, tests and backend-first release guidance.
 - Reviewer tokens are kept in memory rather than persistent browser storage; refreshing or leaving the isolated review page requires signing in again.
 - When configured and reachable, the API's approved profiles are authoritative for the candidate directory. The checked-in candidate data remains available before API configuration and as an outage fallback.
 - These two operational routes are intentionally absent from navigation and sitemap generation; browser metadata marks them `noindex`.

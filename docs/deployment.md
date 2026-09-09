@@ -40,6 +40,15 @@ Reviewers can choose **Preview Profile** at the top or bottom of the editor to s
 
 For additional staff accounts, use Mighty’s `scripts/create-reviewers.py <email> ...`. It creates accounts in the existing Cognito pool, adds `admins`, sets permanent generated passwords, suppresses invitations and verifies each login against a protected endpoint. Generated credentials stay in `~/.local/share/pia/candidate-reviewers.json` with owner-only permissions.
 
+## Candidate profile change requests
+
+See [candidate-profile-updates.md](candidate-profile-updates.md) for the public
+Request Changes entry point, published prefill, private pending-reference requests,
+reviewer comparisons, and the searchable published-profile editor. This feature
+requires matching changes in sibling `mighty-api`; deploy the backend routes and
+transaction/public-projection safeguards before releasing the frontend. Existing
+records do not need reseeding. Local fixture checks are not live AWS verification.
+
 ## Shared news and County Post compatibility
 
 News widgets call `/v1/feeds/counties/:stateSlug/:countySlug/:topic` or `/v1/feeds/states/:stateSlug/:topic`. Use full state slugs even when PIA page URLs use abbreviations. Each widget loads independently with 40 initial stories and can request up to 200. Browser caches are fresh for five minutes, retry empty feeds after 30 seconds, and retain a bounded saved copy for up to 24 hours. The API owns locality and topic filtering. Nearby coverage stays labelled. Video selects actual video items from the cached general response.

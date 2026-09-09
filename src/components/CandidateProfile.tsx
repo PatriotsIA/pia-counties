@@ -25,6 +25,7 @@ export function CandidateProfile({ candidate, backPath, preview = false }: { can
         <div className="actions">
           {preview ? <button className="button" type="button" disabled>Back to Candidates</button> : <Link className="button" to={backPath}>Back to Candidates</Link>}
           <ShareCandidateProfileButton candidate={candidate} disabled={preview} />
+          {!preview ? <Link className="button" to={`/candidate-form?mode=published&candidate=${encodeURIComponent(candidate.id)}`}>Request Changes</Link> : null}
         </div>
       </div>
       <div className="candidate-profile-grid">

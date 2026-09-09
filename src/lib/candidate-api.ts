@@ -10,7 +10,8 @@ type ApiPage<T> = { data: T[]; nextCursor?: string };
 type ApiItem<T> = { data: T };
 
 type CandidateRecordResponse = {
-  source?: "submission" | "seed" | "research";
+  source?: "submission" | "seed" | "research" | "change-request";
+  changeRequest?: CandidateChangeRequestMetadata;
   submissionId: string;
   candidate: Candidate;
   submitter?: {
@@ -41,10 +42,93 @@ export type CandidateSubmission = Omit<Candidate, "id"> & {
   honeypot?: string;
 };
 
+export const candidatePatchFields = [
+  "name", "office", "stateSlug", "scope", "officeLevel", "countySlugs", "countySlug", "countyName", "district", "profileUrl", "party", "ballotpediaUrl", "email", "phone", "websiteUrl", "image", "videoEmbedUrl", "videoTitle", "bio", "electionYear", "incumbent", "facebookUrl", "xUrl", "instagramUrl", "youtubeUrl",
+] as const satisfies readonly (keyof Omit<Candidate, "id">)[];
+export type CandidatePatch = { [K in keyof Omit<Candidate, "id">]?: Candidate[K] | null };
+export type CandidateChangeTarget = { candidate: Candidate; submissionId: string; revision: number; status: "approved" };
+
+export async function fetchCandidateChangeTarget(candidateId: string): Promise<CandidateChangeTarget> {
+  const response = await fetch(`${requireApiBase()}/v1/candidates/${encodeURIComponent(candidateId)}/change-target`, {
+    headers: { Accept: "application/json" }, cache: "no-store", signal: AbortSignal.timeout(20_000),
+  });
+  const { data } = await readJson<ApiItem<CandidateChangeTarget>>(response);
+  const candidate = data?.candidate;
+  const invalid = () => new Error("Candidate service returned an invalid change target. Please load the profile again.");
+  if (!data || data.status !== "approved" || typeof data.submissionId !== "string" || !data.submissionId.trim() || !Number.isSafeInteger(data.revision) || data.revision < 1 || !candidate || candidate.id !== candidateId) throw invalid();
+  if (["name", "office", "stateSlug"].some((field) => typeof candidate[field as keyof Candidate] !== "string" || !String(candidate[field as keyof Candidate]).trim()) || !candidateScopes.some((scope) => scope.value === candidate.scope)) throw invalid();
+  const publicFields: Record<string, unknown> = { id: candidate.id };
+  for (const field of candidatePatchFields) {
+    const entry = candidate[field];
+    if (entry === undefined) continue;
+    const valid = field === "countySlugs" ? Array.isArray(entry) && entry.every((slug) => typeof slug === "string")
+      : field === "incumbent" ? typeof entry === "boolean"
+      : field === "electionYear" ? Number.isSafeInteger(entry)
+      : field === "officeLevel" ? candidateOfficeLevels.some((level) => level.value === entry)
+      : typeof entry === "string";
+    if (!valid) throw invalid();
+    publicFields[field] = entry;
+  }
+  return { candidate: publicFields as Candidate, submissionId: data.submissionId, revision: data.revision, status: "approved" };
+}
+
+export type CandidateChangeRequest = {
+  requestId: string;
+  targetSubmissionId: string;
+  targetStatus: "pending" | "approved";
+  expectedTargetRevision?: number;
+  candidate?: CandidatePatch;
+  reason: string;
+  submitter: { submitterName: string; submitterEmail: string; submitterPhone?: string; submitterRole: string };
+  consent: boolean;
+  attestation: boolean;
+  honeypot: string;
+};
+
+export type CandidateChangeReceipt = { submissionId: string; status: CandidateReviewStatus; createdAt: string; revision: number };
+
+export async function submitCandidateChangeRequest(payload: CandidateChangeRequest): Promise<CandidateChangeReceipt> {
+  if (!/^change-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(payload.requestId)) throw new Error("The change request ID is invalid. Please try again.");
+  if (typeof payload.targetSubmissionId !== "string" || !payload.targetSubmissionId.trim()) throw new Error("A submission reference is required.");
+  if (!["pending", "approved"].includes(payload.targetStatus)) throw new Error("Choose a valid change request type.");
+  if (typeof payload.reason !== "string" || !payload.reason.trim() || payload.reason.length > 2000) throw new Error("Requested changes must contain between 1 and 2000 characters.");
+  if (!payload.submitter?.submitterName?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.submitter.submitterEmail) || !payload.submitter.submitterRole?.trim()) throw new Error("Enter your name, valid email, and relationship to the campaign.");
+  if (payload.consent !== true || payload.attestation !== true) throw new Error("Consent and attestation are required.");
+  if (payload.targetStatus === "approved" && (!Number.isSafeInteger(payload.expectedTargetRevision) || (payload.expectedTargetRevision || 0) < 1)) throw new Error("The target revision is missing or invalid. Load the published profile again.");
+  const candidate = Object.fromEntries(candidatePatchFields.filter((field) => payload.candidate && Object.hasOwn(payload.candidate, field)).map((field) => [field, payload.candidate![field] ?? null]));
+  if (payload.targetStatus === "approved" && !Object.keys(candidate).length) throw new Error("Change at least one profile field before submitting.");
+  const body = {
+    requestId: payload.requestId,
+    targetSubmissionId: payload.targetSubmissionId,
+    targetStatus: payload.targetStatus,
+    ...(payload.targetStatus === "approved" ? { expectedTargetRevision: payload.expectedTargetRevision, candidate } : {}),
+    reason: payload.reason,
+    submitter: {
+      submitterName: payload.submitter.submitterName,
+      submitterEmail: payload.submitter.submitterEmail,
+      ...(payload.submitter.submitterPhone ? { submitterPhone: payload.submitter.submitterPhone } : {}),
+      submitterRole: payload.submitter.submitterRole,
+    },
+    consent: payload.consent,
+    attestation: payload.attestation,
+    honeypot: payload.honeypot,
+  };
+  const response = await fetch(`${requireApiBase()}/v1/candidates/change-requests`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    signal: AbortSignal.timeout(20_000),
+    body: JSON.stringify(body),
+  });
+  const { data } = await readJson<ApiItem<CandidateChangeReceipt>>(response);
+  if (typeof data?.submissionId !== "string" || !data.submissionId.trim() || !["pending", "approved", "denied"].includes(data.status) || !Number.isSafeInteger(data.revision) || data.revision < 1 || typeof data.createdAt !== "string" || !Number.isFinite(Date.parse(data.createdAt))) throw new Error("Submission receipt could not be confirmed. Please try again.");
+  return { submissionId: data.submissionId, status: data.status, revision: data.revision, createdAt: data.createdAt };
+}
+
 export type CandidateReviewStatus = "pending" | "approved" | "denied";
 
 export type CandidateReviewRecord = CandidateSubmission & {
-  source?: "submission" | "seed" | "research";
+  source?: "submission" | "seed" | "research" | "change-request";
+  changeRequest?: CandidateChangeRequestMetadata;
   submissionId: string;
   id: string;
   status: CandidateReviewStatus;
@@ -54,6 +138,14 @@ export type CandidateReviewRecord = CandidateSubmission & {
   moderationReason?: string;
   reviewedAt?: string;
   reviewedBy?: string;
+};
+
+export type CandidateChangeRequestMetadata = {
+  targetSubmissionId: string;
+  targetStatus: "pending" | "approved";
+  targetRevision: number;
+  baseCandidate: Candidate;
+  reason: string;
 };
 
 export type CandidateReviewerSession = {
@@ -321,6 +413,7 @@ function flattenCandidateRecord(record: CandidateRecordResponse): CandidateRevie
   return {
     ...record.candidate,
     source: record.source,
+    changeRequest: record.changeRequest,
     submissionId: record.submissionId,
     status: record.status,
     createdAt: record.createdAt,
@@ -336,6 +429,11 @@ function flattenCandidateRecord(record: CandidateRecordResponse): CandidateRevie
     reviewedAt: record.statusUpdatedAt,
     reviewedBy: record.reviewer?.email || record.reviewer?.username,
   };
+}
+
+export async function fetchCandidateSubmission(session: CandidateReviewerSession, submissionId: string): Promise<CandidateReviewRecord> {
+  const body = await adminRequest<ApiItem<CandidateRecordResponse>>(session, `/v1/admin/candidates/${encodeURIComponent(submissionId)}`);
+  return flattenCandidateRecord(body.data);
 }
 
 export async function fetchCandidateSubmissions(
@@ -410,6 +508,7 @@ export async function updateCandidateSubmission(
       body: JSON.stringify({
         expectedRevision: payload.revision,
         candidate,
+        ...("moderationReason" in payload ? { reviewReason: payload.moderationReason ?? null } : {}),
       }),
     },
   );

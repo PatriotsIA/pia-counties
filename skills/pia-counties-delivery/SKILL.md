@@ -43,6 +43,20 @@ Seed before switching the directory to the authoritative API. Mighty scripts `se
 
 Check exact production-origin CORS, public API stage, Cognito region/client, seeded catalog, reviewer browser login and both sites' news after release. Follow existing GitHub main → CodePipeline/Amplify builds to success so a later pipeline cannot revert an uncommitted manual deployment. Read settings and pipeline configuration without printing secrets.
 
+## Candidate profile change requests
+
+Use the existing public form for new profiles, published-profile corrections, and pending-profile instructions. Public **Request Changes** links use `/candidate-form?mode=published&candidate=<profile-id>`. Load published prefill from the authoritative change-target endpoint, not the static outage fallback. Pending updates require the original receipt reference and narrative instructions; do not add an unauthenticated draft/email lookup.
+
+Keep requests as separate private records with `source=change-request`, immutable baseline/revision and fresh requester consent/contact details. Verify requester authority during review. Accepting a pending-target correction must leave the original pending; publishing is a separate decision. Public list/get routes and public pagination must not expose accepted request records or their private keys.
+
+Compare county coverage as an unordered, deduplicated set in UI/backend no-op guards; a DOM-order change or duplicate must not count as implementing a pending correction. Keep this semantic normalization separate from exact-input retry fingerprints, where array order remains significant.
+
+Replace editor state with the authoritative save response so omitted/deleted optional fields cannot reappear. Keep comparison and no-op guards synchronized with completed portrait uploads and dependent-control resets. Confirmed discard must reset the retained editor, not only clear its dirty flag.
+
+Use **Published profiles** for direct live edits and **All records** for request history. Acceptance checks request and target revisions atomically; resolve stale requests manually against the current original, or deny and resubmit. Do not silently rebase or force-apply.
+
+Read `docs/candidate-profile-updates.md` and sibling Mighty's `docs/candidate-change-requests.md` for the contract and release checks. Deploy backend protections before frontend entry points, using profile `pia`. No reseed is needed. Preserve request filtering/privacy in any backend rollback once request records exist. Run the full browser suite sequentially on its strict ports; test assertions must identify their own fixtures rather than assume the shared directory is empty.
+
 ## Passwords, portraits, placement, and research
 
 Cognito `ChangePassword` uses the active access token and current/new password. Preserve the in-memory reviewer session and unsaved editor after success. Test with a dedicated invitation-suppressed temporary reviewer, verify the existing token still reaches admin routes and a new login accepts the new password, then delete only that test user. Do not change real staff credentials as a test.
@@ -52,3 +66,11 @@ Submission and review share `CandidatePhotoField`. Accept JPG/PNG/WebP originals
 `officeLevel` (`local`, `state`, `federal`) is independent of geographic `scope`. `countySlug` is the primary county and `countySlugs` additional coverage; all must belong to the canonical state. Statewide candidates match every county in that state. District/city races match only listed counties. Apply the same matcher to featured candidates. `/candidates` is the national directory; state directories separate state and federal offices. Keep operational form/review routes noindex. Verify cross-state exclusion, multi-county districts, statewide inclusion, and pending-draft privacy.
 
 Use authenticated `POST /v1/admin/candidates` with `{candidate, reviewReason}` for user-requested research profiles. Include stable IDs and verified official election/biography sources in private review notes. This creates `source=research`, pending status, and false consent/attestation without mail; do not impersonate campaign submissions or publish research drafts unless authorized. Verify current election filings and district county coverage, since older official biographies can describe earlier maps. Never invent contacts, portraits, or candidate authorization.
+
+## Candidate interview videos
+
+The interview player uses `candidate.videoEmbedUrl` and `videoTitle`; `youtubeUrl` is a separate social-channel link. Store YouTube videos as `https://www.youtube.com/embed/VIDEO_ID`, not a watch/share URL. The existing preview renders this iframe directly. Verify the deployed preview player after saving. Updating these API records takes effect without a frontend deployment.
+
+For researched interviews, check the candidate's identity, publisher, upload/recording date, full-upload runtime, embed permission, and actual footage. A YouTube podcast may show only a still photograph of the candidate even while its host is on camera. For requests for filmed interviews, exclude those and audio-only podcasts. Metadata or a thumbnail alone cannot establish moving footage; YouTube storyboard frames can help when local browser streaming stalls. Distinguish guest interview length from a full multi-segment episode. Label archival interviews, especially recordings from a different office, and leave unresolved matches empty rather than substituting namesakes. Public web search may miss indexed YouTube videos; direct YouTube exact-name searches with office/locality can uncover them.
+
+When adding videos to pending research drafts, GET each record, PATCH only `videoEmbedUrl` and `videoTitle` with `expectedRevision`, then reread and compare all other candidate fields and moderation state. Preserve existing reviewer edits; do not approve a profile as a side effect of adding an interview. Keep source/date/runtime and footage-verification evidence in a reviewable project research report.

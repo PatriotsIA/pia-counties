@@ -1,17 +1,23 @@
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { CandidatePhotoField } from "./CandidatePhotoField";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
-import { Link } from "react-router-dom";
+import { PublishedCandidatePicker } from "./PublishedCandidatePicker";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getCountiesForState, states } from "../data/counties";
+import { buildCandidateChangePatch, prepareChangeRequestAttempt } from "../lib/candidate-change-form";
 import {
   candidateApiIsConfigured,
   candidateScopes,
   candidateOfficeLevels,
   submitCandidateProfile,
+  submitCandidateChangeRequest,
+  fetchCandidateChangeTarget,
+  type CandidateChangeTarget,
+  type CandidateChangeRequest,
   type CandidateSubmission,
 } from "../lib/candidate-api";
 
-type FormStatus = { tone: "success" | "error"; message: string };
+type FormStatus = { tone: "success" | "error"; message: string; pendingReference?: string };
 
 function value(values: FormData, name: string) {
   return String(values.get(name) || "").trim();
@@ -22,6 +28,16 @@ function optional(values: FormData, name: string) {
 }
 
 export function CandidateSubmissionForm() {
+  const [params, setParams] = useSearchParams();
+  const location = useLocation();
+  const requestedMode = params.get("mode");
+  const mode = requestedMode === "pending" || requestedMode === "published" ? requestedMode : "new";
+  const reference = params.get("reference") || "";
+  const candidateId = params.get("candidate") || "";
+  return <CandidateIntakeForm key={location.key} mode={mode} reference={reference} candidateId={candidateId} onLoadTarget={(id) => setParams({ mode: "published", candidate: id })} onModeChange={(next) => setParams(next === "new" ? {} : { mode: next })} />;
+}
+
+function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoadTarget }: { mode: "new" | "pending" | "published"; reference: string; candidateId: string; onModeChange: (mode: string) => void; onLoadTarget: (id: string) => void }) {
   const [stateSlug, setStateSlug] = useState("texas");
   const [scope, setScope] = useState<CandidateSubmission["scope"]>("county");
   const attempt = useRef<{ key: string; id: string } | undefined>(undefined);
@@ -30,13 +46,70 @@ export function CandidateSubmissionForm() {
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<FormStatus>();
   const stateCounties = useMemo(() => getCountiesForState(stateSlug), [stateSlug]);
+  const [target, setTarget] = useState<CandidateChangeTarget>();
+  const [targetLoading, setTargetLoading] = useState(mode === "published" && Boolean(candidateId));
+
+  useEffect(() => {
+    if (mode !== "published" || !candidateId) return;
+    let active = true;
+    fetchCandidateChangeTarget(candidateId).then((loaded) => {
+      if (!active) return;
+      setTarget(loaded);
+      setStateSlug(loaded.candidate.stateSlug);
+      setScope(loaded.candidate.scope);
+      setTargetLoading(false);
+    }).catch((error: unknown) => {
+      if (!active) return;
+      setStatus({ tone: "error", message: error instanceof Error ? error.message : "The profile could not be loaded." });
+      setTargetLoading(false);
+    });
+    return () => { active = false; };
+  }, [candidateId, mode]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (sending || uploading) return;
+    if (sending || uploading || (mode === "published" && !target)) return;
     const formElement = event.currentTarget;
     const values = new FormData(formElement);
     if (value(values, "honeypot")) return;
+
+    if (mode !== "new") {
+      const candidate = target ? buildCandidateChangePatch(target.candidate, values) : undefined;
+      if (mode === "published" && !Object.keys(candidate || {}).length) {
+        setStatus({ tone: "error", message: "Change at least one profile field before submitting a published profile update." });
+        return;
+      }
+      setSending(true);
+      setStatus(undefined);
+      try {
+        const payload: Omit<CandidateChangeRequest, "requestId"> = {
+          targetSubmissionId: target?.submissionId || value(values, "targetSubmissionId"),
+          targetStatus: mode === "published" ? "approved" : "pending",
+          ...(target ? { expectedTargetRevision: target.revision, candidate } : {}),
+          reason: value(values, "reason"),
+          submitter: {
+            submitterName: value(values, "submitterName"),
+            submitterEmail: value(values, "submitterEmail"),
+            submitterPhone: optional(values, "submitterPhone"),
+            submitterRole: value(values, "submitterRole"),
+          },
+          consent: values.get("publicationConsent") === "on",
+          attestation: values.get("attestation") === "on",
+          honeypot: "",
+        };
+        attempt.current = prepareChangeRequestAttempt(payload, attempt.current);
+        const receipt = await submitCandidateChangeRequest({ ...payload, requestId: attempt.current.id });
+        attempt.current = undefined;
+        formElement.reset();
+        setStateSlug(target?.candidate.stateSlug || "texas");
+        setScope(target?.candidate.scope || "county");
+        setPhotoKey((key) => key + 1);
+        setStatus({ tone: "success", message: `Your change request was received. Reference: ${receipt.submissionId}. Changes are reviewed before publication.` });
+      } catch (error) {
+        setStatus({ tone: "error", message: error instanceof Error ? error.message : "The change request could not be submitted. Please try again." });
+      } finally { setSending(false); }
+      return;
+    }
 
     const countySlug = optional(values, "countySlug");
     const county = stateCounties.find((item) => item.slug === countySlug);
@@ -94,6 +167,7 @@ export function CandidateSubmissionForm() {
       setStatus({
         tone: "success",
         message: `Your candidate profile was received. Reference: ${receipt.submissionId}. Submissions are reviewed before publication.`,
+        pendingReference: receipt.submissionId,
       });
     } catch (error) {
       setStatus({
@@ -109,19 +183,32 @@ export function CandidateSubmissionForm() {
     <section className="candidate-intake">
       <header className="page-hero">
         <p className="eyebrow">Candidate Directory</p>
-        <h1>Submit a Candidate Profile</h1>
-        <p>Provide the information our team needs to review and publish a complete candidate directory profile.</p>
+        <h1>{mode === "new" ? "Submit a Candidate Profile" : "Request Candidate Profile Changes"}</h1>
+        <p>{mode === "new" ? "Provide the information our team needs to review and publish a complete candidate directory profile." : "Send corrections to our review team. Your request does not immediately change a candidate profile."}</p>
       </header>
 
       <p>Fields marked <span className="required-mark">*</span> are required. For any questions or technical difficulties, please reach out to <a href="mailto:erik@patriotsinaction.com">erik@patriotsinaction.com</a>.</p>
-      <form className="form-card candidate-profile-form" onSubmit={handleSubmit}>
+      <label className="field"><span>Submission type</span><select aria-label="Submission type" value={mode} disabled={sending || uploading} onChange={(event) => onModeChange(event.target.value)}>
+        <option value="new">New candidate profile</option>
+        <option value="published">Update a published profile</option>
+        <option value="pending">Update a pending profile</option>
+      </select></label>
+      {mode === "published" ? <PublishedCandidatePicker candidateId={candidateId} disabled={sending || uploading} onLoad={onLoadTarget} /> : null}
+      {targetLoading ? <p role="status">Loading published profile…</p> : null}
+      {target ? <p>Editing published profile: <strong>{target.candidate.name}</strong>. Describe and submit your corrections below.</p> : null}
+      <form key={target ? `${target.submissionId}:${target.revision}` : "unloaded"} className="form-card candidate-profile-form" onSubmit={handleSubmit}>
         <label className="honeypot">Leave this field empty <input name="honeypot" tabIndex={-1} autoComplete="off" /></label>
+        <fieldset disabled={sending || (mode === "published" && !target)}>
+        {mode === "pending" ? <>
+          <p>Pending profiles are private and are not loaded here. The review team applies your instructions to the existing draft. Use the submission reference from your receipt or one provided by staff. If you do not have it, contact our support address above.</p>
+          <FormField name="targetSubmissionId" label="Pending submission reference" defaultValue={reference} required />
+        </> : mode === "new" || target ? <>
 
         <fieldset>
           <legend>Candidate and race</legend>
           <div className="candidate-form-grid">
-            <FormField name="name" label="Candidate display name" autoComplete="name" required />
-            <FormField name="office" label="Office sought" required />
+            <FormField name="name" defaultValue={target?.candidate.name} label="Candidate display name" autoComplete="name" required />
+            <FormField name="office" defaultValue={target?.candidate.office} label="Office sought" required />
             <label className="field">
               <span id="candidate-state-label">State <span className="required-mark" aria-hidden="true">*</span></span>
               <select aria-label="State" name="stateSlug" value={stateSlug} onChange={(event) => setStateSlug(event.target.value)} required>
@@ -136,21 +223,24 @@ export function CandidateSubmissionForm() {
             </label>
             <label className="field">
               <span>County, if applicable {(scope === "county" || scope === "precinct") ? <span className="required-mark" aria-hidden="true">*</span> : null}</span>
-              <select key={stateSlug} name="countySlug" defaultValue="" required={scope === "county" || scope === "precinct"}>
+              <select aria-label="County, if applicable" key={stateSlug} name="countySlug" defaultValue={target?.candidate.stateSlug === stateSlug ? target.candidate.countySlug || "" : ""} required={scope === "county" || scope === "precinct"}>
                 <option value="">Not county-specific</option>
                 {stateCounties.map((county) => <option key={county.fips} value={county.slug}>{county.displayName}</option>)}
               </select>
             </label>
             <label className="field"><span>Office level <span className="required-mark" aria-hidden="true">*</span></span>
-              <select aria-label="Office level" name="officeLevel" defaultValue="local" required>{candidateOfficeLevels.map((level) => <option key={level.value} value={level.value}>{level.label}</option>)}</select>
+              <select aria-label="Office level" name="officeLevel" defaultValue={mode === "new" ? "local" : target?.candidate.officeLevel || ""} required={mode === "new"}>
+                {mode === "published" ? <option value="">Not specified</option> : null}
+                {candidateOfficeLevels.map((level) => <option key={level.value} value={level.value}>{level.label}</option>)}
+              </select>
             </label>
-            <FormField name="district" label="District, precinct, or city" />
-            <FormField name="party" label="Political party" />
-            <FormField name="electionYear" label="Election year" type="number" min="2024" max="2100" />
+            <FormField name="district" defaultValue={target?.candidate.district} label="District, precinct, or city" />
+            <FormField name="party" defaultValue={target?.candidate.party} label="Political party" />
+            <FormField name="electionYear" defaultValue={target?.candidate.electionYear} label="Election year" type="number" min="2024" max="2100" />
           </div>
-          <CandidateCountyCoverage key={stateSlug} stateSlug={stateSlug} />
+          <CandidateCountyCoverage key={stateSlug} stateSlug={stateSlug} selected={target?.candidate.stateSlug === stateSlug ? target.candidate.countySlugs : []} />
           <label className="checkbox-row">
-            <input type="checkbox" name="incumbent" />
+            <input type="checkbox" name="incumbent" defaultChecked={target?.candidate.incumbent ?? false} />
             <span>This candidate is the incumbent.</span>
           </label>
         </fieldset>
@@ -158,33 +248,36 @@ export function CandidateSubmissionForm() {
         <fieldset>
           <legend>Campaign contact and links</legend>
           <div className="candidate-form-grid">
-            <FormField name="email" label="Public campaign email" type="email" autoComplete="email" />
-            <FormField name="phone" label="Public campaign phone" type="tel" autoComplete="tel" />
-            <FormField name="websiteUrl" label="Campaign website URL" type="url" />
-            <FormField name="profileUrl" label="Existing candidate profile URL" type="url" />
-            <FormField name="ballotpediaUrl" label="Ballotpedia profile URL" type="url" />
-            <FormField name="facebookUrl" label="Facebook URL" type="url" />
-            <FormField name="xUrl" label="X / Twitter URL" type="url" />
-            <FormField name="instagramUrl" label="Instagram URL" type="url" />
-            <FormField name="youtubeUrl" label="YouTube URL" type="url" />
+            <FormField name="email" defaultValue={target?.candidate.email} label="Public campaign email" type="email" autoComplete="email" />
+            <FormField name="phone" defaultValue={target?.candidate.phone} label="Public campaign phone" type="tel" autoComplete="tel" />
+            <FormField name="websiteUrl" defaultValue={target?.candidate.websiteUrl} label="Campaign website URL" type="url" />
+            <FormField name="profileUrl" defaultValue={target?.candidate.profileUrl} label="Existing candidate profile URL" type="url" />
+            <FormField name="ballotpediaUrl" defaultValue={target?.candidate.ballotpediaUrl} label="Ballotpedia profile URL" type="url" />
+            <FormField name="facebookUrl" defaultValue={target?.candidate.facebookUrl} label="Facebook URL" type="url" />
+            <FormField name="xUrl" defaultValue={target?.candidate.xUrl} label="X / Twitter URL" type="url" />
+            <FormField name="instagramUrl" defaultValue={target?.candidate.instagramUrl} label="Instagram URL" type="url" />
+            <FormField name="youtubeUrl" defaultValue={target?.candidate.youtubeUrl} label="YouTube URL" type="url" />
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Profile media and biography</legend>
           <div className="candidate-form-grid">
-            <CandidatePhotoField key={photoKey} onBusy={setUploading} />
-            <FormField name="videoEmbedUrl" label="Interview/video embed URL" type="url" help="Vimeo or YouTube embed URLs work best." />
-            <FormField name="videoTitle" label="Video title" />
+            <CandidatePhotoField key={photoKey} initialValue={target?.candidate.image} onBusy={setUploading} />
+            <FormField name="videoEmbedUrl" defaultValue={target?.candidate.videoEmbedUrl} label="Interview/video embed URL" type="url" help="Vimeo or YouTube embed URLs work best." />
+            <FormField name="videoTitle" defaultValue={target?.candidate.videoTitle} label="Video title" />
           </div>
           <FormField
             name="bio"
+            defaultValue={target?.candidate.bio}
             label="Candidate biography or campaign statement"
             textarea
             maxLength={5000}
             help="Include background, priorities, qualifications, and why you are running."
           />
         </fieldset>
+        </> : null}
+        {mode !== "new" ? <FormField name="reason" label="Requested changes" textarea maxLength={2000} required /> : null}
 
         <fieldset>
           <legend>Submitter information</legend>
@@ -194,7 +287,8 @@ export function CandidateSubmissionForm() {
             <FormField name="submitterPhone" label="Your phone" type="tel" autoComplete="tel" />
             <label className="field">
               <span>Your relationship to the campaign <span className="required-mark" aria-hidden="true">*</span></span>
-              <select name="submitterRole" defaultValue="candidate" required>
+              <select name="submitterRole" defaultValue={mode === "new" ? "candidate" : ""} required>
+                {mode !== "new" ? <option value="">Select your relationship</option> : null}
                 <option value="candidate">Candidate</option>
                 <option value="campaign">Campaign manager or staff</option>
                 <option value="volunteer">Campaign volunteer</option>
@@ -216,10 +310,12 @@ export function CandidateSubmissionForm() {
           </label>
         </div>
 
+        </fieldset>
         {status ? <p role={status.tone === "error" ? "alert" : "status"} className={`status form-status-${status.tone}`}>{status.message}</p> : null}
+        {status?.pendingReference ? <p><Link to={`/candidate-form?mode=pending&reference=${encodeURIComponent(status.pendingReference)}`}>Request changes to this pending submission</Link>. Save this reference for followup.</p> : null}
         {!candidateApiIsConfigured() ? <p className="status form-status-error">Candidate submissions are not configured yet.</p> : null}
-        <button className="button primary" type="submit" disabled={sending || uploading || !candidateApiIsConfigured()}>
-          {sending ? "Submitting…" : "Submit Candidate Profile"}
+        <button className="button primary" type="submit" disabled={sending || uploading || (mode === "published" && !target) || !candidateApiIsConfigured()}>
+          {sending ? "Submitting…" : mode === "new" ? "Submit Candidate Profile" : "Submit Change Request"}
         </button>
         <p className="privacy-reassurance">Submissions are reviewed before publication. <Link to="/privacy">Read our Privacy Policy</Link>.</p>
       </form>
@@ -240,7 +336,7 @@ function FormField({
   return (
     <label className="field">
       <span>{label} {inputProps.required ? <span className="required-mark" aria-hidden="true">*</span> : null}</span>
-      {textarea ? <textarea {...(inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)} /> : <input {...inputProps} aria-label={label} />}
+      {textarea ? <textarea {...(inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)} aria-label={label} /> : <input {...inputProps} aria-label={label} />}
       {help ? <small>{help}</small> : null}
     </label>
   );

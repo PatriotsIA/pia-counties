@@ -2414,7 +2414,20 @@ nav a {
   margin: 0;
 }
 
+.candidate-review-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.candidate-review-tabs [aria-selected="true"] {
+  color: white;
+  background: var(--navy);
+}
+
 .candidate-review-toolbar {
+  flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 1rem;
   padding: 1rem;
@@ -2480,6 +2493,33 @@ nav a {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+
+.candidate-change-details {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--navy);
+  border-radius: 14px;
+  background: rgba(21, 56, 111, 0.04);
+  overflow-wrap: anywhere;
+}
+
+.candidate-change-details h2 { margin-top: 0; }
+.candidate-change-reason { white-space: pre-wrap; }
+.candidate-change-table-scroll { max-width: 100%; overflow-x: auto; }
+.candidate-change-details table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.candidate-change-details th,
+.candidate-change-details td {
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.candidate-change-details th { color: var(--navy); }
+.candidate-review-editor { min-width: 0; }
+.candidate-record-kind { font-weight: 700; }
 
 .candidate-review-login {
   display: grid;
