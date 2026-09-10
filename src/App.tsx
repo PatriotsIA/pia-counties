@@ -18,6 +18,7 @@ import { getCandidateOfficeLevel, getCandidateById, getCandidatesForCounty, getC
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
+import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
 import { apiUrl, hasApiBaseUrl } from "./lib/api";
@@ -679,33 +680,10 @@ function FoundingPartnerCallout({ county }: { county?: CountySite }) {
 function CountyFinder() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const normalizedQuery = query.trim().toLowerCase();
-  const hasQuery = Boolean(normalizedQuery);
-  const stateMatches = useMemo(
-    () =>
-      hasQuery
-        ? states
-            .filter((state) => [state.name, state.abbr, state.slug].some((value) => value.toLowerCase().includes(normalizedQuery)))
-            .slice(0, 5)
-        : [],
-    [hasQuery, normalizedQuery],
-  );
-  const countyMatches = useMemo(
-    () =>
-      hasQuery
-        ? counties
-            .filter((county) =>
-              [county.displayName, county.name, county.primaryCity, county.state.name, county.state.abbr, county.slug].some((value) =>
-                value?.toLowerCase().includes(normalizedQuery),
-              ),
-            )
-            .slice(0, 10)
-        : [],
-    [hasQuery, normalizedQuery],
-  );
-  const bestState = stateMatches.find(
-    (state) => state.name.toLowerCase() === normalizedQuery || state.abbr.toLowerCase() === normalizedQuery,
-  );
+  const hasQuery = Boolean(query.trim());
+  const stateMatches = useMemo(() => hasQuery ? searchStates(query) : [], [hasQuery, query]);
+  const countyMatches = useMemo(() => hasQuery ? searchCounties(query) : [], [hasQuery, query]);
+  const bestState = getExactSearchState(query) || stateMatches[0];
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -730,7 +708,7 @@ function CountyFinder() {
         <button type="submit" disabled={!bestState && !countyMatches.length}>Search</button>
       </form>
       {hasQuery ? (
-        <div className="home-county-finder-results">
+        <div key={query} className="home-county-finder-results" role="region" aria-label="County and state search results" tabIndex={0}>
           {stateMatches.map((state) => (
             <Link key={state.abbr} to={statePath(state)}>
               <strong>{state.name}</strong>
@@ -946,19 +924,9 @@ function DirectoryPage() {
   const [directorySearch, setDirectorySearch] = useState("");
   const [selectedStateSlug, setSelectedStateSlug] = useState("all");
   const query = directorySearch.trim().toLowerCase();
-  const filteredCounties = counties.filter((county) =>
-    (selectedStateSlug === "all" || county.state.slug === selectedStateSlug) &&
-    [
-      county.displayName,
-      county.name,
-      county.slug,
-      county.primaryCity,
-      county.fips,
-      county.state.name,
-      county.state.abbr,
-      county.state.slug,
-    ].some((value) => value?.toLowerCase().includes(query)),
-  );
+  const filteredCounties = useMemo(() => searchCounties(directorySearch).filter((county) =>
+    selectedStateSlug === "all" || county.state.slug === selectedStateSlug,
+  ), [directorySearch, selectedStateSlug]);
   const visibleStates = states.filter((state) =>
     selectedStateSlug === "all" &&
     !query &&
@@ -1042,12 +1010,9 @@ function DirectoryPage() {
 function StatePage() {
   const { stateSlug } = useParams();
   const state = getStateBySlug(stateSlug);
-  const stateCounties = getCountiesForState(stateSlug);
+  const stateCounties = useMemo(() => getCountiesForState(stateSlug), [stateSlug]);
   const [countySearch, setCountySearch] = useState("");
-  const countyQuery = countySearch.trim().toLowerCase();
-  const visibleCounties = stateCounties.filter((county) =>
-    [county.displayName, county.name, county.slug, county.primaryCity, county.fips].some((value) => value?.toLowerCase().includes(countyQuery)),
-  );
+  const visibleCounties = useMemo(() => searchCounties(countySearch, stateCounties), [countySearch, stateCounties]);
 
   usePageTitle(state ? `${state.name} Counties` : "Not Found");
   if (!state) return <NotFound />;
