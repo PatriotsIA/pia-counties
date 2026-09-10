@@ -12,16 +12,8 @@ async function isolateExternalServices(page: Page) {
     return route.abort();
   });
   await page.route("**/api/rss-feed?**", (route) => route.fulfill({ json: { items: [] } }));
-}
-
-function newsPayload(url: string) {
-  const parts = new URL(url).pathname.split("/");
-  const county = parts[3] === "counties";
-  const topic = parts[county ? 6 : 5];
-  const place = county ? parts[5] : parts[4];
-  return { scope: { level: county ? "county" : "state", stateSlug: parts[4], ...(county ? { countySlug: parts[5] } : {}) }, topic,
-    items: Array.from({ length: 12 }, (_, i) => ({ id: `${place}-${topic}-${i}`, title: `${place} ${topic} story ${i+1}`, link: `https://publisher.example/${place}/${topic}/${i}`, source: "Local Publisher", publishedAt: new Date().toISOString(), mediaType: i === 0 ? "video" : "article" })),
-    meta: { fetchedAt: new Date().toISOString(), cacheTtlSeconds: 300, sourcesUsed: ["county:primary"], hasMore: false } };
+  await page.route("**/api/mighty/**", (route) => route.fulfill({ json: { items: [] } }));
+  await page.route("**/api/vimeo-showcase?**", (route) => route.fulfill({ json: { videos: [] } }));
 }
 
 test("candidate submission, private review, approval and public directory use the real API handler", async ({ page, request }) => {
@@ -46,7 +38,7 @@ test("candidate submission, private review, approval and public directory use th
   const receiptResponse = page.waitForResponse((response) => response.url().endsWith("/v1/candidates/submissions") && response.request().method() === "POST");
   await page.getByRole("button", { name: "Submit Candidate Profile", exact: true }).click();
   const id = (await (await receiptResponse).json()).data.submissionId;
-  await expect(page.getByRole("status")).toContainText("Your candidate profile was received");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("Your candidate profile was received");
   const publicBefore = await request.get("http://127.0.0.1:8791/v1/candidates");
   const baselineDirectory = (await publicBefore.json()).data;
   expect(baselineDirectory.some((candidate: { id: string }) => candidate.id === id)).toBe(false);
@@ -69,7 +61,7 @@ test("candidate submission, private review, approval and public directory use th
   await expect(page.getByRole("alert")).toContainText("Incorrect");
   await page.getByLabel("Current password", { exact: true }).fill("Fixture Password 123!");
   await page.getByRole("button", { name: "Update Password", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("You are still signed in");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("You are still signed in");
   await expect(page.getByLabel("Biography", { exact: true })).toHaveValue("Reviewed candidate biography.");
   await page.getByRole("button", { name: "Change Password", exact: true }).click();
   await page.getByLabel("Public email", { exact: true }).fill("public-campaign@example.com");
@@ -122,7 +114,7 @@ test("candidate submission, private review, approval and public directory use th
   await expect(preview).toHaveCount(0);
   await page.getByLabel("Candidate name", { exact: true }).fill("Alex Integration");
   await page.getByRole("button", { name: "Approve & Publish" }).click();
-  await expect(page.getByRole("status")).toContainText("Candidate approved");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("Candidate approved");
   const publicAfter = await request.get("http://127.0.0.1:8791/v1/candidates");
   const body = await publicAfter.json();
   expect(body.data.filter((candidate: { id: string }) => candidate.id === id)).toHaveLength(1);
@@ -145,40 +137,69 @@ test("candidate submission, private review, approval and public directory use th
   await expect(page.getByRole("heading", { name: "Alex Integration", exact: true })).toHaveCount(0);
 });
 
-test("all county widgets share the API, retain headlines during a topic failure, and retry", async ({ page }) => {
+test("county home and news pages link to County Post and retain the PIA video section", async ({ page }) => {
   await isolateExternalServices(page);
   const calls: string[] = [];
-  let failSports = true;
   await page.route("https://news.fixture/**", (route) => {
     calls.push(route.request().url());
-    if (new URL(route.request().url()).pathname.endsWith("/sports") && failSports) return route.fulfill({ status: 503, json: { error: "Unavailable" } });
-    return route.fulfill({ json: newsPayload(route.request().url()) });
+    return route.abort();
   });
-  await page.goto("/tx/potter/news");
-  const general = page.getByRole("article", { name: "County & City News", exact: true });
-  await expect(general.getByText("potter general story 1", { exact: true })).toBeVisible();
-  const sports = page.getByRole("article", { name: "High School & College Sports", exact: true });
-  await expect(sports.getByRole("alert")).toBeVisible();
-  failSports = false;
-  await sports.getByRole("button", { name: "Retry news feed" }).click();
-  await expect(sports.getByText("potter sports story 1", { exact: true })).toBeVisible();
-  expect(calls.filter((url) => new URL(url).pathname.endsWith("/general"))).toHaveLength(1);
-  expect(new Set(calls.map((url) => new URL(url).pathname.split("/").at(-1)))).toEqual(new Set(["general", "obituaries", "politics", "municipal-bonds", "budgets-levies", "property-taxes", "sports"]));
-  await general.getByRole("button", { name: "Load more stories" }).click();
-  await expect(general.getByText("potter general story 10", { exact: true })).toBeAttached();
+  for (const path of ["/tx/potter", "/tx/potter/news"]) {
+    await page.goto(path);
+    const section = page.locator(".county-post-news-section");
+    await expect(section.getByRole("heading", { name: "The County Post", exact: true })).toBeVisible();
+    await expect(section).toContainText("Follow reporting for Potter County");
+    const links = section.getByRole("link", { name: "Visit The County Post", exact: true });
+    await expect(links).toHaveCount(2);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute("href", "https://thecountypost.com");
+      await expect(link).toHaveAttribute("target", "_blank");
+      await expect(link).toHaveAttribute("rel", /noreferrer/);
+    }
+    await expect(section.getByRole("img", { name: "The County Post" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Patriots in Action video feed" })).toBeVisible();
+  }
+  expect(calls).toEqual([]);
 });
 
-test("state feeds and county navigation select the correct geography on mobile", async ({ page }) => {
+test("state and county news promotions follow the selected geography on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await isolateExternalServices(page);
-  await page.route("https://news.fixture/**", (route) => route.fulfill({ json: newsPayload(route.request().url()) }));
   await page.goto("/texas");
   await expect(page).toHaveURL(/\/tx$/);
-  await expect(page.getByText("texas general story 1", { exact: true })).toBeVisible();
-  await page.getByRole("link", { name: "Randall County Canyon", exact: true }).click();
-  await expect(page.getByRole("article", { name: "County & City News", exact: true }).getByText("randall general story 1", { exact: true })).toBeVisible();
-  await expect(page.getByText("potter general story 1", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".county-post-news-section")).toContainText("Follow reporting for Texas");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.getByRole("link", { name: "Randall County Canyon", exact: true }).click();
+  await expect(page).toHaveURL(/\/tx\/randall$/);
+  await expect(page.locator(".county-post-news-section")).toContainText("Follow reporting for Randall County");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("county calendars load later pages and show future recurring meetings without expired events", async ({ page }) => {
+  await isolateExternalServices(page);
+  await page.clock.setFixedTime(new Date("2026-09-10T12:00:00Z"));
+  const pages = new Set<string>();
+  await page.route("**/api/mighty/spaces/*/events?**", (route) => {
+    const pageNumber = new URL(route.request().url()).searchParams.get("page") || "1";
+    pages.add(pageNumber);
+    return route.fulfill({ json: pageNumber === "1" ? {
+      items: [{ id: 1, title: "Expired meeting", starts_at: "2026-09-01T09:00:00-05:00" }],
+      links: { next: "?page=2" },
+    } : {
+      items: [
+        { id: 2, title: "Community gathering", starts_at: "2026-09-12T11:00:00-05:00", permalink: "https://community.example/events/2" },
+        { id: 3, title: "Second Monday meeting", starts_at: "2026-04-13T09:00:00-05:00", time_zone: "America/Chicago", recurrence_rule: "FREQ=MONTHLY;BYDAY=2MO;COUNT=10" },
+      ],
+      links: {},
+    } });
+  });
+  await page.goto("/tx/potter/events");
+  const events = page.locator(".event-list");
+  await expect(events.getByText("Community gathering", { exact: true })).toBeVisible();
+  await expect(events.getByText("Second Monday meeting", { exact: true })).toHaveCount(5);
+  await expect(events.getByText("Expired meeting", { exact: true })).toHaveCount(0);
+  await expect(events.getByRole("link", { name: "View event" })).toHaveAttribute("href", "https://community.example/events/2");
+  expect(pages).toEqual(new Set(["1", "2"]));
 });
 
 test("changing form state clears the county and errors preserve entered information", async ({ page }) => {

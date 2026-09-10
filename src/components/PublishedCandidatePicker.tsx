@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Candidate } from "../data/candidates";
 import { getStateBySlug } from "../data/counties";
 import { fetchApprovedCandidates } from "../lib/candidate-api";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 export function PublishedCandidatePicker({ candidateId, disabled, onLoad }: { candidateId: string; disabled: boolean; onLoad: (id: string) => void }) {
   const [catalog, setCatalog] = useState<Candidate[]>([]);
@@ -26,9 +27,10 @@ export function PublishedCandidatePicker({ candidateId, disabled, onLoad }: { ca
       <p>Select a profile below or load its ID. Only published profiles can be loaded; pending drafts remain private.</p>
       <label className="field"><span>Search published profiles</span><input aria-label="Search published profiles" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name, office, or state" /></label>
       <label className="field"><span>Published profile</span><select aria-label="Published profile" value="" disabled={loading} onChange={(event) => { if (event.target.value) onLoad(event.target.value); }}>
-        <option value="">{loading ? "Loading published catalog…" : "Select a profile to load"}</option>
+        <option value="">Select a profile to load</option>
         {matches.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.name} — {candidate.office} — {getStateBySlug(candidate.stateSlug)?.name || candidate.stateSlug}</option>)}
       </select></label>
+      {loading ? <LoadingIndicator label="Loading published catalog" /> : null}
       {!loading && !error && !matches.length ? <p>No published profiles match this search.</p> : null}
       {error ? <p role="alert">{error}</p> : null}
       <label className="field"><span>Published profile ID</span><input aria-label="Published profile ID" value={profileId} onChange={(event) => setProfileId(event.target.value)} /></label>

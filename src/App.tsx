@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
-import { CountyNewsFeed, StateNewsFeeds } from "./components/NewsFeed";
+import { CountyPostNewsSection } from "./components/CountyPostNewsSection";
+import { LoadingIndicator } from "./components/LoadingIndicator";
 import { CandidateCatalogProvider } from "./components/CandidateCatalogProvider";
 import { CandidateProfile, CandidateDetails, CandidateProjectDisclaimer, ShareCandidateProfileButton } from "./components/CandidateProfile";
 import { candidateProjectCandidateIds, candidateProjectUrl } from "./data/candidate-project";
@@ -9,7 +10,6 @@ import { candidateJurisdictions, candidateJurisdiction, candidateProfilePath } f
 import { CandidateReviewConsole } from "./components/CandidateReviewConsole";
 import { CandidateSubmissionForm } from "./components/CandidateSubmissionForm";
 import { ScrollToTop } from "./components/ScrollToTop";
-import { countyNewsMidRowAdIds } from "./data/ads";
 import { CountyShowUpMeter } from "./components/CountyShowUpMeter";
 import { PatriotNetworkCommunityBanner } from "./components/PatriotNetworkCommunityBanner";
 import { PresentedByPartner } from "./components/PresentedByPartner";
@@ -25,7 +25,7 @@ import { fetchCalendarFeed, parseIcsEvents, type CalendarEvent } from "./lib/cal
 import { sendCountyFormEmail, sendSiteContactEmail } from "./lib/email";
 import { fetchRssFeedItems } from "./lib/rss-client";
 import type { NewsFeedItem } from "./lib/rss-feed";
-import { fetchSpaceEvents as fetchMightyEvents, fetchSpaceFeed as fetchMightyFeed, mightyIsConfigured } from "./lib/mighty";
+import { fetchSpaceEvents as fetchMightyEvents, fetchSpaceFeed as fetchMightyFeed, mightyIsConfigured, normalizeMightyEvents } from "./lib/mighty";
 import { useCandidateCatalog } from "./lib/candidate-catalog-context";
 import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
 import cbtPartnerImage from "../NewAds/CBT4.jpg";
@@ -1071,7 +1071,7 @@ function StatePage() {
         <p>{visibleCounties.length} of {stateCounties.length} counties shown</p>
       </section>
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
-      <StateNewsFeeds key={state.slug} state={state} />
+      <CountyPostNewsSection locationName={state.name} />
       <div className="directory-grid">
         {visibleCounties.map((county) => (
           <Link key={county.fips} className="directory-card" to={countyPath(county)}>
@@ -1200,7 +1200,7 @@ function NationalCandidatesPage() {
       <label className="field"><span>Office level</span><select aria-label="Office level" value={level} onChange={(event) => setLevel(event.target.value)}><option value="all">All offices</option><option value="federal">Federal / national</option><option value="state">State</option><option value="local">Local / county / city</option></select></label>
       <p className="candidate-filter-count">{candidates.length} of {catalog.length} candidates shown</p>
     </section>
-    {loading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
+    {loading ? <LoadingIndicator label="Refreshing approved candidate profiles" /> : null}
     <CandidateGrid candidates={candidates} emptyText="No candidate profiles match these filters." showCounty />
   </Shell>;
 }
@@ -1253,7 +1253,7 @@ function StateCandidatesPage() {
         onSortChange={setCandidateSort}
       />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
-      {candidatesLoading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
+      {candidatesLoading ? <LoadingIndicator label="Refreshing approved candidate profiles" /> : null}
       {!allCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       <section className="section">
@@ -1288,7 +1288,7 @@ function CandidateProfilePage() {
   if (!candidate && loading) {
     return (
       <Shell route="static" suppressAdRails>
-        <section className="section"><p className="status">Loading candidate profile…</p></section>
+        <section className="section"><LoadingIndicator label="Loading candidate profile" /></section>
       </Shell>
     );
   }
@@ -1394,7 +1394,7 @@ function CountyHome({ county }: { county: CountySite }) {
         <EventCalendar county={county} compact />
       </section>
       <CountyCommunityFeed county={county} />
-      <CountyNewsSection county={county} page="home" />
+      <CountyNewsSection county={county} />
       <ActionGrid county={county} />
     </>
   );
@@ -1485,7 +1485,7 @@ function CountyCandidates({ county }: { county: CountySite }) {
       <CountyShowUpMeter county={county} />
       <CandidateDirectorySponsors county={county} />
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
-      {loading ? <p className="status">Refreshing approved candidate profiles…</p> : null}
+      {loading ? <LoadingIndicator label="Refreshing approved candidate profiles" /> : null}
       {pinnedCandidates.length ? <FeaturedInterviewsSection candidates={pinnedCandidates} /> : null}
       {!countyCandidates.length ? <CandidateDirectoryEmptyBanner /> : null}
       <section className="section">
@@ -1523,10 +1523,10 @@ function FeaturedInterviewsSection({ candidates }: { candidates: Candidate[] }) 
 function CountyNews({ county }: { county: CountySite }) {
   return (
     <>
-      <PageHero eyebrow="News & Events" title="Stay informed" subtitle="Local news, national news, obituaries, interviews, and community updates." />
+      <PageHero eyebrow="News & Events" title="Stay informed" subtitle="Find county-by-county reporting from The County Post alongside Patriots in Action interviews and community updates." />
       <CountyShowUpMeter county={county} />
       <CountyCommunityFeed county={county} />
-      <CountyNewsSection county={county} page="news" />
+      <CountyNewsSection county={county} />
     </>
   );
 }
@@ -1669,124 +1669,14 @@ function CountySubmitEvent({ county }: { county: CountySite }) {
   );
 }
 
-function CountyNewsSection({ county, page }: { county: CountySite; page: CountyPageKey }) {
+function CountyNewsSection({ county }: { county: CountySite }) {
   return (
-    <section className="section news-section">
-      <div className="section-heading">
-        <p className="eyebrow">County Newsroom</p>
-        <h2>Local news feeds for {county.displayName}</h2>
-        <p>Follow local articles, elections, public money, property taxes, sports, video coverage, obituaries, and Patriots in Action TV from one county news section.</p>
-      </div>
-      <div className="feed-layout">
-        <div className="feed-pair">
-          <CountyNewsFeed
-            county={county}
-            feedKind="localNews"
-            eyebrow="Local Articles"
-            title="County & City News"
-            description={`Online news articles focused on ${county.displayName} and nearby city coverage.`}
-
-            emptyText="No local article results are available yet."
-            presentedBy={countyPartner(county, "CBT Real Estate Services")}
-          />
-          <CountyNewsFeed
-            county={county}
-            feedKind="obituaries"
-            eyebrow="Obituaries"
-            title="Local Obituaries"
-            description={`Recent obituary notices and memorial news for ${county.displayName}.`}
-
-
-            emptyText="No local obituary results are available yet."
-            presentedBy={preferredPartner("Patriot Rewards")}
-
-          />
-        </div>
-        <div className="news-sponsor-mid-row">
-          <AdSlot
-            adIds={countyNewsMidRowAdIds}
-            county={county}
-            page={page}
-            route="county"
-            slot="county-news-mid-inline"
-          />
-        </div>
-        <div className="feed-pair">
-          <CountyNewsFeed
-            county={county}
-            feedKind="elections"
-            eyebrow="Election Watch"
-            title="County Elections & Politics"
-            description={`Election, candidate, voting, and political coverage focused on ${county.displayName}.`}
-
-            emptyText="No county election results are available yet."
-
-          />
-          <CountyNewsFeed
-            county={county}
-            feedKind="bondIssues"
-            eyebrow="Bond Watch"
-            title="Local Bond Issues"
-            description={`Bond elections, referendums, and public-debt proposals affecting ${county.displayName}.`}
-
-            emptyText="No local bond-issue results are available yet."
-
-          />
-        </div>
-        <div className="feed-pair">
-          <CountyNewsFeed
-            county={county}
-            feedKind="countyMoney"
-            eyebrow="County Money"
-            title="Budgets & Spending"
-            description={`County budget, spending, funding, revenue, and public-finance coverage for ${county.displayName}.`}
-
-            emptyText="No county budget or spending results are available yet."
-
-          />
-          <CountyNewsFeed
-            county={county}
-            feedKind="propertyTaxes"
-            eyebrow="Property Taxes"
-            title="Taxes, Rates & Appraisals"
-            description={`Property-tax rates, appraisals, assessors, and homestead coverage for ${county.displayName}.`}
-
-            emptyText="No county property-tax results are available yet."
-
-          />
-        </div>
-        <div className="feed-pair">
-          <CountyNewsFeed
-            county={county}
-            feedKind="localVideo"
-            eyebrow="Local Video"
-            title="County News Videos"
-            description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
-
-            emptyText="No local video results are available yet."
-            presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
-          />
-          <VimeoFeed compact />
-        </div>
-      </div>
-      <div className="feed-feature-row">
-        <CountyNewsFeed
-          county={county}
-          feedKind="localSports"
-          eyebrow="Local Sports"
-          title="High School & College Sports"
-          description={`Local high school, college, and athletics coverage connected to ${county.displayName}.`}
-
-          emptyText="No local sports results are available yet."
-          presentedBy={preferredPartner("piaevents.com")}
-
-        />
-      </div>
-      <div className="news-sponsor-row">
-        <AdSlot county={county} page={page} route="county" slot="county-news-inline" limit={5} />
-        <a className="button primary" href={site.links.piaEvents}>Find Patriots in Action Events</a>
-      </div>
-    </section>
+    <>
+      <CountyPostNewsSection locationName={county.displayName} />
+      <section className="section county-news-video-section" aria-label="Patriots in Action video feed">
+        <VimeoFeed compact />
+      </section>
+    </>
   );
 }
 
@@ -1816,24 +1706,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
         setMightyError(false);
         const items = await fetchMightyEvents(mightySpaceId, 100);
         if (!active) return true;
-        const normalized: CalendarEvent[] = items
-          .flatMap((event) => {
-            const startRaw = event.starts_at || event.published_at || event.created_at;
-            if (!startRaw) return [];
-            const start = new Date(startRaw);
-            const end = event.ends_at ? new Date(event.ends_at) : undefined;
-            const calendarEvent: CalendarEvent = {
-              id: `mn-${event.id}`,
-              title: event.title || event.summary || "Community event",
-              start,
-              end,
-              eventLink: event.permalink || event.link || undefined,
-              location: event.location || undefined,
-              isAllDay: false,
-            };
-            return [calendarEvent];
-          })
-          .sort((a, b) => a.start.getTime() - b.start.getTime());
+        const normalized = normalizeMightyEvents(items);
 
         setEvents(normalized);
         setStatus(normalized.length ? "" : "No upcoming events are listed yet.");
@@ -1877,14 +1750,23 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       }
     }
 
-    void Promise.resolve().then(async () => {
+    async function loadCalendar() {
       if (!active) return;
       if (await loadFromMighty()) return;
       if (active) await loadFromIcs();
-    });
+    }
+
+    void loadCalendar();
+    const refreshInterval = window.setInterval(() => void loadCalendar(), 5 * 60_000);
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void loadCalendar();
+    };
+    document.addEventListener("visibilitychange", refreshWhenVisible);
 
     return () => {
       active = false;
+      window.clearInterval(refreshInterval);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [calendarProxyUrl, feedUrl, hasMightyApi, mightySpaceId]);
 
@@ -1907,7 +1789,9 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       {mightyError ? (
         <CountyMightySetupCallout county={county} />
       ) : null}
-      {displayedStatus ? <p>{displayedStatus}</p> : null}
+      {displayedStatus.startsWith("Loading")
+        ? <LoadingIndicator label={displayedStatus} />
+        : displayedStatus ? <p>{displayedStatus}</p> : null}
       <div className="event-list">
         {visible.map((event) => (
           <article className="event-card" key={event.id}>
@@ -2000,7 +1884,9 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
         <h2>{county.displayName} Community Feed</h2>
         <p>Updates from the {county.displayName} space on Patriots in Action.</p>
       </div>
-      {status ? <p className="status">{status}</p> : null}
+      {status.startsWith("Loading")
+        ? <LoadingIndicator label={status} />
+        : status ? <p className="status">{status}</p> : null}
       {fetchError ? (
         <CountyMightySetupCallout county={county} />
       ) : null}
@@ -2078,7 +1964,9 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
           <p className="feed-hero-description">Latest videos from <Link to="/tv">Patriots in Action TV</Link>.</p>
         </div>
       ) : null}
-      {status ? <p className="status">{status}</p> : null}
+      {status.startsWith("Loading")
+        ? <LoadingIndicator label={status} />
+        : status ? <p className="status">{status}</p> : null}
       <div className="feed-list video-feed scroll-feed" onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + (compact ? 8 : 12)))}>
         {visibleVideos.map((video) => {
           return (

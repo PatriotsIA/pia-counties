@@ -46,7 +46,7 @@ test("published direct links prefill the complete public form and submit only co
   await page.getByLabel("Public campaign phone", { exact: true }).fill("");
   await page.getByLabel("Candidate biography or campaign statement", { exact: true }).fill("Corrected biography");
   await page.getByRole("button", { name: "Submit Change Request", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("change-published-receipt");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("change-published-receipt");
   expect(body).toMatchObject({ targetStatus: "approved", targetSubmissionId: "published-source-reference", expectedTargetRevision: 7, candidate: { phone: null, bio: "Corrected biography" } });
   expect(body?.candidate).toEqual({ phone: null, bio: "Corrected biography" });
 });
@@ -111,7 +111,7 @@ test("new receipts lead to a private pending followup persisted separately by th
   const receiptResponse = page.waitForResponse((response) => response.url().endsWith("/v1/candidates/submissions") && response.request().method() === "POST");
   await page.getByRole("button", { name: "Submit Candidate Profile", exact: true }).click();
   const originalReceipt = (await (await receiptResponse).json()).data;
-  await expect(page.getByRole("status")).toContainText("Your candidate profile was received");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("Your candidate profile was received");
   const followup = page.getByRole("link", { name: "Request changes to this pending submission", exact: true });
   await expect(followup).toHaveAttribute("href", `/candidate-form?mode=pending&reference=${originalReceipt.submissionId}`);
   const originalBefore = (await (await request.get(`${apiUrl}/v1/admin/candidates/${originalReceipt.submissionId}`, { headers: reviewerHeaders })).json()).data;
@@ -126,7 +126,7 @@ test("new receipts lead to a private pending followup persisted separately by th
   const changeResponse = await requestResponse;
   expect(changeResponse.status()).toBe(201);
   const receipt = (await changeResponse.json()).data;
-  await expect(page.getByRole("status")).toContainText(receipt.submissionId);
+  await expect(page.getByRole("main").getByRole("status")).toContainText(receipt.submissionId);
   const saved = (await (await request.get(`${apiUrl}/v1/admin/candidates/${receipt.submissionId}`, { headers: reviewerHeaders })).json()).data;
   expect(saved).toMatchObject({ source: "change-request", status: "pending", candidate: originalBefore.candidate, changeRequest: { targetSubmissionId: originalReceipt.submissionId, targetStatus: "pending", reason: "Please add my current campaign phone: 806-555-0112." } });
   expect((await (await request.get(`${apiUrl}/v1/admin/candidates/${originalReceipt.submissionId}`, { headers: reviewerHeaders })).json()).data).toEqual(originalBefore);
@@ -157,7 +157,7 @@ test("published Request Changes persists a separate proposal without changing th
   const response = await responsePromise;
   expect(response.status()).toBe(201);
   const receipt = (await response.json()).data;
-  await expect(page.getByRole("status")).toContainText("Your change request was received");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("Your change request was received");
   const proposal = (await (await request.get(`${apiUrl}/v1/admin/candidates/${receipt.submissionId}`, { headers: reviewerHeaders })).json()).data;
   expect(proposal).toMatchObject({ source: "change-request", status: "pending", candidate: { id: candidate.id, bio: "Proposed corrected biography" }, submitter: { submitterEmail: "current-requester@example.com" }, changeRequest: { targetSubmissionId: candidate.id, targetStatus: "approved", targetRevision: original.revision, baseCandidate: original.candidate } });
   expect(proposal.candidate).not.toHaveProperty("phone");
@@ -191,7 +191,7 @@ test("published uploads guard target switches and successful receipts reset ever
   await page.getByLabel("Requested changes", { exact: true }).fill("Updated portrait and statewide Alaska race.");
   await fillSubmitter(page);
   await page.getByRole("button", { name: "Submit Change Request", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("change-upload-receipt");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("change-upload-receipt");
   await expect(page.getByLabel("State", { exact: true })).toHaveValue("texas");
   await expect(page.getByLabel("Race scope", { exact: true })).toHaveValue("district");
   await expect(page.getByLabel("County, if applicable", { exact: true })).toHaveValue("potter");
@@ -248,8 +248,8 @@ test("pending followup sends private instructions without reading or editing the
   await page.getByLabel("Requested changes", { exact: true }).fill("Please replace the old campaign phone with 806-555-0123.");
   await fillSubmitter(page);
   await page.getByRole("button", { name: "Submit Change Request", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText("Your change request was received");
-  await expect(page.getByRole("status")).toContainText("change-pending-receipt");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("Your change request was received");
+  await expect(page.getByRole("main").getByRole("status")).toContainText("change-pending-receipt");
   expect(body).toEqual({ requestId: expect.stringMatching(/^change-[a-f0-9-]{36}$/), targetSubmissionId: "private-pending-reference", targetStatus: "pending", reason: "Please replace the old campaign phone with 806-555-0123.", submitter: { submitterName: "Current Requester", submitterEmail: "current-requester@example.com", submitterRole: "campaign" }, consent: true, attestation: true, honeypot: "" });
   expect(reads).toEqual([]);
 });

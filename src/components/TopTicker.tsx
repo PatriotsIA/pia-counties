@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
 import itmTradingAd from "../../ads/ad-itmtrading.JPG";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 type WeatherSponsor = {
   name: string;
@@ -169,7 +170,7 @@ function PreciousMetalsTicker() {
               aria-label={`${label} price, presented by ITM Trading`}
             >
               <span>{label}</span>
-              <strong>{quote ? formatMetalPrice(quote.price) : "Loading…"}</strong>
+              <strong>{quote ? formatMetalPrice(quote.price) : <LoadingIndicator label={`Loading ${label} price`} inline />}</strong>
               {change !== undefined ? (
                 <small className={change >= 0 ? "positive" : "negative"}>
                   {change >= 0 ? "+" : "−"}{formatMetalPrice(Math.abs(change))}
@@ -231,8 +232,7 @@ function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weathe
   if (weather.loading) {
     return (
       <span className="weather-pill">
-        <span aria-hidden="true">...</span>
-        <span>{weather.label} weather loading</span>
+        <LoadingIndicator label={`${weather.label} weather loading`} inline />
       </span>
     );
   }

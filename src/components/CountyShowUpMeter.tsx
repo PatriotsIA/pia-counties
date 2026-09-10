@@ -1,5 +1,6 @@
 import type { CountySite } from "../data/counties";
 import { useCountyTurnout } from "../lib/useCountyTurnout";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -15,7 +16,7 @@ export function CountyShowUpMeter({ county, className = "" }: { county: CountySi
         <p className="eyebrow">Operation Show Up</p>
         <h2>{county.displayName} Show Up Meter</h2>
         {turnout.loading ? (
-          <p>Loading latest turnout data...</p>
+          <LoadingIndicator label="Loading latest turnout data" />
         ) : latest ? (
           <>
             <p>

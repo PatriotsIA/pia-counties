@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { CountySite, StateSite } from "../data/counties";
 import type { CountyFeedKind } from "../lib/county-feed-urls";
 import { cachedNewsFeed, fetchNewsFeed, newsApiIsConfigured, newsTopics, type NewsResult, type NewsScope } from "../lib/news-api";
+import { LoadingIndicator } from "./LoadingIndicator";
 
 type FeedProps = {
   scope: NewsScope;
@@ -78,8 +79,8 @@ function NewsFeed({ scope, feedKind, title, eyebrow, description, emptyText, pre
         ) : null}
         <p className="feed-hero-description">{description}</p>
       </div>
-      <div role="status" aria-live="polite">
-        {loading && !items.length ? <p className="status">Loading news…</p> : null}
+      <div aria-live="polite">
+        {loading && !items.length ? <LoadingIndicator label="Loading news" /> : null}
         {!loading && !error && !items.length ? <p className="status">{emptyText}</p> : null}
         {result?.stale ? <p className="status">Showing saved stories while the news service refreshes.</p> : null}
         {includesNearby ? <p className="status feed-fallback-notice">Includes coverage from nearby counties.</p> : null}

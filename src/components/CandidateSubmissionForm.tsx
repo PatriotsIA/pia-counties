@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { CandidatePhotoField } from "./CandidatePhotoField";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
 import { PublishedCandidatePicker } from "./PublishedCandidatePicker";
+import { LoadingIndicator } from "./LoadingIndicator";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getCountiesForState, states } from "../data/counties";
 import { buildCandidateChangePatch, prepareChangeRequestAttempt } from "../lib/candidate-change-form";
@@ -194,7 +195,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
         <option value="pending">Update a pending profile</option>
       </select></label>
       {mode === "published" ? <PublishedCandidatePicker candidateId={candidateId} disabled={sending || uploading} onLoad={onLoadTarget} /> : null}
-      {targetLoading ? <p role="status">Loading published profile…</p> : null}
+      {targetLoading ? <LoadingIndicator label="Loading published profile" /> : null}
       {target ? <p>Editing published profile: <strong>{target.candidate.name}</strong>. Describe and submit your corrections below.</p> : null}
       <form key={target ? `${target.submissionId}:${target.revision}` : "unloaded"} className="form-card candidate-profile-form" onSubmit={handleSubmit}>
         <label className="honeypot">Leave this field empty <input name="honeypot" tabIndex={-1} autoComplete="off" /></label>
