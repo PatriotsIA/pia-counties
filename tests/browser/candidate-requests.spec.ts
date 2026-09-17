@@ -105,7 +105,7 @@ test("new receipts lead to a private pending followup persisted separately by th
   await isolateExternalServices(page);
   await page.goto("/candidate-form");
   await page.getByLabel("Candidate display name").fill("Request Receipt Original");
-  await page.getByLabel("Office sought").fill("County Commissioner");
+  await page.getByLabel("Office sought").selectOption("county_commissioner");
   await page.getByLabel("County, if applicable").selectOption("potter");
   await fillSubmitter(page);
   const receiptResponse = page.waitForResponse((response) => response.url().endsWith("/v1/candidates/submissions") && response.request().method() === "POST");

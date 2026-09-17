@@ -3497,3 +3497,9 @@ nav a {
 .candidate-county-options { max-height: 220px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .5rem; padding: .5rem; border: 1px solid #ccd1dc; border-radius: .5rem; }
 .required-mark { color: #a31b2c; font-weight: 700; }
 .candidate-photo-field input[type=file] { max-width: 100%; }
+.candidate-office-field { min-width: 0; }
+.candidate-office-title { margin-top: .6rem; }
+.candidate-office-title summary { cursor: pointer; }
+.candidate-contact-interests { display: grid; gap: .75rem; margin-top: 1rem; }
+.candidate-contact-interests .checkbox-row { margin: 0; }
+.candidate-contact-interests > a { justify-self: start; margin-left: 1.8rem; }

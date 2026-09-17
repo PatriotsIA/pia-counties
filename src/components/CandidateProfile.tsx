@@ -49,7 +49,7 @@ export function CandidateProfile({ candidate, backPath, preview = false }: { can
               {candidate.bio.split(/\n{2,}/).map((paragraph, index) => <p key={`${candidate.id}-bio-${index}`}>{paragraph}</p>)}
             </div>
           ) : null}
-          <CandidateQuestionnaireAnswers response={candidate.voterGuide} />
+          <CandidateQuestionnaireAnswers response={candidate.voterGuide} place={candidate} />
         </div>
         <aside className="candidate-profile-sidebar">
           {candidate.image ? <img className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}

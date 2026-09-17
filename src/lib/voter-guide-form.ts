@@ -22,6 +22,8 @@ export function readVoterGuide(values: FormData, fallback?: VoterGuideResponse):
     if (text("fundSource")) answer.fundSource = text("fundSource");
     if (Object.keys(answer).length) answers[question.number] = answer;
   }
+  // Opening an existing profile must not add an empty questionnaire by itself.
+  if (!fallback && !Object.keys(answers).length && values.get("voterGuideUnchangedOffice") === office.id) return undefined;
   return { version: voterGuideVersion, officeId: office.id, answers };
 }
 

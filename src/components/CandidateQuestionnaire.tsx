@@ -1,37 +1,64 @@
 import { useEffect, useRef, useState } from "react";
-import { answerCharacterLimit, answerLines, answerWordLimit, isVoterGuideResponse, judicialNote, questionnaireOffice, questionnaireSections, voterGuide, wordCount, type Question, type VoterGuideAnswer, type VoterGuideResponse } from "../voter-guide/model";
+import { answerCharacterLimit, answerLines, answerWordLimit, isVoterGuideResponse, judicialNote, legacyVoterGuideVersion, questionnaireOffice, questionnaireSections, voterGuide, wordCount, type Question, type VoterGuideAnswer, type VoterGuideResponse } from "../voter-guide/model";
 import { readVoterGuide, voterGuideField } from "../lib/voter-guide-form";
+import { localizeQuestionnaireText, localizedJudicialNote, localizedQuestionnaireOffice, type QuestionnairePlace } from "../voter-guide/localize";
 
-export function CandidateQuestionnaireFields({ initial }: { initial?: VoterGuideResponse }) {
-  const [officeId, setOfficeId] = useState(initial?.officeId || "");
-  const office = questionnaireOffice(officeId);
+export function CandidateOfficeField({ officeId, onOfficeChange, place, initialOffice, initialResponse }: {
+  officeId: string; onOfficeChange: (office: string) => void; place: QuestionnairePlace; initialOffice?: string; initialResponse?: VoterGuideResponse;
+}) {
+  const office = localizedQuestionnaireOffice(officeId, place);
+  const [customTitle, setCustomTitle] = useState(initialOffice && initialOffice !== office?.office ? initialOffice : "");
+  const [initialId] = useState(officeId);
+  return <div className="candidate-office-field">
+    <label className="field"><span>Office sought <span className="required-mark" aria-hidden="true">*</span></span>
+      <select name="voterGuideOffice" aria-label="Office sought" value={officeId} required onChange={(event) => {
+        const next = event.target.value;
+        const form = event.currentTarget.form;
+        const values = form ? new FormData(form) : undefined;
+        values?.set("voterGuideOffice", officeId);
+        if (values && Object.keys(readVoterGuide(values)?.answers || {}).length && !window.confirm("Changing the office clears its current questionnaire answers. Continue?")) return;
+        setCustomTitle("");
+        onOfficeChange(next);
+      }}>
+        <option value="">Select an office</option>
+        {voterGuide.offices.map((item) => <option key={item.id} value={item.id}>{localizeQuestionnaireText(item.office, place)}</option>)}
+        <option value="other">Other office</option>
+      </select>
+      <small>Your office selection determines the questions below. All answers are optional.</small>
+    </label>
+    <input type="hidden" name="office" value={customTitle.trim() || office?.office || ""} />
+    <input type="hidden" name="voterGuideUnchangedOffice" value={initialOffice && !initialResponse ? initialId : ""} />
+    {officeId === "other" ? <label className="field"><span>Office title <span className="required-mark" aria-hidden="true">*</span></span><input aria-label="Office title" name="voterGuideOfficeTitle" value={customTitle} onChange={(event) => setCustomTitle(event.target.value)} maxLength={200} required /></label> : office ? <details className="candidate-office-title" open={initialOffice && initialOffice !== office.office && customTitle ? true : undefined}>
+      <summary>Use a specific office title</summary>
+      <label className="field"><span>Specific office title (optional)</span><input name="voterGuideOfficeTitle" value={customTitle} onChange={(event) => setCustomTitle(event.target.value)} placeholder={office.office} maxLength={200} /></label>
+    </details> : null}
+  </div>;
+}
+
+export function CandidateContactInterests() {
+  return <div className="candidate-contact-interests">
+    <label className="checkbox-row"><input type="checkbox" name="interviewRequested" /><span>Would you like to schedule an interview with Patriots In Action?</span></label>
+    <label className="checkbox-row"><input type="checkbox" name="advertisingRequested" /><span>Would you like to advertise your candidacy on Patriots In Action?</span></label>
+    <a href="https://advertise.patriotsinaction.com" target="_blank" rel="noreferrer">View advertising options</a>
+  </div>;
+}
+
+export function CandidateQuestionnaireFields({ initial, officeId, place }: { initial?: VoterGuideResponse; officeId: string; place: QuestionnairePlace }) {
+  const office = localizedQuestionnaireOffice(officeId, place);
+  if (!office) return null;
   return (
     <fieldset className="candidate-questionnaire">
       <legend>Voter guide questionnaire</legend>
-      <p>Your responses will appear on your public candidate profile after review. Choose the questionnaire for the office you seek. The supplied questions refer to Texas and the Republican Party; you may use them regardless of your state or party, and skip any that do not apply.</p>
-      <label className="field"><span>Office questionnaire (optional)</span>
-        <select name="voterGuideOffice" aria-label="Office questionnaire" value={officeId} onChange={(event) => {
-          const next = event.target.value;
-          const form = event.currentTarget.form;
-          // Read the previously selected office's controls before changing sets.
-          const values = form ? new FormData(form) : undefined;
-          values?.set("voterGuideOffice", officeId);
-          if (values && Object.keys(readVoterGuide(values)?.answers || {}).length && !window.confirm("Changing the office questionnaire clears its current answers. Continue?")) return;
-          setOfficeId(next);
-        }}>
-          <option value="">No questionnaire / office not listed</option>
-          {voterGuide.offices.map((item) => <option key={item.id} value={item.id}>{item.office}</option>)}
-        </select>
-      </label>
-      {office ? <div key={office.id} className="candidate-questionnaire-questions">
+      <p>Your responses will appear on your public candidate profile after review. Questions reflect your selected state and county. Office duties vary by jurisdiction; answer for the office you seek and skip questions that do not apply. Candidates of every party may use this questionnaire.</p>
+      <div key={office.id} className="candidate-questionnaire-questions">
         <h2>{office.office}</h2>
         <p>All twenty questions are optional. Answer as many as you wish; unanswered questions will show “No response provided” on the public profile. Limit each written answer to 150 words. Yes-or-No explanations in the final section should be 50 words or fewer.</p>
-        {office.judicial ? <p className="questionnaire-note">{judicialNote}</p> : null}
+        {office.judicial ? <p className="questionnaire-note">{localizedJudicialNote(place)}</p> : null}
         {questionnaireSections.map((section) => <section key={section.id} aria-label={section.title}>
           <h3>{section.title}</h3><p>{section.note}</p>
           {office.questions.filter((question) => question.section === section.id).map((question) => <QuestionFields key={question.number} question={question} initial={initial?.officeId === office.id ? initial.answers[question.number] : undefined} />)}
         </section>)}
-      </div> : null}
+      </div>
     </fieldset>
   );
 }
@@ -63,12 +90,13 @@ function WordAnswer({ name, label, initial = "", limit }: { name: string; label:
   }} /><small id={`${name}-count`} className={error ? "questionnaire-limit-error" : ""}>{count} / {limit} words</small></label>;
 }
 
-export function CandidateQuestionnaireAnswers({ response }: { response?: VoterGuideResponse }) {
+export function CandidateQuestionnaireAnswers({ response, place }: { response?: VoterGuideResponse; place: QuestionnairePlace }) {
   if (!response || !isVoterGuideResponse(response)) return null;
-  const office = questionnaireOffice(response.officeId)!;
+  const legacy = response.version === legacyVoterGuideVersion;
+  const office = (legacy ? questionnaireOffice(response.officeId) : localizedQuestionnaireOffice(response.officeId, place))!;
   return <section className="candidate-questionnaire-public" aria-label="Candidate questionnaire responses">
     <h2>Voter guide responses</h2><p>{office.office} · Candidate-provided answers</p>
-    {office.judicial ? <p className="questionnaire-note">{judicialNote}</p> : null}
+    {office.judicial ? <p className="questionnaire-note">{legacy ? judicialNote : localizedJudicialNote(place)}</p> : null}
     {questionnaireSections.map((section) => <section key={section.id} aria-label={section.title}>
       <h3>{section.title}</h3><p>{section.note}</p>
       {office.questions.filter((question) => question.section === section.id).map((question) => {

@@ -472,7 +472,7 @@ test("cleared optional fields stay cleared across direct published saves", async
   expect(cleared).not.toHaveProperty("bio");
   await expect.soft(page.getByLabel("Public phone", { exact: true })).toHaveValue("");
   await expect.soft(page.getByLabel("Biography", { exact: true })).toHaveValue("");
-  await page.getByLabel("Office sought", { exact: true }).fill("Lieutenant Governor");
+  await page.getByLabel("Office sought", { exact: true }).selectOption("lieutenant_governor");
   await page.getByRole("button", { name: "Save Published Profile", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Published profile updated");
   const updated = (await (await request.get(`${api}/v1/candidates/${candidate.id}`)).json()).data;

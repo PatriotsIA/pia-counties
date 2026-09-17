@@ -4,7 +4,8 @@ import { candidateProfilePath } from "../lib/candidate-profile";
 import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
 import { getCountiesForState, getStateBySlug, states } from "../data/counties";
 import { CandidatePhotoField } from "./CandidatePhotoField";
-import { CandidateQuestionnaireAnswers, CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { CandidateOfficeField, CandidateQuestionnaireAnswers, CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { initialQuestionnaireOffice } from "../voter-guide/localize";
 import { readVoterGuide, voterGuideKey } from "../lib/voter-guide-form";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
 import { CandidateProfile } from "./CandidateProfile";
@@ -341,6 +342,8 @@ function CandidateReviewEditor({
   const [preview, setPreview] = useState<Candidate>();
   const [draft, setDraft] = useState<Candidate>();
   const [stateSlug, setStateSlug] = useState(getStateBySlug(record.stateSlug)?.slug || record.stateSlug);
+  const [countySlug, setCountySlug] = useState(record.countySlug || "");
+  const [officeId, setOfficeId] = useState(initialQuestionnaireOffice(record));
   const [uploading, setUploading] = useState(false);
   const busy = loading || uploading;
   const isRequest = record.source === "change-request";
@@ -379,9 +382,10 @@ function CandidateReviewEditor({
           <div className="candidate-form-grid">
             <ReviewField name="id" label="Profile ID / URL slug" value={record.id} readOnly />
             <ReviewField name="name" label="Candidate name" value={record.name} required />
-            <ReviewField name="office" label="Office sought" value={record.office} required />
+            <CandidateOfficeField officeId={officeId} onOfficeChange={setOfficeId} place={{ stateSlug, countySlug }} initialOffice={record.office} initialResponse={record.voterGuide} />
             <label className="field"><span>State <span className="required-mark" aria-hidden="true">*</span></span><select aria-label="State" name="stateSlug" value={stateSlug} onChange={(event) => {
               setStateSlug(event.target.value);
+              setCountySlug(event.target.value === getStateBySlug(record.stateSlug)?.slug ? record.countySlug || "" : "");
               // Read again after React resets the state-dependent county controls.
               queueMicrotask(() => { if (formRef.current) setDraft(reviewCandidate(new FormData(formRef.current), record)); });
             }} required>{states.map((state) => <option key={state.slug} value={state.slug}>{state.name}</option>)}</select></label>
@@ -392,7 +396,7 @@ function CandidateReviewEditor({
                 {candidateScopes.map((scope) => <option key={scope.value} value={scope.value}>{scope.label}</option>)}
               </select>
             </label>
-            <label className="field"><span>County</span><select name="countySlug" key={stateSlug} defaultValue={stateSlug === getStateBySlug(record.stateSlug)?.slug ? record.countySlug || "" : ""}><option value="">Not county-specific</option>{getCountiesForState(stateSlug).map((county) => <option key={county.fips} value={county.slug}>{county.displayName}</option>)}</select></label>
+            <label className="field"><span>County</span><select name="countySlug" value={countySlug} onChange={(event) => setCountySlug(event.target.value)}><option value="">Not county-specific</option>{getCountiesForState(stateSlug).map((county) => <option key={county.fips} value={county.slug}>{county.displayName}</option>)}</select></label>
             <ReviewField name="district" label="District / precinct / city" value={record.district} />
             <ReviewField name="party" label="Party" value={record.party} />
             <ReviewField name="electionYear" label="Election year" type="number" value={record.electionYear} />
@@ -415,7 +419,7 @@ function CandidateReviewEditor({
             <span>Incumbent</span>
           </label>
           <ReviewField name="bio" label="Biography" textarea value={record.bio} />
-          <CandidateQuestionnaireFields initial={record.voterGuide} />
+          <CandidateQuestionnaireFields initial={record.voterGuide} officeId={officeId} place={{ stateSlug, countySlug }} />
         </fieldset>
 
         <fieldset>
@@ -425,6 +429,8 @@ function CandidateReviewEditor({
             <ReviewField name="submitterEmail" label="Submitter email" value={record.submitterEmail} readOnly />
             <ReviewField name="submitterPhone" label="Submitter phone" value={record.submitterPhone} readOnly />
             <ReviewField name="submitterRole" label="Submitter role" value={record.submitterRole} readOnly />
+            <ReviewField name="interviewRequested" label="Interview requested" value={record.interviewRequested ? "Yes" : "No"} readOnly />
+            <ReviewField name="advertisingRequested" label="Advertising requested" value={record.advertisingRequested ? "Yes" : "No"} readOnly />
           </div>
         </fieldset>
 
@@ -477,7 +483,7 @@ function CandidateChangeDetails({ record, candidate, busy, onOpenOriginal }: { r
       <p>{request.targetStatus === "pending" ? "Applying this request updates the pending draft only. Publication still requires separate approval." : "Saving proposed edits does not change the live profile. Applying the request updates the existing published profile."}</p>
       {changed.length ? <div className="candidate-change-table-scroll"><table aria-label="Proposed profile changes">
         <thead><tr><th scope="col">Field</th><th scope="col">Original at request time</th><th scope="col">Proposed value</th></tr></thead>
-        <tbody>{changed.map((key) => <tr key={key}><th scope="row">{profileFieldLabels[key]}</th><td>{key === "voterGuide" ? request.baseCandidate.voterGuide ? <CandidateQuestionnaireAnswers response={request.baseCandidate.voterGuide} /> : "Not set" : display(request.baseCandidate[key])}</td><td>{key === "voterGuide" ? candidate.voterGuide ? <CandidateQuestionnaireAnswers response={candidate.voterGuide} /> : "Not set" : display(candidate[key])}</td></tr>)}</tbody>
+        <tbody>{changed.map((key) => <tr key={key}><th scope="row">{profileFieldLabels[key]}</th><td>{key === "voterGuide" ? request.baseCandidate.voterGuide ? <CandidateQuestionnaireAnswers response={request.baseCandidate.voterGuide} place={request.baseCandidate} /> : "Not set" : display(request.baseCandidate[key])}</td><td>{key === "voterGuide" ? candidate.voterGuide ? <CandidateQuestionnaireAnswers response={candidate.voterGuide} place={candidate} /> : "Not set" : display(candidate[key])}</td></tr>)}</tbody>
       </table></div> : <p>Enter the requested edits below before applying this request.</p>}
     </section>
   );

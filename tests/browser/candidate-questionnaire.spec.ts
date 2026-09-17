@@ -31,13 +31,18 @@ test("optional answers work for any state/party through intake, preview, publica
   await isolate(page);
   await page.goto("/candidate-form");
   await page.getByLabel("Candidate display name").fill("Questionnaire Workflow Candidate");
-  await page.getByLabel("Office sought").fill("Governor");
+  await page.getByLabel("Office sought").selectOption("governor");
   await page.getByLabel("State", { exact: true }).selectOption("alaska");
   await page.getByLabel("Race scope", { exact: true }).selectOption("statewide");
   await page.getByLabel("Office level", { exact: true }).selectOption("state");
   await page.getByLabel("Political party", { exact: true }).fill("Independent");
-  await page.getByLabel("Office questionnaire", { exact: true }).selectOption("governor");
+  await page.getByLabel("Office sought", { exact: true }).selectOption("governor");
   await expect(page.locator(".questionnaire-question")).toHaveCount(20);
+  await expect(page.locator(".candidate-questionnaire")).toContainText("Governor of Alaska");
+  await expect(page.locator(".candidate-questionnaire")).not.toContainText("Texas");
+  await page.getByLabel("Would you like to schedule an interview with Patriots In Action?", { exact: true }).check();
+  await page.getByLabel("Would you like to advertise your candidacy on Patriots In Action?", { exact: true }).check();
+  await expect(page.getByRole("link", { name: "View advertising options" })).toHaveAttribute("href", "https://advertise.patriotsinaction.com");
   await page.getByLabel(answerLabel, { exact: true }).fill("Candidate's original background response.");
   await page.getByLabel("11. Hand-Marked Ballots (Yes or No): Yes or No", { exact: true }).selectOption("No");
   await page.getByLabel("2018 primary", { exact: true }).selectOption("Did not vote");
@@ -50,13 +55,19 @@ test("optional answers work for any state/party through intake, preview, publica
   await page.getByRole("button", { name: "Submit Candidate Profile", exact: true }).click();
   const receipt = (await (await receiptResponse).json()).data;
   await expect(page.getByRole("main").getByRole("status")).toContainText("Your candidate profile was received");
-  await expect(page.getByLabel("Office questionnaire", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Office sought", { exact: true })).toHaveValue("");
   expect((await request.get(`${api}/v1/candidates/${receipt.submissionId}`)).status()).toBe(404);
   const record = (await (await request.get(`${api}/v1/admin/candidates/${receipt.submissionId}`, { headers })).json()).data;
   expect(record.candidate.voterGuide.answers[2]).toBeUndefined();
   expect(record.candidate.voterGuide.answers[19].amounts["Local party, last four years ($)"]).toBe("0");
+  expect(record.submitter.interviewRequested).toBe(true);
+  expect(record.submitter.advertisingRequested).toBe(true);
+  expect(record.candidate).not.toHaveProperty("interviewRequested");
+  expect(record.candidate).not.toHaveProperty("advertisingRequested");
 
   await signIn(page, receipt.submissionId);
+  await expect(page.getByLabel("Interview requested", { exact: true })).toHaveValue("Yes");
+  await expect(page.getByLabel("Advertising requested", { exact: true })).toHaveValue("Yes");
   await expect(page.getByLabel(answerLabel, { exact: true })).toHaveValue("Candidate's original background response.");
   await page.getByLabel(answerLabel, { exact: true }).fill("Reviewed background response, still unsaved.");
   await page.getByRole("button", { name: "Preview Profile", exact: true }).first().click();
@@ -71,6 +82,7 @@ test("optional answers work for any state/party through intake, preview, publica
   await page.goto(`/candidates/${receipt.submissionId}`);
   const publicAnswers = page.getByRole("region", { name: "Candidate questionnaire responses", exact: true });
   await expect(publicAnswers).toContainText("Reviewed background response, still unsaved.");
+  await expect(publicAnswers).toContainText("Governor of Alaska");
   await expect(publicAnswers).toContainText("Local party, last four years ($): $0");
   await expect(publicAnswers.locator(".questionnaire-public-answer")).toHaveCount(20);
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -99,11 +111,35 @@ test("optional answers work for any state/party through intake, preview, publica
   const final = (await (await request.get(`${api}/v1/candidates/${receipt.submissionId}`)).json()).data;
   expect(final.voterGuide.answers[1].text).toBe("Corrected questionnaire answer.");
   expect(final.voterGuide.answers[19]).toEqual(record.candidate.voterGuide.answers[19]);
+  expect(final).not.toHaveProperty("interviewRequested");
+  expect(final).not.toHaveProperty("advertisingRequested");
+});
+
+test("the top office selector drives live location wording and preserves answers when geography changes", async ({ page }) => {
+  await isolate(page); await page.goto("/candidate-form");
+  const office = page.getByLabel("Office sought", { exact: true });
+  await expect(office).toHaveJSProperty("tagName", "SELECT");
+  await expect(page.locator('.candidate-questionnaire select[name="voterGuideOffice"]')).toHaveCount(0);
+  await office.selectOption("sheriff");
+  await page.getByLabel("County, if applicable", { exact: true }).selectOption("potter");
+  await expect(page.locator(".candidate-questionnaire")).toContainText("public safety issue in Potter County");
+  await page.getByLabel(answerLabel, { exact: true }).fill("My experience remains in the form.");
+  await page.getByLabel("State", { exact: true }).selectOption("louisiana");
+  await expect(page.getByLabel("County, if applicable", { exact: true })).toHaveValue("");
+  await expect(page.locator(".candidate-questionnaire")).not.toContainText("Potter");
+  await page.getByLabel("County, if applicable", { exact: true }).selectOption("west-carroll");
+  await expect(page.locator(".candidate-questionnaire")).toContainText("public safety issue in West Carroll Parish");
+  await expect(page.locator(".candidate-questionnaire")).not.toContainText("Texas");
+  await expect(page.getByLabel(answerLabel, { exact: true })).toHaveValue("My experience remains in the form.");
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await office.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "coverage/questionnaire/office-mobile.png" });
 });
 
 test("office changes confirm answer loss, judicial notes remain visible, and word limits are enforced", async ({ page }) => {
   await isolate(page); await page.goto("/candidate-form");
-  await page.getByLabel("Office questionnaire", { exact: true }).selectOption("justice_of_the_peace");
+  await page.getByLabel("Office sought", { exact: true }).selectOption("justice_of_the_peace");
   await expect(page.getByText("Note to judicial candidates:", { exact: false })).toBeVisible();
   await expect(page.getByText("Judicial candidates: Answer as permitted", { exact: false })).toHaveCount(2);
   const answer = page.getByLabel(answerLabel, { exact: true });
@@ -119,11 +155,11 @@ test("office changes confirm answer loss, judicial notes remain visible, and wor
   await page.getByLabel("None of the above", { exact: true }).check();
   await expect(page.getByLabel("Precinct chair", { exact: true })).not.toBeChecked();
   page.once("dialog", (dialog) => dialog.dismiss());
-  await page.getByLabel("Office questionnaire", { exact: true }).selectOption("sheriff");
-  await expect(page.getByLabel("Office questionnaire", { exact: true })).toHaveValue("justice_of_the_peace");
+  await page.getByLabel("Office sought", { exact: true }).selectOption("sheriff");
+  await expect(page.getByLabel("Office sought", { exact: true })).toHaveValue("justice_of_the_peace");
   await expect(answer).toHaveValue("Preserved answer.");
   page.once("dialog", (dialog) => dialog.accept());
-  await page.getByLabel("Office questionnaire", { exact: true }).selectOption("sheriff");
+  await page.getByLabel("Office sought", { exact: true }).selectOption("sheriff");
   await expect(answer).toHaveValue("");
   await expect(page.getByText("Note to judicial candidates:", { exact: false })).toHaveCount(0);
   await page.setViewportSize({ width: 390, height: 844 });

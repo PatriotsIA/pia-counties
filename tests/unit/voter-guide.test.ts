@@ -54,7 +54,7 @@ it("changes only the questionnaire, preserves unmounted controls, and supports e
   data.set("voterGuideOffice", ""); expect(buildCandidateChangePatch(base, data)).toEqual({ voterGuide: null });
 });
 it("renders all supplied questions, judicial notes, structured responses and explicit unanswered labels", () => {
-  const html = renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, { response }));
+  const html = renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, { response, place: { stateSlug: "texas" } }));
   expect(html).toContain("Voter guide responses");
   expect(html).toContain("Note to judicial candidates");
   expect(html).toContain("Judicial Campaign Fairness Act");
@@ -64,6 +64,6 @@ it("renders all supplied questions, judicial notes, structured responses and exp
   expect(html.match(/No response provided\./g)).toHaveLength(15);
   expect(html).not.toContain("[object Object]");
   const unsafe = structuredClone(response); unsafe.answers[1].text = "<script>alert('test')</script>";
-  expect(renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, { response: unsafe }))).not.toContain("<script>");
-  expect(renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, {}))).toBe("");
+  expect(renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, { response: unsafe, place: { stateSlug: "texas" } }))).not.toContain("<script>");
+  expect(renderToStaticMarkup(createElement(CandidateQuestionnaireAnswers, { place: { stateSlug: "texas" } }))).toBe("");
 });

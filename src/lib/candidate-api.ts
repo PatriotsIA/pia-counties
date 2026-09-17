@@ -20,6 +20,8 @@ type CandidateRecordResponse = {
     submitterEmail: string;
     submitterPhone?: string;
     submitterRole: string;
+    interviewRequested?: boolean;
+    advertisingRequested?: boolean;
   };
   consent: boolean;
   attestation: boolean;
@@ -38,6 +40,8 @@ export type CandidateSubmission = Omit<Candidate, "id"> & {
   submitterEmail: string;
   submitterPhone?: string;
   submitterRole: string;
+  interviewRequested?: boolean;
+  advertisingRequested?: boolean;
   attestation: boolean;
   publicationConsent: boolean;
   honeypot?: string;
@@ -81,7 +85,7 @@ export type CandidateChangeRequest = {
   expectedTargetRevision?: number;
   candidate?: CandidatePatch;
   reason: string;
-  submitter: { submitterName: string; submitterEmail: string; submitterPhone?: string; submitterRole: string };
+  submitter: { submitterName: string; submitterEmail: string; submitterPhone?: string; submitterRole: string; interviewRequested?: boolean; advertisingRequested?: boolean };
   consent: boolean;
   attestation: boolean;
   honeypot: string;
@@ -110,6 +114,8 @@ export async function submitCandidateChangeRequest(payload: CandidateChangeReque
       submitterEmail: payload.submitter.submitterEmail,
       ...(payload.submitter.submitterPhone ? { submitterPhone: payload.submitter.submitterPhone } : {}),
       submitterRole: payload.submitter.submitterRole,
+      ...(payload.submitter.interviewRequested === undefined ? {} : { interviewRequested: payload.submitter.interviewRequested }),
+      ...(payload.submitter.advertisingRequested === undefined ? {} : { advertisingRequested: payload.submitter.advertisingRequested }),
     },
     consent: payload.consent,
     attestation: payload.attestation,
@@ -223,6 +229,8 @@ export async function submitCandidateProfile(payload: CandidateSubmission) {
     submitterEmail,
     submitterPhone,
     submitterRole,
+    interviewRequested,
+    advertisingRequested,
     attestation,
     publicationConsent,
     honeypot,
@@ -239,6 +247,8 @@ export async function submitCandidateProfile(payload: CandidateSubmission) {
         submitterEmail,
         ...(submitterPhone ? { submitterPhone } : {}),
         submitterRole,
+        ...(interviewRequested === undefined ? {} : { interviewRequested }),
+        ...(advertisingRequested === undefined ? {} : { advertisingRequested }),
       },
       consent: publicationConsent,
       attestation,
@@ -425,6 +435,8 @@ function flattenCandidateRecord(record: CandidateRecordResponse): CandidateRevie
     submitterEmail: record.submitter?.submitterEmail || "",
     submitterPhone: record.submitter?.submitterPhone,
     submitterRole: record.submitter?.submitterRole || "",
+    interviewRequested: record.submitter?.interviewRequested,
+    advertisingRequested: record.submitter?.advertisingRequested,
     attestation: record.attestation,
     publicationConsent: record.consent,
     moderationReason: record.reviewReason,

@@ -20,7 +20,7 @@ test("candidate submission, private review, approval and public directory use th
   await isolateExternalServices(page);
   await page.goto("/candidate-form");
   await page.getByLabel("Candidate display name").fill("Alex Integration");
-  await page.getByLabel("Office sought").fill("County Commissioner");
+  await page.getByLabel("Office sought").selectOption("county_commissioner");
   await page.getByLabel("County, if applicable").selectOption("potter");
   await page.getByLabel("Your name", { exact: true }).fill("Private Campaign Staff");
   await page.getByLabel("Your email", { exact: true }).fill("private-campaign@example.com");
@@ -210,7 +210,7 @@ test("changing form state clears the county and errors preserve entered informat
   await expect(page.getByLabel("County, if applicable")).toHaveValue("");
   await page.getByLabel("Race scope").selectOption("statewide");
   await page.getByLabel("Candidate display name").fill("Sam Statewide");
-  await page.getByLabel("Office sought").fill("Governor");
+  await page.getByLabel("Office sought").selectOption("governor");
   await page.getByLabel("Your name", { exact: true }).fill("Sam");
   await page.getByLabel("Your email", { exact: true }).fill("sam@example.com");
   await page.getByLabel("I attest").check(); await page.getByLabel("I consent").check();

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { CandidatePhotoField } from "./CandidatePhotoField";
-import { CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { CandidateContactInterests, CandidateOfficeField, CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { initialQuestionnaireOffice } from "../voter-guide/localize";
 import { readVoterGuide } from "../lib/voter-guide-form";
 import { voterGuideIssues } from "../voter-guide/model";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
@@ -43,6 +44,8 @@ export function CandidateSubmissionForm() {
 
 function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoadTarget }: { mode: "new" | "pending" | "published"; reference: string; candidateId: string; onModeChange: (mode: string) => void; onLoadTarget: (id: string) => void }) {
   const [stateSlug, setStateSlug] = useState("texas");
+  const [countySlug, setCountySlug] = useState("");
+  const [officeId, setOfficeId] = useState("");
   const [scope, setScope] = useState<CandidateSubmission["scope"]>("county");
   const attempt = useRef<{ key: string; id: string } | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
@@ -60,6 +63,8 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
       if (!active) return;
       setTarget(loaded);
       setStateSlug(loaded.candidate.stateSlug);
+      setCountySlug(loaded.candidate.countySlug || "");
+      setOfficeId(initialQuestionnaireOffice(loaded.candidate));
       setScope(loaded.candidate.scope);
       setTargetLoading(false);
     }).catch((error: unknown) => {
@@ -102,6 +107,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
             submitterEmail: value(values, "submitterEmail"),
             submitterPhone: optional(values, "submitterPhone"),
             submitterRole: value(values, "submitterRole"),
+            ...(mode === "published" ? { interviewRequested: values.get("interviewRequested") === "on", advertisingRequested: values.get("advertisingRequested") === "on" } : {}),
           },
           consent: values.get("publicationConsent") === "on",
           attestation: values.get("attestation") === "on",
@@ -112,6 +118,8 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
         attempt.current = undefined;
         formElement.reset();
         setStateSlug(target?.candidate.stateSlug || "texas");
+        setCountySlug(target?.candidate.countySlug || "");
+        setOfficeId(initialQuestionnaireOffice(target?.candidate));
         setScope(target?.candidate.scope || "county");
         setPhotoKey((key) => key + 1);
         setStatus({ tone: "success", message: `Your change request was received. Reference: ${receipt.submissionId}. Changes are reviewed before publication.` });
@@ -155,6 +163,8 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
       submitterEmail: value(values, "submitterEmail"),
       submitterPhone: optional(values, "submitterPhone"),
       submitterRole: value(values, "submitterRole"),
+      interviewRequested: values.get("interviewRequested") === "on",
+      advertisingRequested: values.get("advertisingRequested") === "on",
       attestation: values.get("attestation") === "on",
       publicationConsent: values.get("publicationConsent") === "on",
       honeypot: "",
@@ -173,6 +183,8 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
       formElement.reset();
       setPhotoKey((key) => key + 1);
       setStateSlug("texas");
+      setCountySlug("");
+      setOfficeId("");
       setScope("county");
       attempt.current = undefined;
       setStatus({
@@ -219,10 +231,10 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
           <legend>Candidate and race</legend>
           <div className="candidate-form-grid">
             <FormField name="name" defaultValue={target?.candidate.name} label="Candidate display name" autoComplete="name" required />
-            <FormField name="office" defaultValue={target?.candidate.office} label="Office sought" required />
+            <CandidateOfficeField key={`office-${photoKey}`} officeId={officeId} onOfficeChange={setOfficeId} place={{ stateSlug, countySlug }} initialOffice={target?.candidate.office} initialResponse={target?.candidate.voterGuide} />
             <label className="field">
               <span id="candidate-state-label">State <span className="required-mark" aria-hidden="true">*</span></span>
-              <select aria-label="State" name="stateSlug" value={stateSlug} onChange={(event) => setStateSlug(event.target.value)} required>
+              <select aria-label="State" name="stateSlug" value={stateSlug} onChange={(event) => { setStateSlug(event.target.value); setCountySlug(event.target.value === target?.candidate.stateSlug ? target.candidate.countySlug || "" : ""); }} required>
                 {states.map((state) => <option key={state.slug} value={state.slug}>{state.name}</option>)}
               </select>
             </label>
@@ -234,7 +246,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
             </label>
             <label className="field">
               <span>County, if applicable {(scope === "county" || scope === "precinct") ? <span className="required-mark" aria-hidden="true">*</span> : null}</span>
-              <select aria-label="County, if applicable" key={stateSlug} name="countySlug" defaultValue={target?.candidate.stateSlug === stateSlug ? target.candidate.countySlug || "" : ""} required={scope === "county" || scope === "precinct"}>
+              <select aria-label="County, if applicable" name="countySlug" value={countySlug} onChange={(event) => setCountySlug(event.target.value)} required={scope === "county" || scope === "precinct"}>
                 <option value="">Not county-specific</option>
                 {stateCounties.map((county) => <option key={county.fips} value={county.slug}>{county.displayName}</option>)}
               </select>
@@ -254,6 +266,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
             <input type="checkbox" name="incumbent" defaultChecked={target?.candidate.incumbent ?? false} />
             <span>This candidate is the incumbent.</span>
           </label>
+          <CandidateContactInterests />
         </fieldset>
 
         <fieldset>
@@ -287,7 +300,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
             help="Include background, priorities, qualifications, and why you are running."
           />
         </fieldset>
-        <CandidateQuestionnaireFields key={`questionnaire-${photoKey}`} initial={target?.candidate.voterGuide} />
+        <CandidateQuestionnaireFields key={`questionnaire-${photoKey}`} initial={target?.candidate.voterGuide} officeId={officeId} place={{ stateSlug, countySlug }} />
         </> : null}
         {mode !== "new" ? <FormField name="reason" label="Requested changes" textarea maxLength={2000} required /> : null}
 
