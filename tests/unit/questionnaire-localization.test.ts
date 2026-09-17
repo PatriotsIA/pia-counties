@@ -12,7 +12,7 @@ it("adapts every questionnaire to each state without copying Texas-only institut
     for (const office of voterGuide.offices) {
       const localized = localizedQuestionnaireOffice(office.id, { stateSlug: state.slug })!;
       expect(localized.questions).toHaveLength(20);
-      const text = localized.questions.map((question) => `${question.text} ${question.note || ""}`).join(" ");
+      const text = [localized.office, ...localized.questions.map((question) => `${question.label} ${question.text} ${question.note || ""}`)].join(" ");
       expect(text).toContain(state.name);
       expect(text).not.toMatch(/Texas|Texans|Austin|254 counties|Judicial Campaign Fairness Act|Permanent School Fund|Veterans Land Board|Alamo|Legislative Budget Board|\{state\}/);
       expect(text).not.toContain("across local election jurisdictions across");

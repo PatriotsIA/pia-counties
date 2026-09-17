@@ -95,6 +95,13 @@ const jurisdictionQuestions: Record<string, Record<number, string>> = {
   },
 };
 
+const jurisdictionLabels: Record<string, Record<number, string>> = {
+  state_board_of_education: { 10: "School Funds and Charter Schools" },
+  commissioner_of_the_general_land_office: { 8: "State Lands and Public Revenue", 10: "Disaster Recovery, Conservation, and Historic Sites" },
+  comptroller_of_public_accounts: { 10: "Public Programs, Investments, and Contracts" },
+  lieutenant_governor: { 8: "Legislative Responsibilities" },
+};
+
 export function localizeQuestionnaireText(text: string, place: QuestionnairePlace): string {
   const { state, county } = questionnairePlace(place);
   let result = text.replaceAll("{state}", state);
@@ -127,7 +134,8 @@ export function localizedQuestionnaireOffice(id: string, place: QuestionnairePla
       const note = place.stateSlug !== "texas" && question.note?.includes("Judicial Campaign Fairness Act")
         ? "Judicial candidates: Answer as permitted by the campaign finance and judicial conduct rules that apply in {state}."
         : question.note;
-      return { ...question, text: localizeQuestionnaireText(text, place), ...(note ? { note: localizeQuestionnaireText(note, place) } : {}) };
+      const label = place.stateSlug !== "texas" ? jurisdictionLabels[id]?.[question.number] || question.label : question.label;
+      return { ...question, label: localizeQuestionnaireText(label, place), text: localizeQuestionnaireText(text, place), ...(note ? { note: localizeQuestionnaireText(note, place) } : {}) };
     }),
   };
 }
