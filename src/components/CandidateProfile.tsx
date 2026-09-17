@@ -4,6 +4,7 @@ import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
 import { getCountiesForState, getStateBySlug } from "../data/counties";
 import { candidateProjectCandidateIds, candidateProjectDisclaimer, candidateProjectUrl } from "../data/candidate-project";
 import { candidateJurisdiction, candidateProfilePath } from "../lib/candidate-profile";
+import { CandidateQuestionnaireAnswers } from "./CandidateQuestionnaire";
 
 export function CandidateProjectDisclaimer({ preview = false }: { preview?: boolean }) {
   return (
@@ -48,6 +49,7 @@ export function CandidateProfile({ candidate, backPath, preview = false }: { can
               {candidate.bio.split(/\n{2,}/).map((paragraph, index) => <p key={`${candidate.id}-bio-${index}`}>{paragraph}</p>)}
             </div>
           ) : null}
+          <CandidateQuestionnaireAnswers response={candidate.voterGuide} />
         </div>
         <aside className="candidate-profile-sidebar">
           {candidate.image ? <img className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}

@@ -68,6 +68,8 @@ After changing a `VITE_` variable in Amplify, redeploy the frontend because Vite
 The RSS proxy accepts the Patriots in Action Vimeo RSS host as well as Google News. The optional `/api/vimeo-showcase` route uses Vimeo's authenticated API; set `PIA_VIMEO_ACCESS_TOKEN` or `VIMEO_ACCESS_TOKEN` on the API deployment before using that route.
 ## Candidate profile API
 
+The form supports optional [office-specific voter guide questionnaires](docs/candidate-questionnaires.md) for candidates of any state or party. Responses appear on the public profile after review; unanswered questions are allowed.
+
 Candidate submissions, moderation, profile change requests, and runtime directory updates use the candidate service in the existing `mighty-api-production` stack (source: sibling `mighty-api`, `src/candidates`). Set the stack output values locally and in AWS Amplify:
 
 ```bash

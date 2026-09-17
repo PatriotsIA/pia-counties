@@ -1,6 +1,7 @@
 import type { Candidate } from "../data/candidates";
 import { getCountiesForState } from "../data/counties";
 import { candidatePatchFields, type CandidatePatch, type CandidateChangeRequest } from "./candidate-api";
+import { readVoterGuide, voterGuideKey } from "./voter-guide-form";
 
 export function prepareChangeRequestAttempt(payload: Omit<CandidateChangeRequest, "requestId">, previous?: { key: string; id: string }) {
   const key = JSON.stringify(payload);
@@ -13,6 +14,11 @@ export function buildCandidateChangePatch(base: Candidate, values: FormData): Ca
   for (const field of candidatePatchFields) {
     // County names are derived, not editable controls.
     if (field === "countyName") continue;
+    if (field === "voterGuide") {
+      const next = readVoterGuide(values, base.voterGuide);
+      if (voterGuideKey(next) !== voterGuideKey(base.voterGuide)) patch.voterGuide = next ?? null;
+      continue;
+    }
     let next: unknown = text(field);
     let previous: unknown = base[field];
     if (field === "countySlugs") {

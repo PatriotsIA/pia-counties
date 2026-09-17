@@ -1,4 +1,5 @@
 import { getStateBySlug, type CountySite } from "./counties";
+import type { VoterGuideResponse } from "../voter-guide/model";
 
 export type CandidateScope = "statewide" | "district" | "county" | "precinct" | "city";
 
@@ -23,6 +24,7 @@ export type Candidate = {
   videoEmbedUrl?: string;
   videoTitle?: string;
   bio?: string;
+  voterGuide?: VoterGuideResponse;
   electionYear?: number;
   incumbent?: boolean;
   facebookUrl?: string;

@@ -2652,6 +2652,59 @@ nav a {
   margin-bottom: 0;
 }
 
+.candidate-questionnaire,
+.candidate-questionnaire-public,
+.candidate-profile-main {
+  min-width: 0;
+}
+
+.candidate-questionnaire-questions > section,
+.candidate-questionnaire-public > section {
+  margin-top: 2rem;
+}
+
+.candidate-questionnaire h2,
+.candidate-questionnaire h3,
+.candidate-questionnaire-public h2,
+.candidate-questionnaire-public h3,
+.questionnaire-public-answer h4 {
+  color: var(--navy);
+}
+
+.candidate-profile-form .questionnaire-question {
+  min-width: 0;
+  margin: 1.4rem 0;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.questionnaire-question p { margin: 0; line-height: 1.6; }
+.questionnaire-question .field { margin-top: 0.75rem; }
+.questionnaire-question textarea { font-weight: 400; line-height: 1.6; resize: vertical; }
+.questionnaire-activities { display: grid; gap: 0.75rem; }
+.questionnaire-activities input { flex-shrink: 0; }
+.questionnaire-note { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+.field .questionnaire-limit-error { color: var(--red); }
+
+.candidate-questionnaire-public {
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  overflow-wrap: anywhere;
+}
+
+.questionnaire-public-answer { padding: 1.25rem 0; border-top: 1px solid var(--border); }
+.questionnaire-public-answer h4 { margin: 0 0 0.65rem; font-size: 1.05rem; }
+.questionnaire-public-answer p { line-height: 1.65; }
+.questionnaire-response { border-left: 3px solid var(--blue); padding-left: 1rem; }
+.questionnaire-response p { white-space: pre-wrap; }
+
+@media (max-width: 600px) {
+  .candidate-profile-form .candidate-questionnaire,
+  .candidate-profile-form .questionnaire-question { padding: 0.75rem; }
+}
+
 .candidate-filters {
   display: grid;
   grid-template-columns: minmax(240px, 1.3fr) repeat(3, minmax(160px, 0.7fr));

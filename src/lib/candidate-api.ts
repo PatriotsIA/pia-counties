@@ -1,4 +1,5 @@
 import type { Candidate, CandidateScope } from "../data/candidates";
+import { isVoterGuideResponse } from "../voter-guide/model";
 
 const configuredApiBase = String(import.meta.env.VITE_CANDIDATE_API_BASE || "").trim().replace(/\/+$/, "");
 const apiBase = import.meta.env.DEV && configuredApiBase ? "/api/candidate-api" : configuredApiBase;
@@ -43,7 +44,7 @@ export type CandidateSubmission = Omit<Candidate, "id"> & {
 };
 
 export const candidatePatchFields = [
-  "name", "office", "stateSlug", "scope", "officeLevel", "countySlugs", "countySlug", "countyName", "district", "profileUrl", "party", "ballotpediaUrl", "email", "phone", "websiteUrl", "image", "videoEmbedUrl", "videoTitle", "bio", "electionYear", "incumbent", "facebookUrl", "xUrl", "instagramUrl", "youtubeUrl",
+  "name", "office", "stateSlug", "scope", "officeLevel", "countySlugs", "countySlug", "countyName", "district", "profileUrl", "party", "ballotpediaUrl", "email", "phone", "websiteUrl", "image", "videoEmbedUrl", "videoTitle", "bio", "voterGuide", "electionYear", "incumbent", "facebookUrl", "xUrl", "instagramUrl", "youtubeUrl",
 ] as const satisfies readonly (keyof Omit<Candidate, "id">)[];
 export type CandidatePatch = { [K in keyof Omit<Candidate, "id">]?: Candidate[K] | null };
 export type CandidateChangeTarget = { candidate: Candidate; submissionId: string; revision: number; status: "approved" };
@@ -61,7 +62,8 @@ export async function fetchCandidateChangeTarget(candidateId: string): Promise<C
   for (const field of candidatePatchFields) {
     const entry = candidate[field];
     if (entry === undefined) continue;
-    const valid = field === "countySlugs" ? Array.isArray(entry) && entry.every((slug) => typeof slug === "string")
+    const valid = field === "voterGuide" ? isVoterGuideResponse(entry)
+      : field === "countySlugs" ? Array.isArray(entry) && entry.every((slug) => typeof slug === "string")
       : field === "incumbent" ? typeof entry === "boolean"
       : field === "electionYear" ? Number.isSafeInteger(entry)
       : field === "officeLevel" ? candidateOfficeLevels.some((level) => level.value === entry)
@@ -485,6 +487,7 @@ export async function updateCandidateSubmission(
     "videoEmbedUrl",
     "videoTitle",
     "bio",
+    "voterGuide",
     "electionYear",
     "incumbent",
     "facebookUrl",

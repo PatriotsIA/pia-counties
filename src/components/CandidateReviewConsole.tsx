@@ -4,6 +4,8 @@ import { candidateProfilePath } from "../lib/candidate-profile";
 import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
 import { getCountiesForState, getStateBySlug, states } from "../data/counties";
 import { CandidatePhotoField } from "./CandidatePhotoField";
+import { CandidateQuestionnaireAnswers, CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { readVoterGuide, voterGuideKey } from "../lib/voter-guide-form";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
 import { CandidateProfile } from "./CandidateProfile";
 import { CandidatePasswordChange } from "./CandidatePasswordChange";
@@ -352,7 +354,15 @@ function CandidateReviewEditor({
 
   return (
     <>
-      <form ref={formRef} id="candidate-review-editor" className="form-card candidate-profile-form" onChange={(event) => { setDraft(reviewCandidate(new FormData(event.currentTarget), record)); onDirty(); }} onSubmit={(event) => { if (busy || closedRequest) event.preventDefault(); else onSubmit(event); }}>
+      <form ref={formRef} id="candidate-review-editor" className="form-card candidate-profile-form" onChange={(event) => {
+        const form = event.currentTarget;
+        onDirty();
+        // Questionnaire selection and exclusive checkboxes settle after React
+        // renders. Other fields must be captured before an upload disables them.
+        if (event.target.name?.startsWith("voterGuide")) {
+          queueMicrotask(() => { if (formRef.current === form) setDraft(reviewCandidate(new FormData(form), record)); });
+        } else setDraft(reviewCandidate(new FormData(form), record));
+      }} onSubmit={(event) => { if (busy || closedRequest) event.preventDefault(); else onSubmit(event); }}>
         <div className="candidate-review-status">
           <strong>Status: {record.status}</strong>
           <span>Revision {record.revision || 1}</span>
@@ -405,6 +415,7 @@ function CandidateReviewEditor({
             <span>Incumbent</span>
           </label>
           <ReviewField name="bio" label="Biography" textarea value={record.bio} />
+          <CandidateQuestionnaireFields initial={record.voterGuide} />
         </fieldset>
 
         <fieldset>
@@ -437,7 +448,7 @@ function CandidateReviewEditor({
 const profileFieldLabels: Partial<Record<keyof Candidate, string>> = {
     name: "Name", office: "Office", stateSlug: "State", scope: "Scope", officeLevel: "Office level",
     countySlug: "Primary county", countySlugs: "County coverage", countyName: "County name", district: "District",
-    party: "Party", electionYear: "Election year", incumbent: "Incumbent", bio: "Biography",
+    party: "Party", electionYear: "Election year", incumbent: "Incumbent", bio: "Biography", voterGuide: "Voter guide responses",
     email: "Public email", phone: "Public phone", websiteUrl: "Website", profileUrl: "Profile URL", ballotpediaUrl: "Ballotpedia",
     image: "Portrait", videoEmbedUrl: "Video", videoTitle: "Video title", facebookUrl: "Facebook", xUrl: "X / Twitter", instagramUrl: "Instagram", youtubeUrl: "YouTube",
   };
@@ -447,7 +458,7 @@ function countyCoverageKey(countySlugs: Candidate["countySlugs"]) {
 }
 
 function changedProfileFields(original: Candidate, proposed: Candidate) {
-  return (Object.keys(profileFieldLabels) as (keyof Candidate)[]).filter((key) => key === "countySlugs"
+  return (Object.keys(profileFieldLabels) as (keyof Candidate)[]).filter((key) => key === "voterGuide" ? voterGuideKey(original.voterGuide) !== voterGuideKey(proposed.voterGuide) : key === "countySlugs"
     ? countyCoverageKey(original.countySlugs) !== countyCoverageKey(proposed.countySlugs)
     : JSON.stringify(original[key] ?? null) !== JSON.stringify(proposed[key] ?? null));
 }
@@ -466,7 +477,7 @@ function CandidateChangeDetails({ record, candidate, busy, onOpenOriginal }: { r
       <p>{request.targetStatus === "pending" ? "Applying this request updates the pending draft only. Publication still requires separate approval." : "Saving proposed edits does not change the live profile. Applying the request updates the existing published profile."}</p>
       {changed.length ? <div className="candidate-change-table-scroll"><table aria-label="Proposed profile changes">
         <thead><tr><th scope="col">Field</th><th scope="col">Original at request time</th><th scope="col">Proposed value</th></tr></thead>
-        <tbody>{changed.map((key) => <tr key={key}><th scope="row">{profileFieldLabels[key]}</th><td>{display(request.baseCandidate[key])}</td><td>{display(candidate[key])}</td></tr>)}</tbody>
+        <tbody>{changed.map((key) => <tr key={key}><th scope="row">{profileFieldLabels[key]}</th><td>{key === "voterGuide" ? request.baseCandidate.voterGuide ? <CandidateQuestionnaireAnswers response={request.baseCandidate.voterGuide} /> : "Not set" : display(request.baseCandidate[key])}</td><td>{key === "voterGuide" ? candidate.voterGuide ? <CandidateQuestionnaireAnswers response={candidate.voterGuide} /> : "Not set" : display(candidate[key])}</td></tr>)}</tbody>
       </table></div> : <p>Enter the requested edits below before applying this request.</p>}
     </section>
   );
@@ -558,6 +569,7 @@ function reviewCandidate(values: FormData, record: CandidateReviewRecord): Candi
     videoEmbedUrl: optional("videoEmbedUrl"),
     videoTitle: optional("videoTitle"),
     bio: optional("bio"),
+    voterGuide: readVoterGuide(values, record.voterGuide),
     facebookUrl: optional("facebookUrl"),
     xUrl: optional("xUrl"),
     instagramUrl: optional("instagramUrl"),

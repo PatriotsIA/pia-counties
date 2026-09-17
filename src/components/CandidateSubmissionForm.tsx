@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { CandidatePhotoField } from "./CandidatePhotoField";
+import { CandidateQuestionnaireFields } from "./CandidateQuestionnaire";
+import { readVoterGuide } from "../lib/voter-guide-form";
+import { voterGuideIssues } from "../voter-guide/model";
 import { CandidateCountyCoverage } from "./CandidateCountyCoverage";
 import { PublishedCandidatePicker } from "./PublishedCandidatePicker";
 import { LoadingIndicator } from "./LoadingIndicator";
@@ -73,6 +76,12 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
     const formElement = event.currentTarget;
     const values = new FormData(formElement);
     if (value(values, "honeypot")) return;
+    const voterGuide = mode === "pending" ? undefined : readVoterGuide(values, target?.candidate.voterGuide);
+    const questionnaireErrors = voterGuide ? voterGuideIssues(voterGuide) : [];
+    if (questionnaireErrors.length) {
+      setStatus({ tone: "error", message: `Voter guide: ${questionnaireErrors.map((issue) => `${issue.path[0] === "answers" ? `Question ${issue.path[1]}: ` : ""}${issue.message}`).join(" ")}` });
+      return;
+    }
 
     if (mode !== "new") {
       const candidate = target ? buildCandidateChangePatch(target.candidate, values) : undefined;
@@ -137,6 +146,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
       videoEmbedUrl: optional(values, "videoEmbedUrl"),
       videoTitle: optional(values, "videoTitle"),
       bio: optional(values, "bio"),
+      voterGuide,
       facebookUrl: optional(values, "facebookUrl"),
       xUrl: optional(values, "xUrl"),
       instagramUrl: optional(values, "instagramUrl"),
@@ -277,6 +287,7 @@ function CandidateIntakeForm({ mode, reference, candidateId, onModeChange, onLoa
             help="Include background, priorities, qualifications, and why you are running."
           />
         </fieldset>
+        <CandidateQuestionnaireFields key={`questionnaire-${photoKey}`} initial={target?.candidate.voterGuide} />
         </> : null}
         {mode !== "new" ? <FormField name="reason" label="Requested changes" textarea maxLength={2000} required /> : null}
 
