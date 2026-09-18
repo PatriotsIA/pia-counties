@@ -1,4 +1,5 @@
 import type { CountyPageKey } from "./counties";
+import { parallelPartners } from "./parallel-partners";
 import america250AdImage from "../../NewAds/Banner-America250-Large.jpg";
 import america250AdImageSmall from "../../NewAds/Banner-America250-Small.jpg";
 import brownGmcAdImage from "../../NewAds/BrownGMC-250.jpg";
@@ -78,6 +79,43 @@ export type AdCreative = {
 };
 
 export const ads: AdCreative[] = [
+  ...parallelPartners.flatMap((partner): AdCreative[] => {
+    const shared = {
+      campaignId: "pia-parallel-partners",
+      sponsor: partner.name,
+      title: partner.name,
+      body: partner.description,
+      cta: "Visit Partner",
+      href: partner.href,
+      display: "image-only" as const,
+      image: { desktop: partner.image, mobile: partner.image, alt: partner.name },
+      priority: 115,
+      active: true,
+    };
+    return [
+      {
+        ...shared,
+        id: `${partner.id}-county-home-2026`,
+        placement: "compact",
+        targeting: {
+          slots: ["county-home-inline"],
+          routes: ["county"],
+          pages: ["home"],
+          countyKeys: partner.countyKeys,
+        },
+      },
+      {
+        ...shared,
+        id: `${partner.id}-banner-2026`,
+        placement: "leaderboard",
+        targeting: {
+          slots: ["county-page-footer"],
+          routes: ["county"],
+          countyKeys: partner.countyKeys,
+        },
+      },
+    ];
+  }),
   {
     id: "guerrilla-gear-national-2026",
     campaignId: "pia-national-partners",

@@ -18,6 +18,7 @@ import { getCandidateOfficeLevel, getCandidateById, getCandidatesForCounty, getC
 import { counties, getCountiesForState, getCounty, getStateBySlug, states, type CountyPageKey, type CountySite } from "./data/counties";
 import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
+import { parallelPartners } from "./data/parallel-partners";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -120,6 +121,7 @@ const nationwidePartners: Partner[] = [
 ];
 
 const countySpecificPartners: Partner[] = [
+  ...parallelPartners,
   {
     name: "CBT Real Estate Services",
     description: "Connect with CBT Real Estate Services on Facebook.",
@@ -1349,7 +1351,7 @@ function CountyHome({ county }: { county: CountySite }) {
       <CountyShowUpMeter county={county} className="county-show-up-section-home" />
       <CountyAboutCompact county={county} />
       <FoundingPartnerCallout county={county} />
-      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6} />
+      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6 + parallelPartners.filter((partner) => partner.countyKeys.includes(`${county.state.slug}/${county.slug}`)).length} />
       <section className="section split">
         <div>
           <p className="eyebrow">Know Your Leaders. Become Empowered.</p>
