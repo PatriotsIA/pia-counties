@@ -1,0 +1,62 @@
+[
+  {
+    "template_id": "template_pia_advertise",
+    "template_name": "PIA advertising \u2014 campaign requests",
+    "template_subject": "PIA advertising: {{title}}",
+    "template_to_email": "erik@patriotsinaction.com",
+    "template_cc": "dan@patriotsinaction.com",
+    "template_bcc": "",
+    "template_reply_to": "{{reply_to}}",
+    "template_from_name": "PIA advertising",
+    "template_linked_id": "",
+    "htmlVerified": true
+  },
+  {
+    "template_id": "template_pia_community",
+    "template_name": "PIA and GOP \u2014 community submissions",
+    "template_subject": "PIA community: {{title}}",
+    "template_to_email": "erik@patriotsinaction.com",
+    "template_cc": "dan@patriotsinaction.com",
+    "template_bcc": "",
+    "template_reply_to": "{{reply_to}}",
+    "template_from_name": "PIA community websites",
+    "template_linked_id": "",
+    "htmlVerified": true
+  },
+  {
+    "template_id": "template_countypost",
+    "template_name": "County Post \u2014 editorial and advertising",
+    "template_subject": "The County Post: {{title}}",
+    "template_to_email": "erik@patriotsinaction.com",
+    "template_cc": "dan@patriotsinaction.com",
+    "template_bcc": "",
+    "template_reply_to": "{{reply_to}}",
+    "template_from_name": "The County Post",
+    "template_linked_id": "",
+    "htmlVerified": true
+  },
+  {
+    "template_id": "template_pia_requests",
+    "template_name": "PIA brands \u2014 requests and outreach",
+    "template_subject": "PIA request: {{title}}{{subject}}",
+    "template_to_email": "erik@patriotsinaction.com",
+    "template_cc": "dan@patriotsinaction.com",
+    "template_bcc": "",
+    "template_reply_to": "{{reply_to}}",
+    "template_from_name": "PIA brand websites",
+    "template_linked_id": "",
+    "htmlVerified": true
+  },
+  {
+    "template_id": "template_do0b6qd",
+    "template_name": "Patriot Messaging \u2014 website submissions",
+    "template_subject": "Patriot Messaging: {{title}}",
+    "template_to_email": "erik@patriotsinaction.com",
+    "template_cc": "dan@patriotsinaction.com",
+    "template_bcc": "",
+    "template_reply_to": "{{reply_to}}",
+    "template_from_name": "Patriot Messaging website",
+    "template_linked_id": "",
+    "htmlVerified": true
+  }
+]
