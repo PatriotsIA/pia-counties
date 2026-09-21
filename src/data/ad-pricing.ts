@@ -1,4 +1,5 @@
 import type { AdSlotId } from "./ads";
+import { advertiserContactEmail } from "./advertiser-contact";
 
 export type AdPricingKey =
   | AdSlotId
@@ -81,7 +82,7 @@ export const countyPackages = [
 ] as const;
 
 export const adAssetDeliveryInstructions =
-  "Please email your ad asset(s) to erik@patriotsinaction.com. 250x250px for regular ad spots, 980x300px for banners.";
+  `Please email your ad asset(s) to ${advertiserContactEmail}. 250x250px for regular ad spots, 980x300px for banners.`;
 
 export const paymentsQuotePath = "/contact";
 
@@ -96,7 +97,7 @@ export const adAssetSpecs = {
   },
   format: "PNG",
   backgrounds: "White or transparent background",
-  email: "erik@patriotsinaction.com",
+  email: advertiserContactEmail,
   deliveryInstructions: adAssetDeliveryInstructions,
 } as const;
 

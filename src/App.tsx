@@ -10,6 +10,8 @@ import {
 } from "./data/ad-pricing";
 import { sendSiteContactEmail } from "./lib/email";
 import { PlacementExamples } from "./components/PlacementExamples";
+import { advertiserContactEmail } from "./data/advertiser-contact";
+import { advertiserCheckoutUrl } from "./lib/advertiser-checkout";
 
 const mainSite = "https://patriotsinaction.com";
 const mainTiers = partnerSubscriptionTiers.filter((tier) =>
@@ -33,6 +35,7 @@ export default function App() {
     "idle" | "sending" | "success" | "error"
   >("idle");
   const submitting = useRef(false);
+  const [submittedCheckoutUrl, setSubmittedCheckoutUrl] = useState<string>();
   const tier = partnerSubscriptionTiers.find((item) => item.id === tierId)!;
   const national = tierId === "national-level";
   const selectedState = states.find((state) => state.abbr === stateAbbr);
@@ -51,8 +54,7 @@ export default function App() {
   )?.name;
   const stateName = states.find((state) => state.abbr === stateAbbr)?.name;
   const price = billing === "monthly" ? tier.monthly : tier.yearly;
-  const stripeUrl =
-    billing === "monthly" ? tier.stripeMonthlyUrl : tier.stripeYearlyUrl;
+  const hasCheckout = tierHasStripeCheckout(tier);
 
   useEffect(() => {
     // Old preview links continue into this single-page sales experience.
@@ -103,18 +105,21 @@ export default function App() {
     if (String(data.get("companyFax") || "")) return;
     submitting.current = true;
     setStatus("sending");
+    setSubmittedCheckoutUrl(undefined);
+    const email = String(data.get("email") || "").trim();
+    const checkoutUrl = advertiserCheckoutUrl(tier, billing, email);
     try {
       await sendSiteContactEmail({
         title: "PIA advertising campaign request",
-        replyTo: String(data.get("email") || "").trim(),
+        replyTo: email,
         values: {
           name: String(data.get("name") || "").trim(),
-          email: String(data.get("email") || "").trim(),
+          email,
           businessName: businessName.trim(),
           phone: String(data.get("phone") || "").trim(),
           businessUrl: String(data.get("businessUrl") || "").trim(),
           tier: tier.name,
-          billing,
+          billing: national ? "Custom quote" : billing,
           advertisedRate: national
             ? "Custom quote"
             : `${formatAdPrice(price)}/${billing === "monthly" ? "month" : "year"}`,
@@ -129,7 +134,9 @@ export default function App() {
           contactConsent: data.get("consent") === "on",
         },
       });
+      setSubmittedCheckoutUrl(checkoutUrl);
       setStatus("success");
+      if (checkoutUrl) window.location.assign(checkoutUrl);
     } catch {
       setStatus("error");
     } finally {
@@ -428,8 +435,8 @@ export default function App() {
               <p className="contact-note">
                 Prefer a conversation?
                 <br />
-                <a href="mailto:erik@patriotsinaction.com">
-                  erik@patriotsinaction.com
+                <a href={`mailto:${advertiserContactEmail}`}>
+                  {advertiserContactEmail}
                 </a>
                 <br />
                 <a href="tel:+18667561776">(866) 756-1776</a>
@@ -463,18 +470,20 @@ export default function App() {
                       ))}
                     </select>
                   </label>
-                  <label>
-                    Billing preference *
-                    <select
-                      aria-label="Billing preference"
-                      name="billing"
-                      value={billing}
-                      onChange={(event) => setBilling(event.target.value)}
-                    >
-                      <option value="monthly">Monthly</option>
-                      <option value="annual">Annual — save 2 months</option>
-                    </select>
-                  </label>
+                  {!national && (
+                    <label>
+                      Billing preference *
+                      <select
+                        aria-label="Billing preference"
+                        name="billing"
+                        value={billing}
+                        onChange={(event) => setBilling(event.target.value)}
+                      >
+                        <option value="monthly">Monthly</option>
+                        <option value="annual">Annual — save 2 months</option>
+                      </select>
+                    </label>
+                  )}
                 </div>
                 <div className="form-grid">
                   <label>
@@ -629,27 +638,26 @@ export default function App() {
                     ? "Sending your request…"
                     : status === "success"
                       ? "Request sent ✓"
-                      : "Send campaign request →"}
+                      : hasCheckout
+                        ? `Send request & open Stripe — ${formatAdPrice(price)}/${billing === "monthly" ? "month" : "year"} →`
+                        : "Request a quote →"}
                 </button>
                 <p className="form-note">
-                  Sending a request does not charge your card or reserve a
-                  placement.
+                  {hasCheckout
+                    ? "We’ll send your campaign details, then open secure Stripe checkout for your selected base plan. Additional counties are quoted separately. Your card is charged only when you complete payment in Stripe."
+                    : "Our team will confirm availability and send a custom proposal. This request does not charge your card or reserve a placement."}
                 </p>
               </fieldset>
               {status === "success" && (
                 <div className="form-success" role="status">
                   <strong>Your campaign request has been sent.</strong>
                   <p>
-                    Our team will follow up about coverage, availability, and
-                    artwork.
+                    {submittedCheckoutUrl
+                      ? "Opening your selected Stripe checkout. If it does not open, use the link below."
+                      : "Our team will follow up about coverage, availability, artwork, and your quote."}
                   </p>
-                  {tierHasStripeCheckout(tier) && (
-                    <a
-                      className="button"
-                      href={stripeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                  {submittedCheckoutUrl && (
+                    <a className="button" href={submittedCheckoutUrl}>
                       Continue to Stripe — {formatAdPrice(price)}/
                       {billing === "monthly" ? "month" : "year"} ↗
                     </a>
@@ -660,8 +668,8 @@ export default function App() {
                 <p className="form-error" role="alert">
                   We couldn’t send your request. Your details are still
                   here—please try again, or email{" "}
-                  <a href="mailto:erik@patriotsinaction.com">
-                    erik@patriotsinaction.com
+                  <a href={`mailto:${advertiserContactEmail}`}>
+                    {advertiserContactEmail}
                   </a>
                   .
                 </p>
@@ -691,7 +699,7 @@ export default function App() {
               <p>
                 PNG, JPG, or WebP · up to 5 MB. Preview stays in your browser.
                 Email final artwork to{" "}
-                <a href="mailto:erik@patriotsinaction.com">
+                <a href={`mailto:${advertiserContactEmail}`}>
                   {adAssetSpecs.email}
                 </a>
                 .
@@ -771,6 +779,42 @@ export default function App() {
             </span>
             <span>Final files: PNG, white or transparent background.</span>
           </div>
+          <figure className="county-site-example">
+            <figcaption>
+              <div>
+                <p className="eyebrow">A REAL COUNTY SITE</p>
+                <h3>Explore the Potter County experience</h3>
+                <p>
+                  See how sponsor recognition, square ads, and wide banners fit
+                  into a complete county page. Select the screenshot to view it
+                  at full size.
+                </p>
+              </div>
+              <a
+                className="text-link"
+                href="https://patriotsinaction.com/texas/potter"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Visit Potter County ↗
+              </a>
+            </figcaption>
+            <a
+              href="/examples/potter-county-site.png"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="View the full-size Potter County site screenshot"
+            >
+              <img
+                src="/examples/potter-county-site.png"
+                alt="Full Potter County Patriots page showing the county hero sponsor, community content, square sponsor carousel, and wide footer banner"
+                width="2024"
+                height="6767"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+          </figure>
           <a
             className="text-link"
             href={mainSite}
@@ -794,9 +838,11 @@ export default function App() {
               <summary>What happens after I submit the form?</summary>
               <p>
                 We’ll review your selected partnership and requested coverage,
-                confirm availability, and coordinate your creative. For eligible
-                plans, the confirmation also offers the existing secure Stripe
-                subscription link. Payment is separate from your request.
+                confirm availability, and coordinate your creative. For plans
+                with online checkout, we send your campaign details and then
+                automatically open the Stripe payment form for your selected
+                plan and billing period. Quote-only plans stay here for
+                confirmation and follow-up.
               </p>
             </details>
             <details>
@@ -819,8 +865,8 @@ export default function App() {
               <summary>What artwork should I send?</summary>
               <p>
                 Email finished PNG files to{" "}
-                <a href="mailto:erik@patriotsinaction.com">
-                  erik@patriotsinaction.com
+                <a href={`mailto:${advertiserContactEmail}`}>
+                  {advertiserContactEmail}
                 </a>
                 : 250 × 250 pixels for square placements and 980 × 300 pixels
                 for banners, with a white or transparent background. The preview
@@ -850,8 +896,8 @@ export default function App() {
           </span>
         </div>
         <div>
-          <a href="mailto:erik@patriotsinaction.com">
-            erik@patriotsinaction.com
+          <a href={`mailto:${advertiserContactEmail}`}>
+            {advertiserContactEmail}
           </a>
           <small>Patriots Connect, LLC, DBA Patriots in Action</small>
         </div>

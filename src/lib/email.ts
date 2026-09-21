@@ -1,6 +1,7 @@
 import emailjs from "@emailjs/browser";
 import type { CountySite } from "../data/counties";
 import { site } from "../data/site";
+import { advertiserSubmissionEmail } from "../data/advertiser-contact";
 
 type FormValue = string | boolean | undefined;
 
@@ -87,7 +88,7 @@ export async function sendSiteContactEmail(params: {
       name: fromName,
       email: fromEmail,
       reply_to: fromEmail,
-      to_email: "erik@patriotsinaction.com",
+      to_email: advertiserSubmissionEmail,
       county_name: "General inquiry",
       county_slug: "general",
       state_name: "General",
