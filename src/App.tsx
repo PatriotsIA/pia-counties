@@ -19,6 +19,7 @@ import { counties, getCountiesForState, getCounty, getStateBySlug, states, type 
 import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
 import { parallelPartners } from "./data/parallel-partners";
+import { gopConnectPartner } from "./data/gopconnect";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -70,6 +71,7 @@ type Partner = {
 const panhandleCountySponsorKeys = ["texas/potter", "texas/randall"];
 
 const nationwidePartners: Partner[] = [
+  gopConnectPartner,
   {
     name: "Patriots For Action",
     description: "Connect with the Patriots For Action organization for civic engagement, grassroots action, and community resources.",
@@ -634,6 +636,7 @@ function HomePage() {
         </div>
       </section>
       <FoundingPartnerCallout />
+      <AdSlot route="home" slot="site-inline" />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
@@ -1039,6 +1042,7 @@ function StatePage() {
       </section>
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
       <CountyPostNewsSection locationName={state.name} />
+      <AdSlot route="state" slot="site-inline" />
       <div className="directory-grid">
         {visibleCounties.map((county) => (
           <Link key={county.fips} className="directory-card" to={countyPath(county)}>
@@ -1351,7 +1355,7 @@ function CountyHome({ county }: { county: CountySite }) {
       <CountyShowUpMeter county={county} className="county-show-up-section-home" />
       <CountyAboutCompact county={county} />
       <FoundingPartnerCallout county={county} />
-      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={6 + parallelPartners.filter((partner) => partner.countyKeys.includes(`${county.state.slug}/${county.slug}`)).length} />
+      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={7 + parallelPartners.filter((partner) => partner.countyKeys.includes(`${county.state.slug}/${county.slug}`)).length} />
       <section className="section split">
         <div>
           <p className="eyebrow">Know Your Leaders. Become Empowered.</p>

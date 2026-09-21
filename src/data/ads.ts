@@ -1,5 +1,6 @@
 import type { CountyPageKey } from "./counties";
 import { parallelPartners } from "./parallel-partners";
+import { gopConnectPartner, GOPCONNECT_AD_ID } from "./gopconnect";
 import america250AdImage from "../../NewAds/Banner-America250-Large.jpg";
 import america250AdImageSmall from "../../NewAds/Banner-America250-Small.jpg";
 import brownGmcAdImage from "../../NewAds/BrownGMC-250.jpg";
@@ -31,6 +32,7 @@ export type AdSlotId =
   | "county-news-mid-inline"
   | "county-page-footer"
   | "site-footer"
+  | "site-inline"
   | "site-left-rail"
   | "site-right-rail";
 
@@ -79,6 +81,29 @@ export type AdCreative = {
 };
 
 export const ads: AdCreative[] = [
+  {
+    id: GOPCONNECT_AD_ID,
+    campaignId: "pia-gopconnect-national",
+    sponsor: gopConnectPartner.name,
+    title: "My Local GOP — Be Informed",
+    body: gopConnectPartner.description,
+    cta: "Visit My Local GOP",
+    href: gopConnectPartner.href,
+    placement: "compact",
+    display: "image-only",
+    image: {
+      desktop: gopConnectPartner.image,
+      mobile: gopConnectPartner.image,
+      alt: "My Local GOP — Be informed. Text GOP to 84576. Paid for by GOPConnect, LLC.",
+    },
+    priority: 125,
+    active: true,
+    targeting: {
+      slots: ["county-home-inline", "site-inline"],
+      routes: ["home", "state", "county"],
+      pages: ["home"],
+    },
+  },
   ...parallelPartners.flatMap((partner): AdCreative[] => {
     const shared = {
       campaignId: "pia-parallel-partners",

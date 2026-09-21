@@ -13,7 +13,7 @@ for (const width of [1280, 390]) {
     await page.route("**/api/vimeo-showcase?**", (route) => route.fulfill({ json: { videos: [] } }));
     for (const county of ["randall", "potter"]) {
       await page.goto(`/tx/${county}`);
-      await expect(page.locator(".sponsor-carousel-item")).toHaveCount(8);
+      await expect(page.locator(".sponsor-carousel-item")).toHaveCount(9);
       for (const slot of [".sponsor-carousel", ".sponsor-banner-carousel"]) {
         for (const [name, size] of [["Roofing", [767, 435]], ["Builders", [569, 267]]] as const) {
           const ad = page.locator(slot).getByRole("link", { name: `Parallel ${name}`, exact: true });

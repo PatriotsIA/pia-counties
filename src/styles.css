@@ -837,6 +837,14 @@ nav a {
   display: none;
 }
 
+.sponsor-slot-site-inline {
+  justify-items: center;
+}
+
+.sponsor-slot-site-inline .sponsor-card {
+  width: min(100%, 300px);
+}
+
 .sponsor-slot-county-page-footer,
 .sponsor-slot-site-footer {
   margin: 3rem 0 0;

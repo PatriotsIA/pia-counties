@@ -35,6 +35,7 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds 
 
   return (
     <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label="Sponsored message">
+      {slot === "site-inline" ? <p className="sponsor-label">Sponsored by {resolvedAds.map((ad) => ad.sponsor).join(", ")}</p> : null}
       {resolvedAds.map((ad) => (
         <AdCard ad={ad} county={county} key={ad.id} page={page} placement={placement || ad.placement} slot={slot} />
       ))}
