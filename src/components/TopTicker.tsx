@@ -68,7 +68,7 @@ export function TopTicker({ county, weatherSponsor }: { county?: CountySite; wea
       </div>
       {county ? (
         <div className="market-weather-weather-bar">
-          <CountyWeather county={county} weatherSponsor={weatherSponsor} />
+          <CountyWeather key={county.fips} county={county} weatherSponsor={weatherSponsor} />
         </div>
       ) : null}
     </section>
@@ -108,7 +108,7 @@ function TradingViewTicker() {
   return <div className="tradingview-widget-container market-ticker-widget" ref={containerRef} />;
 }
 
-function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weatherSponsor?: WeatherSponsor }) {
+function CountyWeather({ county, weatherSponsor }: { county: CountySite; weatherSponsor?: WeatherSponsor }) {
   const [weather, setWeather] = useState<WeatherStatus>(() => ({
     label: county ? weatherLocationName(county) : "Local weather",
     loading: Boolean(county),
@@ -118,12 +118,6 @@ function CountyWeather({ county, weatherSponsor }: { county?: CountySite; weathe
   useEffect(() => {
     let active = true;
 
-    if (!county) {
-      setWeather({ label: "Choose a county for local weather", loading: false });
-      return;
-    }
-
-    setWeather({ label: locationName, loading: true });
     fetchCountyWeather(county)
       .then((nextWeather) => {
         if (active) setWeather(nextWeather);

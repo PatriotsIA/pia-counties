@@ -1,4 +1,3 @@
-import { ADVERTISER_PREVIEW_ENABLED } from "../config/advertiser-preview";
 import { formatAdPrice, formatPlacementPricing, getAdPricing, nationwidePricingLabel, type AdPricingKey } from "../data/ad-pricing";
 import { adClickHint } from "../data/ads";
 
@@ -48,8 +47,4 @@ export function PresentedByPreview({ pricingKey, className = "" }: { pricingKey:
       <AdPreviewPlaceholder pricingKey={pricingKey} compact />
     </div>
   );
-}
-
-export function isAdvertiserPreviewMode() {
-  return ADVERTISER_PREVIEW_ENABLED;
 }

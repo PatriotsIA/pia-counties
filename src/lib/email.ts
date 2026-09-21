@@ -87,7 +87,7 @@ export async function sendSiteContactEmail(params: {
       name: fromName,
       email: fromEmail,
       reply_to: fromEmail,
-      to_email: site.contact.email,
+      to_email: "erik@patriotsinaction.com",
       county_name: "General inquiry",
       county_slug: "general",
       state_name: "General",

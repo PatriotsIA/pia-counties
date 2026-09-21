@@ -1,16 +1,6 @@
-# Patriots in Action
+# Patriots in Action Advertising
 
-A nationwide county-by-county civic network for local events, trusted resources, community updates, and practical action.
+https://advertise.patriotsinaction.com/ is the Patriots in Action advertising site, with county and national sponsorship information, monthly and annual pricing, placement examples, and a campaign inquiry form.
 
-Patriots in Action is a nationwide and local civic hub with county pages for voter resources, elected official lookups, candidate profiles, local news, events, community updates, Patriots in Action TV, and practical civic action.
-
-Important URLs:
-- Home: https://patriotsinaction.com/
-- County finder: https://patriotsinaction.com/counties
-- Texas candidates: https://patriotsinaction.com/tx/candidates
-- PIA TV: https://patriotsinaction.com/tv
-- Contact: https://patriotsinaction.com/contact
-- Privacy: https://patriotsinaction.com/privacy
-- Terms: https://patriotsinaction.com/terms
-
-County URLs use state abbreviations, for example https://patriotsinaction.com/tx/potter.
+Advertising contact: erik@patriotsinaction.com.
+Main civic site: https://patriotsinaction.com/.

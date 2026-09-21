@@ -1,3 +1,7 @@
+# Patriots in Action Advertising
+
+This branch serves **https://advertise.patriotsinaction.com/** as a standalone advertising page. See [advertiser site documentation](docs/advertiser-site.md) for pricing, form delivery, local development, tests, and deployment. The civic site remains on the `main` branch.
+
 # Patriots in Action Counties (`pia-counties`)
 
 Nationwide React + Vite application that powers **Patriots in Action** county civic hubs: local weather, news feeds, elections, events, partners, PIA TV, and a sponsorship/ad system with a partner payments page.
