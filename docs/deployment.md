@@ -16,13 +16,19 @@ Use `aws --profile pia` and `sam ... --profile pia` for local AWS operations. Ve
 Public PIA build settings:
 
 ```text
-VITE_NEWS_API_URL=https://ntqzmx2vo55fnwkqfwggcmdkny0jzlco.lambda-url.us-east-2.on.aws
+VITE_NEWS_API_URL=https://d2vo13idhuovzg.cloudfront.net
 VITE_CANDIDATE_API_BASE=https://luzwga4j7h.execute-api.us-east-2.amazonaws.com/prod
 VITE_CANDIDATE_COGNITO_REGION=us-east-2
 VITE_CANDIDATE_COGNITO_CLIENT_ID=17rhshtv8pi76e2a4jeb7afe04
 ```
 
 `VITE_MIGHTY_API_BASE` remains the Mighty Function URL. The separate `VITE_API_BASE_URL` serves calendar/Vimeo routes. Preserve all existing app environment variables when updating public candidate values; other settings may contain secrets. Amplify static hosting does not execute `api/` functions. Rebuild after changing `VITE_` settings and retain the SPA rewrite for fresh deep links.
+
+The news edge setting above is the intended PIA-004 rollout configuration. On
+September 21, 2026, Amplify still used the raw news Lambda URL, with no `main`
+branch override. Updating this example does not change the live site. Follow
+the [edge rollout procedure](#pia-004-news-edge-rollout) below for the production
+environment update and frontend rebuild.
 
 ## Candidates
 
@@ -68,6 +74,54 @@ The API now uses one 750 ms image-enrichment budget and retains completed images
 Louisiana retrieval and locality labels use Parish. The previously empty West Carroll feed returned 21 stories after a forced refresh of the deployed fix. Six independent cities now have distinct `-city` routes: Baltimore, St. Louis, Fairfax, Franklin, Richmond and Roanoke. Existing county URLs remain intact. PIA, Mighty geography validation, the news API and County Post agree on all 3,143 FIPS routes.
 
 County Post continues using its existing API URL and editorial filters. Compatibility checks cover national/state/county feeds, batched page sections, sources, atlas and the six city routes, including PIA and County Post apex/www CORS. Its frontend recognizes parish/city display names and distinct city URLs.
+
+### PIA-004 news edge rollout
+
+Use `https://d2vo13idhuovzg.cloudfront.net` for `VITE_NEWS_API_URL`. The edge uses
+the same news Lambda origin and existing routes. No changes to topic mapping,
+independent widget loading, video selection, scope validation, nearby-coverage
+labels, or bounded browser fallback are required. Keep `VITE_API_BASE_URL`,
+`VITE_MIGHTY_API_BASE`, and all candidate settings unchanged.
+
+Read-only checks on September 21, 2026 found:
+
+- Potter County general and Texas state politics, each with `limit=40`, returned
+  HTTP 200 through both edge and raw origin with identical items, scope, topic,
+  and fetch timestamp. Only elapsed `meta.ageSeconds` differed.
+- Feed responses allowed `https://patriotsinaction.com`; the edge health response
+  also allowed `https://www.patriotsinaction.com`, both by exact origin.
+- A repeated Potter request returned `Hit from cloudfront`. The live cache key
+  includes `Origin` and the `limit`, `offset`, and `sections` query parameters,
+  retaining separate CORS responses and pagination variants.
+- Both sampled feeds were stale in the shared cache. Edge caching reduces Lambda
+  traffic; it does not resolve the separate refresh queue backlog.
+
+For a controlled release:
+
+1. Verify the current AWS identity, app configuration and `main` branch overrides.
+   Save the existing app environment map in a private file without printing it.
+   Copy that map and replace only `VITE_NEWS_API_URL` with the edge URL; preserve
+   every other key and value. Keep a private copy of the original map for rollback.
+2. Run frontend unit tests, lint, build and browser checks under Node 22 with the
+   edge setting. Review the exact source commit that will be released.
+3. Apply the complete merged environment map with
+   `aws --profile pia --region us-west-1 amplify update-app --app-id d1c230b674qax4 --environment-variables file:///path/to/private/merged-environment.json --query 'app.{appId:appId,NewsApiUrl:environmentVariables.VITE_NEWS_API_URL}'`.
+   Do not supply only the news key: this request must retain the other environment
+   settings. Re-read the map privately to verify only the intended value changed.
+4. Rebuild and deploy the selected frontend commit through the existing Amplify
+   release workflow. `VITE_` values are embedded during the build; changing the
+   app setting alone does not update already-published JavaScript. A push to
+   `main` starts a production build.
+5. Verify the published JavaScript references the edge URL, then check county and
+   state news from both PIA origins, topic selection, video and load-more behavior,
+   and independent candidate/community widgets. Confirm a repeated feed request
+   is an edge hit. Use bounded reads; do not run the national audit during a
+   capacity incident.
+
+The raw news endpoint remains available during the switch. If validation fails,
+restore only the previous news setting in the current complete environment map
+and redeploy the previous known-good frontend artifact. Do not change news DNS,
+stop services, or replace backend resources as part of this frontend release.
 
 ## Verification and releases
 
