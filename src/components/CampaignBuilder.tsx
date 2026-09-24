@@ -137,7 +137,7 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
     </section>
 
     <section className="campaign-section"><div className="section-wrap campaign-layout">
-      <aside className="campaign-copy"><p className="eyebrow">LET’S MAKE IT LOCAL</p><h2>Build your<br />next connection.</h2><p>Choose your reach and placement. We’ll confirm availability and coordinate your creative before launch.</p>
+      <aside className="campaign-copy"><p className="eyebrow">LET’S MAKE IT LOCAL</p><h2>Build your<br /> next connection.</h2><p>Choose your reach and placement. We’ll confirm availability and coordinate your creative before launch.</p>
         <div className="campaign-summary" aria-live="polite"><span>YOUR SELECTED CAMPAIGN</span><h3>{planName}</h3><p className="price"><strong>{scope === "national" ? "Let’s talk" : formatAdPrice(total)}</strong>{scope !== "national" && <span>/{billing === "annual" ? "year" : "month"}</span>}</p>
           <p>{scope === "national" ? "Custom national proposal" : !hasSelection ? "Add your coverage to calculate the exact total." : scope === "county" ? `${selectedCounties.length} selected counties · highest rate in full, additional counties at half their own rate.` : `${countyCount} counties across ${selectedStates.length} selected states${needsFeeds ? ` · ${feeds.length} sponsored sections` : ""}.`}</p>
           {billing === "annual" && scope !== "national" && <p>12 months of coverage, paid annually at 10 times the monthly rate.</p>}
