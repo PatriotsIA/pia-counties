@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { AdCreative, AdPlacement, AdSlotId } from "../data/ads";
 import type { CountyPageKey, CountySite } from "../data/counties";
 import { resolveAdsByIds, resolveAdsForSlot, type AdRouteType } from "../lib/ads";
 import { trackAdClick, trackAdImpression, type AdTrackingPayload } from "../lib/analytics";
+import { imageAssets } from "../data/image-assets.generated";
+import { COUNTY_POST_CAMPAIGN } from "../data/county-post-ads";
 
 type AdSlotProps = {
   slot: AdSlotId;
@@ -35,7 +37,7 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds 
 
   return (
     <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label="Sponsored message">
-      {slot === "site-inline" ? <p className="sponsor-label">Sponsored by {resolvedAds.map((ad) => ad.sponsor).join(", ")}</p> : null}
+      {slot === "site-inline" ? <p className="sponsor-label">Sponsored by {[...new Set(resolvedAds.map((ad) => ad.sponsor))].join(", ")}</p> : null}
       {resolvedAds.map((ad) => (
         <AdCard ad={ad} county={county} key={ad.id} page={page} placement={placement || ad.placement} slot={slot} />
       ))}
@@ -203,17 +205,15 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
 
   return (
     <a
-      className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}`}
+      className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}${ad.campaignId === COUNTY_POST_CAMPAIGN ? " sponsor-card-county-post" : ""}`}
+      data-ad-id={ad.id}
       href={ad.href}
       onClick={() => trackAdClick(trackingPayload)}
       ref={cardRef}
       rel={opensNewWindow ? "noreferrer" : undefined}
       target={opensNewWindow ? "_blank" : undefined}
     >
-      <picture>
-        {ad.image.mobile ? <source media="(max-width: 780px)" srcSet={ad.image.mobile} /> : null}
-        <img src={ad.image.desktop} alt={ad.image.alt} />
-      </picture>
+      <AdImage ad={ad} slot={slot} />
       {ad.display === "card" ? (
         <span className="sponsor-card-content">
           <span className="sponsor-label">Sponsored by {ad.sponsor}</span>
@@ -224,6 +224,43 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
       ) : null}
     </a>
   );
+}
+
+function AdImage({ ad, slot }: { ad: AdCreative; slot: AdSlotId }) {
+  const ref = useRef<HTMLPictureElement>(null);
+  const [ready, setReady] = useState(false);
+  const desktop = imageAssets[ad.image.desktop];
+  const mobile = ad.image.mobile ? imageAssets[ad.image.mobile] : undefined;
+  const sizes = slot === "site-inline" && ad.campaignId === COUNTY_POST_CAMPAIGN
+    ? "(max-width: 780px) calc(100vw - 40px), 720px"
+    : ad.placement === "leaderboard" ? "(max-width: 780px) calc(100vw - 116px), 876px" : "300px";
+
+  useEffect(() => {
+    const picture = ref.current;
+    if (!picture) return;
+    if (typeof IntersectionObserver === "undefined") {
+      // Legacy browsers still get the artwork.
+      picture.querySelectorAll<HTMLImageElement | HTMLSourceElement>("[data-src]").forEach((image) => {
+        image.setAttribute("src", image.dataset.src!);
+      });
+      return;
+    }
+    const track = picture.closest(".sponsor-carousel-track, .sponsor-banner-carousel-track");
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setReady(true);
+      observer.disconnect();
+    }, { root: track, rootMargin: track ? "0px 100%" : "400px" });
+    observer.observe(picture);
+    return () => observer.disconnect();
+  }, []);
+
+  return <picture ref={ref}>
+    {ad.image.mobile ? <source media="(max-width: 780px)" srcSet={ready ? mobile?.srcSet || ad.image.mobile : undefined} width={mobile?.width} height={mobile?.height} sizes={sizes} /> : null}
+    <img src={ready ? desktop?.src || ad.image.desktop : undefined} data-src={desktop?.src || ad.image.desktop}
+      srcSet={ready ? desktop?.srcSet : undefined} sizes={sizes} width={desktop?.width} height={desktop?.height}
+      loading="lazy" decoding="async" alt={ad.image.alt} />
+  </picture>;
 }
 
 function adTrackingPayload(ad: AdCreative, slot: AdSlotId, county?: CountySite, page?: CountyPageKey): AdTrackingPayload {

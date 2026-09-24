@@ -1,3 +1,4 @@
+import { SiteImage } from "./SiteImage";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CountySite } from "../data/counties";
 import itmTradingAd from "../../ads/ad-itmtrading.JPG";
@@ -182,7 +183,7 @@ function PreciousMetalsTicker() {
       </div>
       <a className="precious-metals-sponsor" href={itmTradingUrl} target="_blank" rel="noreferrer sponsored">
         <span>Presented by ITM Trading</span>
-        <img src={itmTradingAd} alt="ITM Trading" />
+        <SiteImage loading="eager" sizes="170px" src={itmTradingAd} alt="ITM Trading" />
       </a>
     </aside>
   );

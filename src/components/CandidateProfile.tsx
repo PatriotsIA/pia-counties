@@ -1,3 +1,4 @@
+import { SiteImage } from "./SiteImage";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getCandidateOfficeLevel, type Candidate } from "../data/candidates";
@@ -39,7 +40,7 @@ export function CandidateProfile({ candidate, backPath, preview = false }: { can
               title={candidate.videoTitle || `${candidate.name} video`}
             />
           ) : candidate.image ? (
-            <img src={candidate.image} alt={candidate.name} />
+            <SiteImage sizes="300px" src={candidate.image} alt={candidate.name} />
           ) : (
             <div className="candidate-profile-empty-video">No candidate video has been added yet.</div>
           )}
@@ -52,7 +53,7 @@ export function CandidateProfile({ candidate, backPath, preview = false }: { can
           <CandidateQuestionnaireAnswers response={candidate.voterGuide} place={candidate} />
         </div>
         <aside className="candidate-profile-sidebar">
-          {candidate.image ? <img className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}
+          {candidate.image ? <SiteImage sizes="(max-width: 780px) 90vw, 420px" className="candidate-profile-photo" src={candidate.image} alt={candidate.name} /> : null}
           <CandidateDetails candidate={candidate} showProfileLink preview={preview} />
           {candidateProjectCandidateIds.has(candidate.id) ? (
             <div className="candidate-support">

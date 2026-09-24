@@ -1,0 +1,1593 @@
+[
+  {
+    "source": "NewAds/Banner-America250-Large.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 461813,
+    "fullBytes": 461813,
+    "losslessVerified": true,
+    "full": "NewAds/Banner-America250-Large.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/banner-america250-large-53da1af3d832-300.webp",
+        "bytes": 187512
+      }
+    ]
+  },
+  {
+    "source": "NewAds/Banner-America250-Small.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 170335,
+    "fullBytes": 170335,
+    "losslessVerified": true,
+    "full": "NewAds/Banner-America250-Small.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/banner-america250-small-5efc7f1ba306-300.webp",
+        "bytes": 142362
+      }
+    ]
+  },
+  {
+    "source": "NewAds/BrownGMC-250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 9199,
+    "fullBytes": 9199,
+    "losslessVerified": true,
+    "full": "NewAds/BrownGMC-250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/CBT4.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 66682,
+    "fullBytes": 66682,
+    "losslessVerified": true,
+    "full": "NewAds/CBT4.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/CanyonRidge250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 7932,
+    "fullBytes": 7932,
+    "losslessVerified": true,
+    "full": "NewAds/CanyonRidge250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/Catchings250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 11752,
+    "fullBytes": 11752,
+    "losslessVerified": true,
+    "full": "NewAds/Catchings250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/Dyers250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 13936,
+    "fullBytes": 13936,
+    "losslessVerified": true,
+    "full": "NewAds/Dyers250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/JoinPIALarge.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 375220,
+    "fullBytes": 375220,
+    "losslessVerified": true,
+    "full": "NewAds/JoinPIALarge.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/joinpialarge-64fe0e4042f1-300.webp",
+        "bytes": 132896
+      }
+    ]
+  },
+  {
+    "source": "NewAds/JoinPIASm.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 162530,
+    "fullBytes": 162530,
+    "losslessVerified": true,
+    "full": "NewAds/JoinPIASm.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/joinpiasm-e9704a0c3e66-300.webp",
+        "bytes": 115472
+      }
+    ]
+  },
+  {
+    "source": "NewAds/LEMC250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 4359,
+    "fullBytes": 4359,
+    "losslessVerified": true,
+    "full": "NewAds/LEMC250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/LEMC980.jpg",
+    "width": 980,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 336068,
+    "fullBytes": 336068,
+    "losslessVerified": true,
+    "full": "NewAds/LEMC980.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/lemc980-1762c47435b3-300.webp",
+        "bytes": 43480
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/lemc980-1762c47435b3-600.webp",
+        "bytes": 161572
+      }
+    ]
+  },
+  {
+    "source": "NewAds/Merch.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 59249,
+    "fullBytes": 57650,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/merch-ab912f66b0b5.webp",
+    "variants": []
+  },
+  {
+    "source": "NewAds/MonaSalazar.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 417195,
+    "fullBytes": 417195,
+    "losslessVerified": true,
+    "full": "NewAds/MonaSalazar.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/monasalazar-41957276a2b3-300.webp",
+        "bytes": 164198
+      }
+    ]
+  },
+  {
+    "source": "NewAds/MonaSalazarSm.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 152767,
+    "fullBytes": 152767,
+    "losslessVerified": true,
+    "full": "NewAds/MonaSalazarSm.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/monasalazarsm-3356ed6ba467-300.webp",
+        "bytes": 120260
+      }
+    ]
+  },
+  {
+    "source": "NewAds/PIATV2.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 39869,
+    "fullBytes": 39869,
+    "losslessVerified": true,
+    "full": "NewAds/PIATV2.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PanhandleGreenhouse250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 9132,
+    "fullBytes": 9132,
+    "losslessVerified": true,
+    "full": "NewAds/PanhandleGreenhouse250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PapaMurphys250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 11160,
+    "fullBytes": 11160,
+    "losslessVerified": true,
+    "full": "NewAds/PapaMurphys250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/Pasture-Exchange980.jpg",
+    "width": 980,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 246448,
+    "fullBytes": 246448,
+    "losslessVerified": true,
+    "full": "NewAds/Pasture-Exchange980.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/pasture-exchange980-d8c861475933-300.webp",
+        "bytes": 33784
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/pasture-exchange980-d8c861475933-600.webp",
+        "bytes": 121734
+      }
+    ]
+  },
+  {
+    "source": "NewAds/PastureEXCHANGELogo.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 13893,
+    "fullBytes": 13893,
+    "losslessVerified": true,
+    "full": "NewAds/PastureEXCHANGELogo.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PatriotMessaging 2.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 37249,
+    "fullBytes": 37249,
+    "losslessVerified": true,
+    "full": "NewAds/PatriotMessaging 2.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PatriotTrailerStore.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 60675,
+    "fullBytes": 49352,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/patriottrailerstore-8799545df981.webp",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PlainsBank250.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 12149,
+    "fullBytes": 12149,
+    "losslessVerified": true,
+    "full": "NewAds/PlainsBank250.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/TrailerLarge.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 751639,
+    "fullBytes": 751639,
+    "losslessVerified": true,
+    "full": "NewAds/TrailerLarge.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/trailerlarge-f4b1ff97d273-300.webp",
+        "bytes": 252606
+      }
+    ]
+  },
+  {
+    "source": "NewAds/gopconnect-be-informed.png",
+    "width": 1254,
+    "height": 1254,
+    "frames": 1,
+    "originalBytes": 2028331,
+    "fullBytes": 1517488,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/gopconnect-be-informed-318da790d5e1.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/gopconnect-be-informed-318da790d5e1-300.webp",
+        "bytes": 123502
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/gopconnect-be-informed-318da790d5e1-600.webp",
+        "bytes": 424886
+      },
+      {
+        "width": 900,
+        "path": "src/assets/optimized/gopconnect-be-informed-318da790d5e1-900.webp",
+        "bytes": 882508
+      }
+    ]
+  },
+  {
+    "source": "NewAds/matress-ad.jpg",
+    "width": 851,
+    "height": 315,
+    "frames": 1,
+    "originalBytes": 42111,
+    "fullBytes": 42111,
+    "losslessVerified": true,
+    "full": "NewAds/matress-ad.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/matress-ad-4135568b2a19-300.webp",
+        "bytes": 18026
+      }
+    ]
+  },
+  {
+    "source": "NewAds/parallel-builders.png",
+    "width": 569,
+    "height": 267,
+    "frames": 1,
+    "originalBytes": 85530,
+    "fullBytes": 43288,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/parallel-builders-49a954e266ce.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/parallel-builders-49a954e266ce-300.webp",
+        "bytes": 17952
+      }
+    ]
+  },
+  {
+    "source": "NewAds/parallel-roofing.png",
+    "width": 767,
+    "height": 435,
+    "frames": 1,
+    "originalBytes": 136056,
+    "fullBytes": 79118,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/parallel-roofing-67267af924f6.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/parallel-roofing-67267af924f6-300.webp",
+        "bytes": 18966
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/parallel-roofing-67267af924f6-600.webp",
+        "bytes": 55074
+      }
+    ]
+  },
+  {
+    "source": "PatriotAnimation.gif",
+    "width": 250,
+    "height": 350,
+    "frames": 25,
+    "originalBytes": 146760,
+    "fullBytes": 146760,
+    "losslessVerified": true,
+    "full": "PatriotAnimation.gif",
+    "variants": []
+  },
+  {
+    "source": "ads/PatriotDispatch.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 46595,
+    "fullBytes": 35488,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/patriotdispatch-214ff66fa13d.webp",
+    "variants": []
+  },
+  {
+    "source": "ads/ad-itmtrading.JPG",
+    "width": 167,
+    "height": 103,
+    "frames": 1,
+    "originalBytes": 9316,
+    "fullBytes": 6060,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/ad-itmtrading-362cc686db91.webp",
+    "variants": []
+  },
+  {
+    "source": "assets/source/county-post-any-county.png",
+    "width": 1672,
+    "height": 941,
+    "frames": 1,
+    "originalBytes": 2524911,
+    "fullBytes": 1877856,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/county-post-any-county-04227768e877.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/county-post-any-county-04227768e877-300.webp",
+        "bytes": 90432
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/county-post-any-county-04227768e877-600.webp",
+        "bytes": 306020
+      },
+      {
+        "width": 900,
+        "path": "src/assets/optimized/county-post-any-county-04227768e877-900.webp",
+        "bytes": 618200
+      }
+    ]
+  },
+  {
+    "source": "assets/source/county-post-no-sweat.png",
+    "width": 1672,
+    "height": 941,
+    "frames": 1,
+    "originalBytes": 2234525,
+    "fullBytes": 1617244,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/county-post-no-sweat-54d4b81898be.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/county-post-no-sweat-54d4b81898be-300.webp",
+        "bytes": 78034
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/county-post-no-sweat-54d4b81898be-600.webp",
+        "bytes": 260490
+      },
+      {
+        "width": 900,
+        "path": "src/assets/optimized/county-post-no-sweat-54d4b81898be-900.webp",
+        "bytes": 524352
+      }
+    ]
+  },
+  {
+    "source": "county-post-final-logo.png",
+    "width": 1536,
+    "height": 1024,
+    "frames": 1,
+    "originalBytes": 1805052,
+    "fullBytes": 1213114,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/county-post-final-logo-49680773ba6a.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/county-post-final-logo-49680773ba6a-300.webp",
+        "bytes": 53762
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/county-post-final-logo-49680773ba6a-600.webp",
+        "bytes": 175786
+      },
+      {
+        "width": 900,
+        "path": "src/assets/optimized/county-post-final-logo-49680773ba6a-900.webp",
+        "bytes": 343672
+      }
+    ]
+  },
+  {
+    "source": "public/ads/PATRIOTREWARDS.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 53318,
+    "fullBytes": 53318,
+    "losslessVerified": true,
+    "full": "public/ads/PATRIOTREWARDS.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/ads/PIATVLarge.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 146730,
+    "fullBytes": 146730,
+    "losslessVerified": true,
+    "full": "public/ads/PIATVLarge.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/piatvlarge-b75cc1da2684-300.webp",
+        "bytes": 119474
+      }
+    ]
+  },
+  {
+    "source": "public/ads/PIATVSmall.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 73321,
+    "fullBytes": 73321,
+    "losslessVerified": true,
+    "full": "public/ads/PIATVSmall.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/ads/TrailerSmall.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 252252,
+    "fullBytes": 252252,
+    "losslessVerified": true,
+    "full": "public/ads/TrailerSmall.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/trailersmall-46ebdecfd15a-300.webp",
+        "bytes": 180090
+      }
+    ]
+  },
+  {
+    "source": "public/ads/ad-guerilla-gear.png",
+    "width": 1922,
+    "height": 2609,
+    "frames": 1,
+    "originalBytes": 304027,
+    "fullBytes": 80638,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/ad-guerilla-gear-667285ecb024.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/ad-guerilla-gear-667285ecb024-300.webp",
+        "bytes": 34806
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/ad-guerilla-gear-667285ecb024-600.webp",
+        "bytes": 72416
+      }
+    ]
+  },
+  {
+    "source": "public/brand/AmericanHeader-600x601.jpg",
+    "width": 600,
+    "height": 601,
+    "frames": 1,
+    "originalBytes": 87944,
+    "fullBytes": 87944,
+    "losslessVerified": true,
+    "full": "public/brand/AmericanHeader-600x601.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/brand/PIAFooterLogo.png",
+    "width": 1130,
+    "height": 242,
+    "frames": 1,
+    "originalBytes": 23663,
+    "fullBytes": 11798,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/piafooterlogo-3bf10f0589c4.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/piafooterlogo-3bf10f0589c4-300.webp",
+        "bytes": 7714
+      }
+    ]
+  },
+  {
+    "source": "public/brand/PIAFullTextLogoRedWhite.png",
+    "width": 1024,
+    "height": 219,
+    "frames": 1,
+    "originalBytes": 136369,
+    "fullBytes": 76682,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/piafulltextlogoredwhite-e498039b99ef.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-300.webp",
+        "bytes": 23972
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-600.webp",
+        "bytes": 57026
+      }
+    ]
+  },
+  {
+    "source": "public/brand/PIAPatriot.png",
+    "width": 632,
+    "height": 1024,
+    "frames": 1,
+    "originalBytes": 214381,
+    "fullBytes": 147286,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/piapatriot-0aa8ea00f176.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/piapatriot-0aa8ea00f176-300.webp",
+        "bytes": 56284
+      }
+    ]
+  },
+  {
+    "source": "public/brand/SocialIcon.png",
+    "width": 800,
+    "height": 800,
+    "frames": 1,
+    "originalBytes": 20328,
+    "fullBytes": 8268,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/socialicon-e75d58e9e95b.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/socialicon-e75d58e9e95b-300.webp",
+        "bytes": 6556
+      }
+    ]
+  },
+  {
+    "source": "public/brand/operation-show-up-cover.png",
+    "width": 311,
+    "height": 466,
+    "frames": 1,
+    "originalBytes": 32697,
+    "fullBytes": 32697,
+    "losslessVerified": true,
+    "full": "public/brand/operation-show-up-cover.png",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/Abraham-George.jpg",
+    "width": 1140,
+    "height": 758,
+    "frames": 1,
+    "originalBytes": 128181,
+    "fullBytes": 128181,
+    "losslessVerified": true,
+    "full": "public/candidates/Abraham-George.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/abraham-george-60e4b1830f00-300.webp",
+        "bytes": 86722
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/SandraWhitten.jpg",
+    "width": 1200,
+    "height": 1600,
+    "frames": 1,
+    "originalBytes": 120474,
+    "fullBytes": 120474,
+    "losslessVerified": true,
+    "full": "public/candidates/SandraWhitten.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/aj-casias.jpg",
+    "width": 600,
+    "height": 503,
+    "frames": 1,
+    "originalBytes": 87032,
+    "fullBytes": 87032,
+    "losslessVerified": true,
+    "full": "public/candidates/aj-casias.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/aj-casias-407d85465830-300.webp",
+        "bytes": 30260
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/al-lujan.jpg",
+    "width": 600,
+    "height": 793,
+    "frames": 1,
+    "originalBytes": 252138,
+    "fullBytes": 252138,
+    "losslessVerified": true,
+    "full": "public/candidates/al-lujan.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/al-lujan-2fc9471f0b4e-300.webp",
+        "bytes": 96962
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/alan-paige.png",
+    "width": 264,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 37213,
+    "fullBytes": 31306,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/alan-paige-ba04e48a37e0.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/amanda-mayfield.jpg",
+    "width": 276,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 56866,
+    "fullBytes": 50302,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/amanda-mayfield-1b4e8a0993fb.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/andrew-smith.webp",
+    "width": 200,
+    "height": 200,
+    "frames": 1,
+    "originalBytes": 27382,
+    "fullBytes": 27382,
+    "losslessVerified": true,
+    "full": "public/candidates/andrew-smith.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/apollo-hernandez.png",
+    "width": 293,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 65191,
+    "fullBytes": 58864,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/apollo-hernandez-465753b79b54.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/bill-eastland.webp",
+    "width": 300,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 7354,
+    "fullBytes": 7354,
+    "losslessVerified": true,
+    "full": "public/candidates/bill-eastland.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/blair-schaffer.jpg",
+    "width": 600,
+    "height": 600,
+    "frames": 1,
+    "originalBytes": 259758,
+    "fullBytes": 259758,
+    "losslessVerified": true,
+    "full": "public/candidates/blair-schaffer.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/blair-schaffer-fb55d8133a9d-300.webp",
+        "bytes": 92346
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/brett-ferguson.jpg",
+    "width": 231,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 35866,
+    "fullBytes": 29490,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/brett-ferguson-fca41c6ef713.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/brooks-mckenzie.jpg",
+    "width": 960,
+    "height": 540,
+    "frames": 1,
+    "originalBytes": 76904,
+    "fullBytes": 76904,
+    "losslessVerified": true,
+    "full": "public/candidates/brooks-mckenzie.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/brooks-mckenzie-334ec9f2404c-300.webp",
+        "bytes": 56884
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/bryan-tackett.webp",
+    "width": 150,
+    "height": 150,
+    "frames": 1,
+    "originalBytes": 23684,
+    "fullBytes": 23684,
+    "losslessVerified": true,
+    "full": "public/candidates/bryan-tackett.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/cathy-welch.jpg",
+    "width": 600,
+    "height": 400,
+    "frames": 1,
+    "originalBytes": 200664,
+    "fullBytes": 200664,
+    "losslessVerified": true,
+    "full": "public/candidates/cathy-welch.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/cathy-welch-e1cd17b4f780-300.webp",
+        "bytes": 64670
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/chad-seay.webp",
+    "width": 1024,
+    "height": 576,
+    "frames": 1,
+    "originalBytes": 292560,
+    "fullBytes": 292560,
+    "losslessVerified": true,
+    "full": "public/candidates/chad-seay.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/chad-seay-557c793744a8-300.webp",
+        "bytes": 47192
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/chad-seay-557c793744a8-600.webp",
+        "bytes": 141210
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/chasity-wedgeworth.jpg",
+    "width": 600,
+    "height": 597,
+    "frames": 1,
+    "originalBytes": 257612,
+    "fullBytes": 257612,
+    "losslessVerified": true,
+    "full": "public/candidates/chasity-wedgeworth.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/chasity-wedgeworth-823d5544fd75-300.webp",
+        "bytes": 82752
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/daniel-betts.webp",
+    "width": 1010,
+    "height": 1020,
+    "frames": 1,
+    "originalBytes": 369398,
+    "fullBytes": 369398,
+    "losslessVerified": true,
+    "full": "public/candidates/daniel-betts.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/daniel-betts-18d373577eb7-300.webp",
+        "bytes": 54548
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/daniel-betts-18d373577eb7-600.webp",
+        "bytes": 163694
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/dc-caldwell.jpg",
+    "width": 600,
+    "height": 600,
+    "frames": 1,
+    "originalBytes": 202678,
+    "fullBytes": 202678,
+    "losslessVerified": true,
+    "full": "public/candidates/dc-caldwell.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/dc-caldwell-3c733f983e71-300.webp",
+        "bytes": 66592
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/drinda-randall.jpg",
+    "width": 988,
+    "height": 578,
+    "frames": 1,
+    "originalBytes": 177197,
+    "fullBytes": 177197,
+    "losslessVerified": true,
+    "full": "public/candidates/drinda-randall.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/drinda-randall-b8b798843ee2-300.webp",
+        "bytes": 30384
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/drinda-randall-b8b798843ee2-600.webp",
+        "bytes": 98688
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/elizabeth-waters.jpg",
+    "width": 600,
+    "height": 495,
+    "frames": 1,
+    "originalBytes": 254538,
+    "fullBytes": 254538,
+    "losslessVerified": true,
+    "full": "public/candidates/elizabeth-waters.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/elizabeth-waters-8898c8688819-300.webp",
+        "bytes": 83900
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/ethan-libby.jpg",
+    "width": 400,
+    "height": 400,
+    "frames": 1,
+    "originalBytes": 43417,
+    "fullBytes": 43417,
+    "losslessVerified": true,
+    "full": "public/candidates/ethan-libby.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/frank-salazar.jpg",
+    "width": 500,
+    "height": 437,
+    "frames": 1,
+    "originalBytes": 136492,
+    "fullBytes": 136492,
+    "losslessVerified": true,
+    "full": "public/candidates/frank-salazar.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/frank-salazar-5f65bfdfe575-300.webp",
+        "bytes": 62566
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/gary-house.jpg",
+    "width": 819,
+    "height": 1024,
+    "frames": 1,
+    "originalBytes": 830966,
+    "fullBytes": 830966,
+    "losslessVerified": true,
+    "full": "public/candidates/gary-house.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/gary-house-9dfbf94be138-300.webp",
+        "bytes": 126292
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/gary-house-9dfbf94be138-600.webp",
+        "bytes": 470294
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/gary-jackson.webp",
+    "width": 226,
+    "height": 267,
+    "frames": 1,
+    "originalBytes": 46556,
+    "fullBytes": 46556,
+    "losslessVerified": true,
+    "full": "public/candidates/gary-jackson.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/gulrez-khan.webp",
+    "width": 200,
+    "height": 300,
+    "frames": 1,
+    "originalBytes": 36160,
+    "fullBytes": 36160,
+    "losslessVerified": true,
+    "full": "public/candidates/gulrez-khan.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/holly-jeffreys.webp",
+    "width": 1024,
+    "height": 683,
+    "frames": 1,
+    "originalBytes": 401850,
+    "fullBytes": 401850,
+    "losslessVerified": true,
+    "full": "public/candidates/holly-jeffreys.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/holly-jeffreys-ae434b368c23-300.webp",
+        "bytes": 51098
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/holly-jeffreys-ae434b368c23-600.webp",
+        "bytes": 171494
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/james-matlock.jpg",
+    "width": 600,
+    "height": 665,
+    "frames": 1,
+    "originalBytes": 103700,
+    "fullBytes": 103700,
+    "losslessVerified": true,
+    "full": "public/candidates/james-matlock.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/james-matlock-f1e7f53d8665-300.webp",
+        "bytes": 45230
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/james-stewart.webp",
+    "width": 1024,
+    "height": 684,
+    "frames": 1,
+    "originalBytes": 217032,
+    "fullBytes": 217032,
+    "losslessVerified": true,
+    "full": "public/candidates/james-stewart.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/james-stewart-e025a4ef1267-300.webp",
+        "bytes": 39910
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/james-stewart-e025a4ef1267-600.webp",
+        "bytes": 110984
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/jamie-haynes.webp",
+    "width": 474,
+    "height": 474,
+    "frames": 1,
+    "originalBytes": 157834,
+    "fullBytes": 157834,
+    "losslessVerified": true,
+    "full": "public/candidates/jamie-haynes.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/jamie-haynes-71014de128b4-300.webp",
+        "bytes": 82504
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/jeff-raef.webp",
+    "width": 150,
+    "height": 150,
+    "frames": 1,
+    "originalBytes": 21776,
+    "fullBytes": 21776,
+    "losslessVerified": true,
+    "full": "public/candidates/jeff-raef.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/jim-baxa.jpg",
+    "width": 600,
+    "height": 398,
+    "frames": 1,
+    "originalBytes": 245908,
+    "fullBytes": 245908,
+    "losslessVerified": true,
+    "full": "public/candidates/jim-baxa.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/jim-baxa-81c14f3939a0-300.webp",
+        "bytes": 80374
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/jim-wright.webp",
+    "width": 529,
+    "height": 528,
+    "frames": 1,
+    "originalBytes": 275766,
+    "fullBytes": 275766,
+    "losslessVerified": true,
+    "full": "public/candidates/jim-wright.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/jim-wright-99c767751810-300.webp",
+        "bytes": 90924
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/joanna-garcia-flores.jpg",
+    "width": 600,
+    "height": 594,
+    "frames": 1,
+    "originalBytes": 307244,
+    "fullBytes": 307244,
+    "losslessVerified": true,
+    "full": "public/candidates/joanna-garcia-flores.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/joanna-garcia-flores-ca2151b96d64-300.webp",
+        "bytes": 94252
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/john-smithee.webp",
+    "width": 474,
+    "height": 543,
+    "frames": 1,
+    "originalBytes": 235158,
+    "fullBytes": 235158,
+    "losslessVerified": true,
+    "full": "public/candidates/john-smithee.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/john-smithee-ea85b41092ba-300.webp",
+        "bytes": 111086
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/jonathan-mitchell.jpg",
+    "width": 300,
+    "height": 157,
+    "frames": 1,
+    "originalBytes": 26643,
+    "fullBytes": 21656,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/jonathan-mitchell-e42c38cdcca0.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/julie-kellogg.jpg",
+    "width": 960,
+    "height": 720,
+    "frames": 1,
+    "originalBytes": 95818,
+    "fullBytes": 95818,
+    "losslessVerified": true,
+    "full": "public/candidates/julie-kellogg.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/julie-kellogg-0bbe906a219a-300.webp",
+        "bytes": 57366
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/ken-mathews.png",
+    "width": 600,
+    "height": 549,
+    "frames": 1,
+    "originalBytes": 183250,
+    "fullBytes": 183250,
+    "losslessVerified": true,
+    "full": "public/candidates/ken-mathews.png",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/ken-mathews-192804358c80-300.webp",
+        "bytes": 62382
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/lesli-fitzpatrick.webp",
+    "width": 782,
+    "height": 1024,
+    "frames": 1,
+    "originalBytes": 598908,
+    "fullBytes": 598908,
+    "losslessVerified": true,
+    "full": "public/candidates/lesli-fitzpatrick.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-300.webp",
+        "bytes": 135298
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-600.webp",
+        "bytes": 416444
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/mayes-middleton.png",
+    "width": 300,
+    "height": 295,
+    "frames": 1,
+    "originalBytes": 50108,
+    "fullBytes": 43306,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/mayes-middleton-d4b712174d11.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/michelle-merendino.webp",
+    "width": 1024,
+    "height": 828,
+    "frames": 1,
+    "originalBytes": 358904,
+    "fullBytes": 358904,
+    "losslessVerified": true,
+    "full": "public/candidates/michelle-merendino.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/michelle-merendino-a7e3f97291fc-300.webp",
+        "bytes": 51720
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/michelle-merendino-a7e3f97291fc-600.webp",
+        "bytes": 162926
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/paul-herrmann.jpg",
+    "width": 600,
+    "height": 615,
+    "frames": 1,
+    "originalBytes": 293042,
+    "fullBytes": 293042,
+    "losslessVerified": true,
+    "full": "public/candidates/paul-herrmann.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/paul-herrmann-bad475418767-300.webp",
+        "bytes": 89536
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/quenton-todd-hatter.jpg",
+    "width": 150,
+    "height": 150,
+    "frames": 1,
+    "originalBytes": 24290,
+    "fullBytes": 24290,
+    "losslessVerified": true,
+    "full": "public/candidates/quenton-todd-hatter.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/rashelle-fetty.jpg",
+    "width": 500,
+    "height": 499,
+    "frames": 1,
+    "originalBytes": 163634,
+    "fullBytes": 163634,
+    "losslessVerified": true,
+    "full": "public/candidates/rashelle-fetty.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/rashelle-fetty-25a4dff005b1-300.webp",
+        "bytes": 73308
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/robert-taylor.jpg",
+    "width": 600,
+    "height": 736,
+    "frames": 1,
+    "originalBytes": 299502,
+    "fullBytes": 299502,
+    "losslessVerified": true,
+    "full": "public/candidates/robert-taylor.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/robert-taylor-1ab645a039bc-300.webp",
+        "bytes": 100400
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/ryan-zink.webp",
+    "width": 1024,
+    "height": 683,
+    "frames": 1,
+    "originalBytes": 456768,
+    "fullBytes": 456768,
+    "losslessVerified": true,
+    "full": "public/candidates/ryan-zink.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/ryan-zink-271315a14c42-300.webp",
+        "bytes": 64802
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/ryan-zink-271315a14c42-600.webp",
+        "bytes": 202196
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/shandi-williams.jpg",
+    "width": 600,
+    "height": 653,
+    "frames": 1,
+    "originalBytes": 272878,
+    "fullBytes": 272878,
+    "losslessVerified": true,
+    "full": "public/candidates/shandi-williams.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/shandi-williams-e0af6e36f086-300.webp",
+        "bytes": 88180
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/sid-miller.jpg",
+    "width": 819,
+    "height": 1024,
+    "frames": 1,
+    "originalBytes": 343968,
+    "fullBytes": 343968,
+    "losslessVerified": true,
+    "full": "public/candidates/sid-miller.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/sid-miller-2b6c22bd73cf-300.webp",
+        "bytes": 88620
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/sid-miller-2b6c22bd73cf-600.webp",
+        "bytes": 259010
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/sylvester-vanerson.jpg",
+    "width": 500,
+    "height": 499,
+    "frames": 1,
+    "originalBytes": 102666,
+    "fullBytes": 102666,
+    "losslessVerified": true,
+    "full": "public/candidates/sylvester-vanerson.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/sylvester-vanerson-e49d3aafc020-300.webp",
+        "bytes": 47410
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/tammie-smith.jpg",
+    "width": 2048,
+    "height": 2048,
+    "frames": 1,
+    "originalBytes": 398254,
+    "fullBytes": 398254,
+    "losslessVerified": true,
+    "full": "public/candidates/tammie-smith.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/tammie-smith-9860f89a5377-300.webp",
+        "bytes": 80344
+      },
+      {
+        "width": 600,
+        "path": "src/assets/optimized/tammie-smith-9860f89a5377-600.webp",
+        "bytes": 277806
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/tanya-lovenburg.jpg",
+    "width": 600,
+    "height": 450,
+    "frames": 1,
+    "originalBytes": 237872,
+    "fullBytes": 237872,
+    "losslessVerified": true,
+    "full": "public/candidates/tanya-lovenburg.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/tanya-lovenburg-003d03a01955-300.webp",
+        "bytes": 74544
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/thomas-smith.webp",
+    "width": 458,
+    "height": 458,
+    "frames": 1,
+    "originalBytes": 114278,
+    "fullBytes": 114278,
+    "losslessVerified": true,
+    "full": "public/candidates/thomas-smith.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/thomas-smith-c60d824f2c03-300.webp",
+        "bytes": 61886
+      }
+    ]
+  },
+  {
+    "source": "public/candidates/traci-baxa.jpg",
+    "width": 187,
+    "height": 280,
+    "frames": 1,
+    "originalBytes": 29119,
+    "fullBytes": 24550,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/traci-baxa-9aedaca11856.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/zach-harvey.webp",
+    "width": 150,
+    "height": 150,
+    "frames": 1,
+    "originalBytes": 31730,
+    "fullBytes": 31730,
+    "losslessVerified": true,
+    "full": "public/candidates/zach-harvey.webp",
+    "variants": []
+  },
+  {
+    "source": "public/candidates/zachary-price.png",
+    "width": 407,
+    "height": 320,
+    "frames": 1,
+    "originalBytes": 223543,
+    "fullBytes": 67516,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/zachary-price-9415c8189264.webp",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/zachary-price-9415c8189264-300.webp",
+        "bytes": 42620
+      }
+    ]
+  },
+  {
+    "source": "public/sponsors/patriot-dispatch.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 46595,
+    "fullBytes": 35488,
+    "losslessVerified": true,
+    "full": "src/assets/optimized/patriot-dispatch-214ff66fa13d.webp",
+    "variants": []
+  },
+  {
+    "source": "public/sponsors/pia-ad-cbt.jpg",
+    "width": 300,
+    "height": 250,
+    "frames": 1,
+    "originalBytes": 66682,
+    "fullBytes": 66682,
+    "losslessVerified": true,
+    "full": "public/sponsors/pia-ad-cbt.jpg",
+    "variants": []
+  },
+  {
+    "source": "public/sponsors/pia-tv-small.jpg",
+    "width": 381,
+    "height": 533,
+    "frames": 1,
+    "originalBytes": 73321,
+    "fullBytes": 73321,
+    "losslessVerified": true,
+    "full": "public/sponsors/pia-tv-small.jpg",
+    "variants": []
+  }
+]

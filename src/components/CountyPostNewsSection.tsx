@@ -1,3 +1,4 @@
+import { SiteImage } from "./SiteImage";
 import countyPostLogo from "../../county-post-final-logo.png";
 
 const countyPostUrl = "https://thecountypost.com";
@@ -12,7 +13,7 @@ export function CountyPostNewsSection({ locationName }: { locationName: string }
         rel="noreferrer"
         aria-label="Visit The County Post"
       >
-        <img src={countyPostLogo} alt="The County Post" />
+        <SiteImage sizes="(max-width: 780px) 240px, 320px" src={countyPostLogo} alt="The County Post" />
       </a>
       <div className="county-post-news-copy">
         <p className="eyebrow">Every County. Every Community. One Nation.</p>

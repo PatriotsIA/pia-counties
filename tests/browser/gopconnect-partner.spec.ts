@@ -15,8 +15,12 @@ for (const width of [1280, 390]) {
       await page.goto(path);
       const ad = page.locator('.sponsor-card[href="https://mylocalgop.com/"]').first();
       await expect(ad).toBeAttached();
+      await ad.scrollIntoViewIfNeeded();
+      await expect(ad.locator("img")).toHaveAttribute("src", /.+/);
       await ad.locator("img").evaluate((image: HTMLImageElement) => image.decode());
-      expect(await ad.locator("img").evaluate((image: HTMLImageElement) => [image.naturalWidth, image.naturalHeight])).toEqual([1254, 1254]);
+      const dimensions = await ad.locator("img").evaluate((image: HTMLImageElement) => [image.naturalWidth, image.naturalHeight]);
+      expect(dimensions[0]).toBeGreaterThanOrEqual(300);
+      expect(dimensions[0]).toBe(dimensions[1]);
       await ad.scrollIntoViewIfNeeded();
       await expect(ad).toBeVisible();
       if (path === "/tx") {

@@ -1,5 +1,6 @@
 import { ads, type AdCreative, type AdSlotId } from "../data/ads";
 import type { CountyPageKey, CountySite } from "../data/counties";
+import { COUNTY_POST_CAMPAIGN } from "../data/county-post-ads";
 
 export type AdRouteType = "home" | "directory" | "state" | "county" | "tv" | "rewards" | "partners" | "contact" | "static";
 
@@ -21,10 +22,28 @@ export const SPONSOR_ADS_ENABLED = true;
 export function resolveAdsForSlot({ slot, limit = 1, catalog = ads, ...context }: ResolveAdsOptions) {
   if (!SPONSOR_ADS_ENABLED) return [];
 
-  return catalog
+  const selected = catalog
     .filter((ad) => isAdEligible(ad, slot, context))
     .sort((first, second) => second.priority - first.priority || first.id.localeCompare(second.id))
     .slice(0, limit);
+  return separateCountyPostAds(selected);
+}
+
+/** Keep the existing sponsors in order and separate the two new creatives.
+ * Sponsor carousels always have at least two other advertisers, including at
+ * the wrap boundary. The national/state static stack has GOPConnect between.
+ */
+export function separateCountyPostAds(selected: AdCreative[]) {
+  const countyPost = selected.filter((ad) => ad.campaignId === COUNTY_POST_CAMPAIGN);
+  const other = selected.filter((ad) => ad.campaignId !== COUNTY_POST_CAMPAIGN);
+  if (countyPost.length < 2 || !other.length) return selected;
+  const result = [...other];
+  const start = other.length > 1 ? 1 : 0;
+  countyPost.forEach((ad, index) => {
+    const position = start + index * Math.max(1, Math.floor(other.length / countyPost.length)) + index;
+    result.splice(position, 0, ad);
+  });
+  return result;
 }
 
 export function resolveAdsByIds(adIds: string[], catalog = ads) {

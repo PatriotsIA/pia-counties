@@ -845,6 +845,16 @@ nav a {
   width: min(100%, 300px);
 }
 
+.sponsor-slot-site-inline .sponsor-card-county-post {
+  width: min(100%, 720px);
+}
+
+.sponsor-slot-site-inline .sponsor-card-county-post img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
 .sponsor-slot-county-page-footer,
 .sponsor-slot-site-footer {
   margin: 3rem 0 0;
@@ -3415,7 +3425,7 @@ nav a {
   }
 
   .sponsor-carousel-track {
-    grid-auto-columns: 300px;
+    grid-auto-columns: 100%;
     width: min(100%, 300px);
   }
 

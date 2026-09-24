@@ -1,3 +1,4 @@
+import { SiteImage } from "./components/SiteImage";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AdSlot } from "./components/AdSlot";
@@ -267,7 +268,7 @@ function countyPath(county: CountySite) {
 function StateFlag({ state, size = "sm" }: { state: { name: string; abbr: string }; size?: "sm" | "md" | "lg" }) {
   return (
     <span className={`state-flag state-flag-${size}`} aria-hidden="true">
-      <img src={`/state-flags/${state.abbr.toLowerCase()}.svg`} alt="" loading="lazy" />
+      <SiteImage src={`/state-flags/${state.abbr.toLowerCase()}.svg`} alt="" loading="lazy" />
     </span>
   );
 }
@@ -617,7 +618,7 @@ function HomePage() {
             <a className="button" href={site.links.community}>Join Our Community</a>
             <a className="button red" href={site.links.merch} target="_blank" rel="noreferrer">Shop Merchandise</a>
           </div>
-          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
+          <SiteImage loading="eager" sizes="140px" className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -636,7 +637,7 @@ function HomePage() {
         </div>
       </section>
       <FoundingPartnerCallout />
-      <AdSlot route="home" slot="site-inline" />
+      <AdSlot route="home" slot="site-inline" limit={3} />
       <section className="section">
         <div className="section-heading">
           <p className="eyebrow">Patriots in Action TV</p>
@@ -1042,7 +1043,7 @@ function StatePage() {
       </section>
       <PatriotNetworkCommunityBanner className="directory-community-banner" />
       <CountyPostNewsSection locationName={state.name} />
-      <AdSlot route="state" slot="site-inline" />
+      <AdSlot route="state" slot="site-inline" limit={3} />
       <div className="directory-grid">
         {visibleCounties.map((county) => (
           <Link key={county.fips} className="directory-card" to={countyPath(county)}>
@@ -1142,7 +1143,7 @@ function CandidateReviewPage() {
       <header className="site-header">
         <div className="container header-inner">
           <a className="brand" href="/">
-            <img src={site.brand.icon} alt="" />
+            <SiteImage sizes="48px" src={site.brand.icon} alt="" />
             <span>{site.name}</span>
           </a>
           <span className="candidate-admin-label">Secure Candidate Administration</span>
@@ -1334,7 +1335,7 @@ function CountyHome({ county }: { county: CountySite }) {
           <p className="eyebrow hero-subtitle-eyebrow">{county.displayName} Hub For Action</p>
           {presentingSponsor ? (
             <a className="county-hero-sponsor" href={presentingSponsor.href} target="_blank" rel="noreferrer">
-              {presentingSponsor.image ? <img src={presentingSponsor.image} alt="" loading="lazy" /> : null}
+              {presentingSponsor.image ? <SiteImage sizes="180px" src={presentingSponsor.image} alt="" loading="lazy" /> : null}
               <span>Presented by</span>
               <strong>{presentingSponsor.name}</strong>
             </a>
@@ -1347,7 +1348,7 @@ function CountyHome({ county }: { county: CountySite }) {
             <Link className="button" to={`${countyPath(county)}/events`}>Community Calendar</Link>
             <Link className="button" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
           </div>
-          <img className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
+          <SiteImage loading="eager" sizes="140px" className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -1355,7 +1356,7 @@ function CountyHome({ county }: { county: CountySite }) {
       <CountyShowUpMeter county={county} className="county-show-up-section-home" />
       <CountyAboutCompact county={county} />
       <FoundingPartnerCallout county={county} />
-      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={7 + parallelPartners.filter((partner) => partner.countyKeys.includes(`${county.state.slug}/${county.slug}`)).length} />
+      <AdSlot county={county} page="home" route="county" slot="county-home-inline" limit={9 + parallelPartners.filter((partner) => partner.countyKeys.includes(`${county.state.slug}/${county.slug}`)).length} />
       <section className="section split">
         <div>
           <p className="eyebrow">Know Your Leaders. Become Empowered.</p>
@@ -1571,7 +1572,7 @@ function PartnerList({ county, partners, showCountyScope = false }: { county?: C
       {partners.map((partner) => (
         <li key={partner.name}>
           <article className="partner-card">
-            {partner.image ? <img src={partner.image} alt="" loading="lazy" /> : null}
+            {partner.image ? <SiteImage sizes="(max-width: 780px) 200px, 300px" src={partner.image} alt="" loading="lazy" /> : null}
             <div className="partner-card-copy">
               <a className="partner-card-title" href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
                 {partner.name}
@@ -1751,7 +1752,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
         <h2>Upcoming Events</h2>
         {presentedBy ? (
           <a className="feed-presented-by calendar-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
-            {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
+            {presentedBy.image ? <SiteImage sizes="150px" src={presentedBy.image} alt="" loading="lazy" /> : null}
             <span>Presented by</span>
             <strong>{presentedBy.name}</strong>
           </a>
@@ -1866,7 +1867,7 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
           <div className="feed-list scroll-feed" style={{ maxWidth: "960px", margin: "0 auto" }} onScroll={(event) => handleScrollLoadMore(event, hasMore, () => setVisibleCount((count) => count + 6))}>
             {visible.map((post) => (
               <a className="feed-item" href={post.permalink || county.links.community} key={`mn-${post.id}`} target="_blank" rel="noreferrer">
-                <img src={postImage(post) as string} alt="" />
+                <SiteImage src={postImage(post) as string} alt="" />
                 <div>
                   <strong>{postTitle(post)}</strong>
                   <span>{formatFeedDate(post.updated_at || post.created_at || "")}</span>
@@ -1927,7 +1928,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
           </div>
           {piaTvPartner ? (
             <Link className="feed-presented-by" to="/tv">
-              {piaTvPartner.image ? <img src={piaTvPartner.image} alt="" loading="lazy" /> : null}
+              {piaTvPartner.image ? <SiteImage sizes="150px" src={piaTvPartner.image} alt="" loading="lazy" /> : null}
               <span>Presented by</span>
               <strong>{piaTvPartner.name}</strong>
             </Link>
@@ -1942,7 +1943,7 @@ function VimeoFeed({ compact = false }: { compact?: boolean }) {
         {visibleVideos.map((video) => {
           return (
             <a className={video.imageUrl ? "feed-item video-feed-item" : "feed-item video-feed-item no-image"} href={video.link || "/tv"} key={video.id} target="_blank" rel="noreferrer">
-              {video.imageUrl ? <img src={video.imageUrl} alt="" /> : null}
+              {video.imageUrl ? <SiteImage src={video.imageUrl} alt="" /> : null}
               <div>
                 <strong>{video.title || "Patriots in Action TV"}</strong>
                 <span>{["Vimeo", formatFeedDate(video.publishedAt)].filter(Boolean).join(" | ")}</span>
@@ -2178,7 +2179,7 @@ function Shell({
       <header className="site-header">
         <div className="container header-inner">
           <Link className="brand" to="/">
-            <img src={site.brand.icon} alt="" />
+            <SiteImage sizes="48px" src={site.brand.icon} alt="" />
             <span>{site.name}</span>
           </Link>
           <button
@@ -2303,7 +2304,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer-grid">
         <div>
-          <img src={site.brand.footerLogo} alt={site.name} />
+          <SiteImage sizes="200px" src={site.brand.footerLogo} alt={site.name} />
           <p>{site.tagline}</p>
           <p>Patriots Connect, LLC, DBA Patriots in Action, is an independent, privately owned business and is not sponsored by, controlled by, or officially associated with any political party or candidate.</p>
         </div>
@@ -2330,7 +2331,7 @@ function Footer() {
 function HeroMedia() {
   return (
     <div className="hero-media">
-      <img className="hero-main-image" src={site.brand.americanHeader} alt="American flag and civic action artwork" />
+      <SiteImage loading="eager" sizes="(max-width: 780px) 90vw, 420px" className="hero-main-image" src={site.brand.americanHeader} alt="American flag and civic action artwork" />
     </div>
   );
 }
@@ -2526,7 +2527,7 @@ function CandidateGrid({ candidates, emptyText, showCounty = false }: { candidat
             if (event.key === "Enter") navigate(candidateProfilePath(candidate));
           }}
         >
-          {candidate.image ? <img className="candidate-photo" src={candidate.image} alt={candidate.name} /> : null}
+          {candidate.image ? <SiteImage sizes="300px" className="candidate-photo" src={candidate.image} alt={candidate.name} /> : null}
           <div className="candidate-card-heading">
             <p className="eyebrow">{candidateLabel(candidate, showCounty)}</p>
             <h3>{candidate.name}</h3>

@@ -1,3 +1,4 @@
+import { SiteImage } from "./SiteImage";
 import { useEffect, useState } from "react";
 import type { CountySite, StateSite } from "../data/counties";
 import type { CountyFeedKind } from "../lib/county-feed-urls";
@@ -73,7 +74,7 @@ function NewsFeed({ scope, feedKind, title, eyebrow, description, emptyText, pre
         <div className="feed-hero-title"><p className="eyebrow">{eyebrow}</p><h3>{title}</h3></div>
         {presentedBy ? (
           <a className="feed-presented-by" href={presentedBy.href} target="_blank" rel="noreferrer">
-            {presentedBy.image ? <img src={presentedBy.image} alt="" loading="lazy" /> : null}
+            {presentedBy.image ? <SiteImage sizes="150px" src={presentedBy.image} alt="" loading="lazy" /> : null}
             <span>Presented by</span><strong>{presentedBy.name}</strong>
           </a>
         ) : null}
@@ -92,7 +93,7 @@ function NewsFeed({ scope, feedKind, title, eyebrow, description, emptyText, pre
       }}>
         {visibleItems.map((item) => (
           <a className={item.imageUrl ? "feed-item" : "feed-item no-image"} href={item.link} key={item.link} target="_blank" rel="noreferrer">
-            {item.imageUrl ? <img src={item.imageUrl} alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} /> : null}
+            {item.imageUrl ? <SiteImage src={item.imageUrl} alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} /> : null}
             <div><strong>{item.title}</strong><span>{[item.source, formatDate(item.publishedAt)].filter(Boolean).join(" | ")}</span>{item.description ? <p>{item.description}</p> : null}</div>
           </a>
         ))}

@@ -11,10 +11,10 @@ it("serves both Parallel creatives only in Randall and Potter without displacing
     const partners = parallelPartners.filter((partner) => partner.countyKeys.includes(key));
     const expected = ["texas/randall", "texas/potter"].includes(key) ? 2 : 0;
     const context = { route: "county" as const, county, page: "home" as const };
-    const carousel = resolveAdsForSlot({ ...context, slot: "county-home-inline", limit: 7 + partners.length });
+    const carousel = resolveAdsForSlot({ ...context, slot: "county-home-inline", limit: 9 + partners.length });
     expect(carousel.filter((ad) => ad.id.startsWith("parallel-"))).toHaveLength(expected);
     expect(resolveAdsForSlot({ ...context, slot: "county-page-footer", limit: 20 }).filter((ad) => ad.id.startsWith("parallel-"))).toHaveLength(expected);
-    const baseline = resolveAdsForSlot({ ...context, slot: "county-home-inline", limit: 7, catalog: catalogWithoutParallel });
+    const baseline = resolveAdsForSlot({ ...context, slot: "county-home-inline", limit: 9, catalog: catalogWithoutParallel });
     for (const ad of baseline) expect(carousel.map((entry) => entry.id)).toContain(ad.id);
   }
   for (const route of ["home", "state", "partners"] as const) {

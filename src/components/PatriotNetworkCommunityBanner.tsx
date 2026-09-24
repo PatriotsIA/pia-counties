@@ -1,3 +1,4 @@
+import { SiteImage } from "./SiteImage";
 import { site } from "../data/site";
 
 const communityUrl = "https://community.patriotsinaction.com/";
@@ -12,7 +13,7 @@ export function PatriotNetworkCommunityBanner({ className }: PatriotNetworkCommu
   return (
     <section className={sectionClassName} aria-label="Join your county Patriot Network">
       <a className="patriot-network-community-banner-icon" href={communityUrl} target="_blank" rel="noopener noreferrer">
-        <img src={site.brand.icon} alt={site.name} loading="lazy" />
+        <SiteImage sizes="48px" src={site.brand.icon} alt={site.name} loading="lazy" />
       </a>
       <div className="patriot-network-community-banner-copy">
         <div className="patriot-network-community-banner-text">
