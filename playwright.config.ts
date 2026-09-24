@@ -20,6 +20,7 @@ export default defineConfig({
     url: "http://127.0.0.1:4186",
     reuseExistingServer: false,
     env: {
+      VITE_ADVERTISING_API_URL: "https://advertising.fixture/",
       VITE_EMAILJS_SERVICE_ID: "test-service",
       VITE_EMAILJS_TEMPLATE_ID: "test-template",
       VITE_EMAILJS_PUBLIC_KEY: "test-public-key",

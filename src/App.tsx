@@ -1,60 +1,15 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { getCountyByState } from "@nickgraffis/us-counties";
-import { states } from "./data/states";
-import { countyDisplayName } from "./data/county-geography";
-import {
-  adAssetSpecs,
-  formatAdPrice,
-  partnerSubscriptionTiers,
-  tierHasStripeCheckout,
-} from "./data/ad-pricing";
-import { sendSiteContactEmail } from "./lib/email";
+import { useEffect, useState } from "react";
+import { adAssetSpecs } from "./data/ad-pricing";
 import { PlacementExamples } from "./components/PlacementExamples";
+import { CampaignBuilder } from "./components/CampaignBuilder";
 import { advertiserContactEmail } from "./data/advertiser-contact";
-import { advertiserCheckoutUrl } from "./lib/advertiser-checkout";
-
 const mainSite = "https://patriotsinaction.com";
-const mainTiers = partnerSubscriptionTiers.filter((tier) =>
-  [
-    "patriot-preferred",
-    "gold-business",
-    "platinum-business",
-    "county-sponsor",
-  ].includes(tier.id),
-);
 
 export default function App() {
-  const [tierId, setTierId] = useState("gold-business");
-  const [billing, setBilling] = useState("monthly");
   const [businessName, setBusinessName] = useState("");
-  const [stateAbbr, setStateAbbr] = useState("");
-  const [countyFips, setCountyFips] = useState("");
+  const [countyName, setCountyName] = useState("Your County");
   const [creativeUrl, setCreativeUrl] = useState("");
   const [creativeError, setCreativeError] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
-  const submitting = useRef(false);
-  const [submittedCheckoutUrl, setSubmittedCheckoutUrl] = useState<string>();
-  const tier = partnerSubscriptionTiers.find((item) => item.id === tierId)!;
-  const national = tierId === "national-level";
-  const selectedState = states.find((state) => state.abbr === stateAbbr);
-  const counties = selectedState
-    ? getCountyByState(selectedState.name)
-        .map((county) => ({
-          ...county,
-          name: ["AK", "DC"].includes(selectedState.abbr)
-            ? county.name
-            : countyDisplayName(county.name, selectedState.slug, county.FIPS),
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-    : [];
-  const countyName = counties.find(
-    (county) => county.FIPS === countyFips,
-  )?.name;
-  const stateName = states.find((state) => state.abbr === stateAbbr)?.name;
-  const price = billing === "monthly" ? tier.monthly : tier.yearly;
-  const hasCheckout = tierHasStripeCheckout(tier);
 
   useEffect(() => {
     // Old preview links continue into this single-page sales experience.
@@ -86,63 +41,6 @@ export default function App() {
     },
     [creativeUrl],
   );
-
-  function selectTier(id: string) {
-    if (submitting.current) return;
-    setTierId(id);
-    setStatus("idle");
-    window.history.pushState(null, "", "#campaign");
-    document.getElementById("campaign")?.scrollIntoView({ behavior: "smooth" });
-    requestAnimationFrame(() =>
-      document.getElementById("tier")?.focus({ preventScroll: true }),
-    );
-  }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (submitting.current) return;
-    const data = new FormData(event.currentTarget);
-    if (String(data.get("companyFax") || "")) return;
-    submitting.current = true;
-    setStatus("sending");
-    setSubmittedCheckoutUrl(undefined);
-    const email = String(data.get("email") || "").trim();
-    const checkoutUrl = advertiserCheckoutUrl(tier, billing, email);
-    try {
-      await sendSiteContactEmail({
-        title: "PIA advertising campaign request",
-        replyTo: email,
-        values: {
-          name: String(data.get("name") || "").trim(),
-          email,
-          businessName: businessName.trim(),
-          phone: String(data.get("phone") || "").trim(),
-          businessUrl: String(data.get("businessUrl") || "").trim(),
-          tier: tier.name,
-          billing: national ? "Custom quote" : billing,
-          advertisedRate: national
-            ? "Custom quote"
-            : `${formatAdPrice(price)}/${billing === "monthly" ? "month" : "year"}`,
-          coverage: national
-            ? "Nationwide"
-            : `${countyName}, ${stateName} (FIPS ${countyFips})`,
-          additionalCounties: String(
-            data.get("additionalCounties") || "",
-          ).trim(),
-          referredBy: String(data.get("referredBy") || "").trim(),
-          message: String(data.get("message") || "").trim(),
-          contactConsent: data.get("consent") === "on",
-        },
-      });
-      setSubmittedCheckoutUrl(checkoutUrl);
-      setStatus("success");
-      if (checkoutUrl) window.location.assign(checkoutUrl);
-    } catch {
-      setStatus("error");
-    } finally {
-      submitting.current = false;
-    }
-  }
 
   return (
     <>
@@ -197,7 +95,7 @@ export default function App() {
             </div>
             <div className="hero-detail">
               <strong>Local roots. National reach.</strong>
-              <span>Choose your county or ask about the full PIA network.</span>
+              <span>Choose counties, states, or the full PIA network.</span>
             </div>
           </div>
           <div
@@ -264,419 +162,7 @@ export default function App() {
           </div>
         </div>
 
-        <section id="pricing" className="section-wrap section-space">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">A PLACE FOR YOUR BUSINESS</p>
-              <h2>
-                Local partnerships.
-                <br />
-                Straightforward pricing.
-              </h2>
-            </div>
-            <div>
-              <p>Start with one county. Grow your presence from there.</p>
-              <div
-                className="billing-switch"
-                aria-label="Pricing billing period"
-              >
-                <button
-                  type="button"
-                  disabled={status === "sending"}
-                  aria-pressed={billing === "monthly"}
-                  onClick={() => {
-                    setBilling("monthly");
-                    setStatus("idle");
-                  }}
-                >
-                  Monthly
-                </button>
-                <button
-                  type="button"
-                  disabled={status === "sending"}
-                  aria-pressed={billing === "annual"}
-                  onClick={() => {
-                    setBilling("annual");
-                    setStatus("idle");
-                  }}
-                >
-                  Annual <span>Save 2 months</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="pricing-grid">
-            {mainTiers.map((item) => (
-              <article
-                key={item.id}
-                className={`price-card ${item.id === "gold-business" ? "featured" : ""}`}
-              >
-                <p className="eyebrow">
-                  {item.id === "gold-business"
-                    ? "CONTENT & COMMUNITY"
-                    : item.id === "county-sponsor"
-                      ? "PREMIER COUNTY PRESENCE"
-                      : item.id === "platinum-business"
-                        ? "PRIORITY VISIBILITY"
-                        : "YOUR LOCAL INTRODUCTION"}
-                </p>
-                <h3>
-                  {item.name
-                    .replace(" Business Program", "")
-                    .replace(" Business Partner", " Partner")
-                    .replace(" — Presented By", "")}
-                </h3>
-                <p className="price">
-                  <strong>
-                    {formatAdPrice(
-                      billing === "monthly" ? item.monthly : item.yearly,
-                    )}
-                  </strong>
-                  <span>/{billing === "monthly" ? "month" : "year"}</span>
-                </p>
-                <p className="price-note">
-                  {billing === "monthly"
-                    ? `${formatAdPrice(item.yearly)} with annual billing`
-                    : "12 months for the price of 10"}
-                </p>
-                <ul>
-                  {item.perks.slice(0, 4).map((perk) => (
-                    <li key={perk}>{perk}</li>
-                  ))}
-                </ul>
-                <button
-                  className={`button ${item.id === "gold-business" ? "" : "button-outline"}`}
-                  type="button"
-                  disabled={status === "sending"}
-                  onClick={() => selectTier(item.id)}
-                >
-                  Choose{" "}
-                  {item.id === "patriot-preferred"
-                    ? "Preferred"
-                    : item.id === "county-sponsor"
-                      ? "County Sponsor"
-                      : item.id === "gold-business"
-                        ? "Gold"
-                        : "Platinum"}{" "}
-                  <span aria-hidden="true">→</span>
-                </button>
-              </article>
-            ))}
-          </div>
-          <div className="pricing-extras">
-            <p>
-              <strong>Expanding next door?</strong> Each additional contiguous
-              county is 50% of your base tier rate. Your primary county stays at
-              full price; we’ll confirm coverage and arrange add-ons.
-            </p>
-            <p>
-              <strong>Become a founding partner.</strong> County Gold founding
-              partnerships start at $95/month or $950/year, subject to
-              availability.{" "}
-              <button
-                className="inline-button"
-                disabled={status === "sending"}
-                onClick={() => selectTier("county-gold")}
-              >
-                Ask about founding availability →
-              </button>
-            </p>
-          </div>
-          <aside className="national-callout">
-            <div>
-              <p className="eyebrow">THINKING BIGGER?</p>
-              <h3>Take your brand across the PIA network.</h3>
-              <p>
-                National homepage, sponsor carousel, and banner opportunities.
-                Custom pricing for your reach.
-              </p>
-            </div>
-            <button
-              className="button button-light"
-              disabled={status === "sending"}
-              onClick={() => selectTier("national-level")}
-            >
-              Plan a national campaign ↗
-            </button>
-          </aside>
-        </section>
-
-        <section className="campaign-section">
-          <div className="section-wrap campaign-layout">
-            <aside className="campaign-copy">
-              <p className="eyebrow">LET’S MAKE IT LOCAL</p>
-              <h2>
-                Build your
-                <br />
-                next connection.
-              </h2>
-              <p>
-                Tell us about your business and where you want to be seen. Our
-                team will help confirm your placements and get your artwork
-                ready.
-              </p>
-              <div className="campaign-summary" aria-live="polite">
-                <span>YOUR SELECTED PARTNERSHIP</span>
-                <h3>{tier.name}</h3>
-                <p className="price">
-                  <strong>
-                    {national ? "Let’s talk" : formatAdPrice(price)}
-                  </strong>
-                  {!national && (
-                    <span>/{billing === "monthly" ? "month" : "year"}</span>
-                  )}
-                </p>
-                <p>
-                  {national
-                    ? "Custom national proposal"
-                    : "Base rate for one county. Add-ons quoted separately."}
-                </p>
-              </div>
-              <p className="contact-note">
-                Prefer a conversation?
-                <br />
-                <a href={`mailto:${advertiserContactEmail}`}>
-                  {advertiserContactEmail}
-                </a>
-                <br />
-                <a href="tel:+18667561776">(866) 756-1776</a>
-              </p>
-            </aside>
-            <form
-              id="campaign"
-              className="campaign-form"
-              onSubmit={submit}
-              onChange={() => {
-                if (status !== "sending") setStatus("idle");
-              }}
-            >
-              <fieldset disabled={status === "sending"}>
-                <legend>Plan your campaign</legend>
-                <p className="form-intro">Fields marked * are required.</p>
-                <div className="form-grid">
-                  <label>
-                    Partnership *
-                    <select
-                      aria-label="Partnership"
-                      id="tier"
-                      name="tier"
-                      value={tierId}
-                      onChange={(event) => setTierId(event.target.value)}
-                    >
-                      {partnerSubscriptionTiers.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  {!national && (
-                    <label>
-                      Billing preference *
-                      <select
-                        aria-label="Billing preference"
-                        name="billing"
-                        value={billing}
-                        onChange={(event) => setBilling(event.target.value)}
-                      >
-                        <option value="monthly">Monthly</option>
-                        <option value="annual">Annual — save 2 months</option>
-                      </select>
-                    </label>
-                  )}
-                </div>
-                <div className="form-grid">
-                  <label>
-                    Business or organization *
-                    <input
-                      name="businessName"
-                      autoComplete="organization"
-                      value={businessName}
-                      onChange={(event) => setBusinessName(event.target.value)}
-                      required
-                      maxLength={120}
-                      pattern=".*\S.*"
-                    />
-                  </label>
-                  <label>
-                    Your name *
-                    <input
-                      name="name"
-                      autoComplete="name"
-                      required
-                      maxLength={120}
-                      pattern=".*\S.*"
-                    />
-                  </label>
-                  <label>
-                    Email address *
-                    <input
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      maxLength={254}
-                    />
-                  </label>
-                  <label>
-                    Phone <span>(optional)</span>
-                    <input
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      maxLength={40}
-                    />
-                  </label>
-                  <label>
-                    Business website <span>(optional)</span>
-                    <input
-                      name="businessUrl"
-                      type="url"
-                      placeholder="https://"
-                      maxLength={500}
-                    />
-                  </label>
-                  <label>
-                    Referred by <span>(optional)</span>
-                    <input
-                      name="referredBy"
-                      maxLength={120}
-                      placeholder="Salesperson or referrer"
-                    />
-                  </label>
-                </div>
-                {!national && (
-                  <>
-                    <div className="form-grid">
-                      <label>
-                        State *
-                        <select
-                          aria-label="State"
-                          name="state"
-                          required
-                          value={stateAbbr}
-                          onChange={(event) => {
-                            setStateAbbr(event.target.value);
-                            setCountyFips("");
-                          }}
-                        >
-                          <option value="">Select a state</option>
-                          {states.map((state) => (
-                            <option key={state.abbr} value={state.abbr}>
-                              {state.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label>
-                        Primary county or equivalent *
-                        <select
-                          aria-label="Primary county or equivalent"
-                          name="county"
-                          required
-                          disabled={!stateAbbr}
-                          value={countyFips}
-                          onChange={(event) =>
-                            setCountyFips(event.target.value)
-                          }
-                        >
-                          <option value="">
-                            {stateAbbr
-                              ? "Select a county"
-                              : "Choose a state first"}
-                          </option>
-                          {counties.map((county) => (
-                            <option key={county.FIPS} value={county.FIPS}>
-                              {county.name}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
-                    <label>
-                      Additional neighboring counties <span>(optional)</span>
-                      <input
-                        name="additionalCounties"
-                        maxLength={500}
-                        placeholder="Tell us where else you’d like to advertise"
-                      />
-                    </label>
-                  </>
-                )}
-                <label>
-                  What would you like to promote? <span>(optional)</span>
-                  <textarea
-                    name="message"
-                    rows={3}
-                    maxLength={3000}
-                    placeholder="Your goals, preferred placements, timing, or questions…"
-                  />
-                </label>
-                <label className="consent">
-                  <input name="consent" type="checkbox" required />
-                  <span>
-                    I agree to be contacted about this advertising request. *{" "}
-                    <a
-                      href={`${mainSite}/privacy`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Privacy policy
-                    </a>
-                  </span>
-                </label>
-                <label className="honeypot" aria-hidden="true">
-                  Company fax
-                  <input name="companyFax" tabIndex={-1} autoComplete="off" />
-                </label>
-                <button
-                  type="submit"
-                  className="button submit-button"
-                  disabled={status === "sending" || status === "success"}
-                >
-                  {status === "sending"
-                    ? "Sending your request…"
-                    : status === "success"
-                      ? "Request sent ✓"
-                      : hasCheckout
-                        ? `Send request & open Stripe — ${formatAdPrice(price)}/${billing === "monthly" ? "month" : "year"} →`
-                        : "Request a quote →"}
-                </button>
-                <p className="form-note">
-                  {hasCheckout
-                    ? "We’ll send your campaign details, then open secure Stripe checkout for your selected base plan. Additional counties are quoted separately. Your card is charged only when you complete payment in Stripe."
-                    : "Our team will confirm availability and send a custom proposal. This request does not charge your card or reserve a placement."}
-                </p>
-              </fieldset>
-              {status === "success" && (
-                <div className="form-success" role="status">
-                  <strong>Your campaign request has been sent.</strong>
-                  <p>
-                    {submittedCheckoutUrl
-                      ? "Opening your selected Stripe checkout. If it does not open, use the link below."
-                      : "Our team will follow up about coverage, availability, artwork, and your quote."}
-                  </p>
-                  {submittedCheckoutUrl && (
-                    <a className="button" href={submittedCheckoutUrl}>
-                      Continue to Stripe — {formatAdPrice(price)}/
-                      {billing === "monthly" ? "month" : "year"} ↗
-                    </a>
-                  )}
-                </div>
-              )}
-              {status === "error" && (
-                <p className="form-error" role="alert">
-                  We couldn’t send your request. Your details are still
-                  here—please try again, or email{" "}
-                  <a href={`mailto:${advertiserContactEmail}`}>
-                    {advertiserContactEmail}
-                  </a>
-                  .
-                </p>
-              )}
-            </form>
-          </div>
-        </section>
+        <CampaignBuilder businessName={businessName} setBusinessName={setBusinessName} onLocationChange={setCountyName} />
 
         <section id="examples" className="section-wrap section-space">
           <div className="section-heading">
@@ -848,17 +334,17 @@ export default function App() {
             <details>
               <summary>Can I advertise in more than one county?</summary>
               <p>
-                Yes. List your additional contiguous counties in the form. Your
-                primary county is full price, and each eligible neighboring
-                county is half the base tier rate. Add-ons are arranged
-                separately; the displayed base price covers one county.
+                Yes. Select up to 25 counties in the form. The highest-priced county
+                is full rate; every additional county is half its own population-tier
+                rate. Your total includes every selected county in one checkout.
+                For broader reach, select entire states.
               </p>
             </details>
             <details>
               <summary>How does annual pricing work?</summary>
               <p>
                 Annual subscriptions provide 12 months for the price of 10. For
-                example, Gold is $295 per month or $2,950 billed annually.
+                example, a $250 monthly campaign is $2,500 billed annually.
               </p>
             </details>
             <details>
@@ -876,11 +362,10 @@ export default function App() {
             </details>
             <details>
               <summary>
-                Are founding and national partnerships available?
+                Are national partnerships available?
               </summary>
               <p>
-                Founding packages depend on county availability. Select a
-                founding tier to ask our team. National partnerships use custom
+                National partnerships use custom
                 quotes for homepage, carousel, and banner placements across the
                 PIA network.
               </p>

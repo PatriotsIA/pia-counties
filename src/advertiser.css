@@ -1388,3 +1388,18 @@ h1 em {
     gap: 18px;
   }
 }
+
+/* Population-based advertising plans retain the existing PIA sales-page style. */
+.price-card > p:not(.eyebrow):not(.price):not(.price-note) { font-size: 12px; line-height: 1.6; flex: 1; }
+.rate-table-wrap { margin-top: 32px; overflow-x: auto; }
+.rate-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 13px; }
+.rate-table caption { text-align: left; font-weight: 800; font-size: 18px; padding: 0 0 15px; }
+.rate-table th, .rate-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.rate-table thead { background: var(--navy); color: white; }
+.rate-table tbody th { font-weight: 500; }
+.coverage-list { list-style: none; padding: 0; margin: 20px 0; }
+.coverage-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+.coverage-list small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+.section-picker { border-block: 1px solid var(--line); margin-bottom: 20px; padding-top: 16px; font-size: 12px; }
+.section-picker p { font-size: 11px; color: var(--muted); }
+@media (max-width: 600px) { .rate-table { font-size: 11px; } .rate-table th, .rate-table td { padding: 10px 7px; } }

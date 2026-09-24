@@ -113,15 +113,13 @@ When enabled, live ad slots show pricing placeholders instead of paid creatives.
 
 ### Payments / Stripe
 
-`/payments` includes a **subscription table** with monthly and yearly Stripe Payment Links for:
+The standalone advertising site uses the population-based county rate card and
+statewide per-county model documented in [docs/advertiser-site.md](docs/advertiser-site.md).
+The server calculates every Stripe subscription total, including half-price
+additional counties and annual billing at ten monthly payments. National campaigns
+request a custom quote. Public contact/artwork goes to dan@patriotsinaction.com;
+form notifications retain the consolidated Erik + Dan routing.
 
-- Patriot Preferred, Gold, Platinum, and County Gold Founding tiers
-
-Tiers without checkout (County Platinum, County Sponsor, National Level, adjacent-county add-ons) show **Get a quote** and link to `/contact`.
-
-Live links are in `stripePaymentLinks` and `partnerSubscriptionTiers` inside `src/data/ad-pricing.ts`.
-
-**Ad assets after purchase:** `Please email your ad asset(s) to erik@patriotsinaction.com. 250x250px for regular ad spots, 980x300px for banners.` (also on the contact form and payments page).
 
 ---
 
