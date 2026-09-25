@@ -13,7 +13,7 @@ The active rate card lives in `src/data/campaign-pricing.ts`; the form is `src/c
 
 `VITE_ADVERTISING_API_URL=https://d2vo13idhuovzg.cloudfront.net` is dedicated to population lookups and advertising checkout. It does not enable County Post news feeds. The shared backend computes the amount independently from trusted population data, validates coverage, creates a PIA-branded Stripe subscription checkout, and returns to this advertising domain. Release the backend's PIA brand/CORS support before the frontend. Existing County Post clients remain compatible.
 
-The form sends contact details, all coverage and county FIPS/population, placement, billing, exact price, selected sections, referral, campaign notes and checkout session reference through EmailJS service `service_o3lsjkm`, template `template_pia_advertise`. Dashboard **To Email** is fixed to `erik@patriotsinaction.com`, **Cc** to `dan@patriotsinaction.com`, and **Reply-To** to `{{reply_to}}`. The legacy `to_email` parameter remains Erik. Preserve all existing EmailJS branch environment values. Public contact/artwork links remain Dan.
+The form sends contact details, all coverage and county FIPS/population, placement, billing, exact price, selected sections, referral, campaign notes and checkout session reference through EmailJS service `service_o3lsjkm`, template `template_pia_advertise`. Dashboard **To Email** is fixed to `<advertiser-inbox>`, **Cc** to `<advertiser-cc>`, and **Reply-To** to `{{reply_to}}`. The legacy `to_email` parameter remains Erik. Preserve all existing EmailJS branch environment values. Public contact/artwork links remain Dan.
 
 The form creates the unpaid checkout session, verifies its amount/currency/cadence, then sends the campaign email. It navigates to Stripe only after EmailJS acknowledges delivery acceptance. An email failure preserves details and reuses the same session on an unchanged retry; changing the checkout selections creates a new session. Invalid price responses stop the flow. National requests send only email. Consent and a honeypot remain. These checks do not confirm payment or inbox delivery. No server-side campaign record is created by this application.
 
@@ -25,7 +25,7 @@ The page names The County Post only in the bottom "Want to expand your reach?" s
 
 ## Hosting
 
-Use AWS profile `pia`, account `426771918029`, Amplify app `d1c230b674qax4`, region `us-west-1`, branch `advertiser-preview`. The new domain association is `advertise.patriotsinaction.com`, empty subdomain prefix, mapped to this branch. Amplify automatically creates its Route 53 A alias and ACM validation CNAME in hosted zone `Z003299699G0A1DAOB97`. Preserve all unrelated DNS, app environment, branch mappings, and SPA rules.
+Use AWS profile `pia`, account `<account>`, Amplify app `d1c230b674qax4`, region `us-west-1`, branch `advertiser-preview`. The new domain association is `advertise.patriotsinaction.com`, empty subdomain prefix, mapped to this branch. Amplify automatically creates its Route 53 A alias and ACM validation CNAME in hosted zone `Z003299699G0A1DAOB97`. Preserve all unrelated DNS, app environment, branch mappings, and SPA rules.
 
 Retain the old `advertiser-preview.patriotsinaction.com` association and certificate for `www.advertiser-preview.patriotsinaction.com`. Add this domain-only 301 before existing Amplify rewrite rules:
 
