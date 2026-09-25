@@ -41,7 +41,7 @@ Annual prepay uses brochure annual rates (roughly two months free vs paying mont
 | Square | **250×250 px** | Homepage carousel, county carousel, newsroom strip, calendar inline |
 | Wide banner | **980×300 px** | Bottom banner carousel (homepage + county + top-level pages) |
 
-**Delivery:** Email finished PNG files to **erik@patriotsinaction.com** with a **white or transparent** background.
+**Delivery:** Email finished PNG files to **<ad-delivery-address>** with a **white or transparent** background.
 
 **Behavior:** All live sponsor units are **clickable ads that open in a new tab** (`target="_blank"`).
 

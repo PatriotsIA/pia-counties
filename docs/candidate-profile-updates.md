@@ -15,7 +15,7 @@ form offers three submission types:
 - **Pending profile update:** enter the original submission reference and describe
   the changes. The reference is in the original receipt, and the new-submission
   success screen links back to this mode. If the reference is unavailable, contact
-  `erik@patriotsinaction.com`.
+  `<site-contact-address>`.
 
 Pending updates intentionally do **not** offer a public draft lookup. A reference
 or an email address is not authentication. Draft content and original submitter
@@ -134,7 +134,7 @@ must not run concurrently on their shared strict ports (4180 and 8791).
 
 Deploy **Mighty first**, then the frontend through the existing main-branch
 CodePipeline/Amplify workflows. Use AWS CLI profile **`pia`** explicitly and verify
-account **426771918029**. Preserve existing stack parameters, environment settings,
+account **<account>**. Preserve existing stack parameters, environment settings,
 retained data, Mighty proxy routes, secrets and notification configuration. No
 candidate reseed or data migration is required. Do not roll the backend back to a
 version that publishes all approved records indiscriminately after update-request
