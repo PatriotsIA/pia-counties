@@ -1,3 +1,4 @@
+import { crc32, deflateSync } from "node:zlib";
 import { expect, test, type Page } from "@playwright/test";
 import { monthlyCountyPlacementPrice, countyCampaignMonthly } from "../../src/data/campaign-pricing";
 
@@ -18,7 +19,6 @@ async function fillRequest(page: Page) {
 async function addCounty(page: Page, fips = "48375") {
   await page.getByLabel("State", { exact: true }).selectOption("TX");
   await page.getByLabel("County", { exact: true }).selectOption(fips);
-  await page.getByRole("button", { name: "Add county", exact: true }).click();
   await expect(page.getByLabel("County", { exact: true })).toHaveValue("");
 }
 async function addState(page: Page, abbr: string) {
@@ -34,6 +34,10 @@ test.beforeEach(async ({ page }) => {
     const url = new URL(route.request().url());
     const county = url.pathname.split("/")[4] as keyof typeof populations;
     if (url.pathname.endsWith("/population")) return route.fulfill({ json: populations[county] });
+    if (url.pathname === "/v1/advertising/creatives/upload") {
+      const { fileName } = route.request().postDataJSON();
+      return route.fulfill({ status: 201, json: { assetKey: `ad-creatives/2026-09-29/${fileName}`, upload: { url: "https://uploads.fixture/", fields: { key: "fixture" } } } });
+    }
     if (url.pathname !== "/v1/checkout/sessions") throw new Error(`Unexpected advertising request: ${url.pathname}`);
     const body = route.request().postDataJSON();
     // Independent fixture amounts, never the production calculator.
@@ -179,10 +183,48 @@ test("population lookup failure cannot introduce an unpriced county", async ({ p
   await page.route("**/population", (route) => route.fulfill({ status: 503, json: { error: "Population unavailable" } }));
   await page.goto("/"); await page.getByLabel("State", { exact: true }).selectOption("TX");
   await page.getByLabel("County", { exact: true }).selectOption("48375");
-  await page.getByRole("button", { name: "Add county", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("Population unavailable");
+  await expect(page.getByLabel("County", { exact: true })).toHaveValue("");
   await expect(page.getByLabel("Selected counties").locator("li")).toHaveCount(0);
   await expect(submitButton(page)).toBeDisabled();
+});
+
+/** Minimal valid RGB PNG, so artwork dimension checks run against real decodable images. */
+function png(width: number, height: number) {
+  const chunk = (type: string, data: Buffer) => {
+    const body = Buffer.concat([Buffer.from(type), data]);
+    const out = Buffer.alloc(body.length + 8);
+    out.writeUInt32BE(data.length); body.copy(out, 4); out.writeUInt32BE(crc32(body), body.length + 4);
+    return out;
+  };
+  const header = Buffer.alloc(13); header.writeUInt32BE(width); header.writeUInt32BE(height, 4); header.set([8, 2, 0, 0, 0], 8);
+  const rows = Buffer.alloc((width * 3 + 1) * height, 0xcc);
+  for (let y = 0; y < height; y++) rows[y * (width * 3 + 1)] = 0;
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk("IHDR", header), chunk("IDAT", deflateSync(rows)), chunk("IEND", Buffer.alloc(0))]);
+}
+
+test("County Post-sized artwork uploads privately before checkout and is reused on retry", async ({ page }) => {
+  const uploads: string[] = []; let checkout: Record<string, unknown> | undefined; let mail: { template_params: Record<string, string> } | undefined;
+  await page.route("https://uploads.fixture/", (route) => { uploads.push(route.request().method()); return route.fulfill({ status: 204 }); });
+  page.on("request", (request) => { if (request.url() === sessionEndpoint) checkout = request.postDataJSON(); });
+  await page.route(emailEndpoint, (route) => route.fulfill({ status: 429, body: "Rate limited" }));
+  await page.goto("/"); await fillRequest(page); await addCounty(page);
+  const square = page.getByLabel("Square ad — 250×250 px"), banner = page.getByLabel("Wide banner — 980×300 px");
+  await square.setInputFiles({ name: "wrong.png", mimeType: "image/png", buffer: png(300, 250) });
+  await expect(page.getByRole("alert")).toContainText("must be 250×250 pixels");
+  await square.setInputFiles({ name: "square.png", mimeType: "image/png", buffer: png(500, 500) });
+  await expect(page.getByAltText("Square ad preview")).toBeVisible();
+  await banner.setInputFiles({ name: "banner.png", mimeType: "image/png", buffer: png(980, 300) });
+  await expect(page.getByAltText("Wide banner preview")).toBeVisible();
+  await submitButton(page).click();
+  await expect(page.getByRole("alert")).toBeVisible();
+  await page.unroute(emailEndpoint);
+  await page.route(emailEndpoint, async (route) => { mail = route.request().postDataJSON(); await route.fulfill({ body: "OK" }); });
+  await submitButton(page).click();
+  await expect(page).toHaveURL(checkoutUrl);
+  expect(uploads).toEqual(["POST", "POST"]);
+  expect(checkout).toMatchObject({ creativeAssetKey: "ad-creatives/2026-09-29/square.png", bannerCreativeAssetKey: "ad-creatives/2026-09-29/banner.png" });
+  for (const detail of ["squareArtwork: ad-creatives/2026-09-29/square.png (500×500, square.png)", "bannerArtwork: ad-creatives/2026-09-29/banner.png (980×300, banner.png)"]) expect(mail?.template_params.message).toContain(detail);
 });
 
 test("consent and honeypot prevent incomplete or automated submissions", async ({ page }) => {
@@ -208,7 +250,11 @@ test("county selection, local artwork, Dan contact, straight preview, and suppli
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(4);
+  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(3);
+  // The County Post is only named in its own expand-your-reach section.
+  const expand = page.getByRole("region", { name: "Advertise on The County Post" });
+  await expect(expand.getByRole("link", { name: "Advertise on The County Post" })).toHaveAttribute("href", "https://www.advertise.thecountypost.com/");
+  expect(await page.evaluate(() => { const clone = document.body.cloneNode(true) as HTMLElement; clone.querySelector('[aria-labelledby="expand-reach"]')?.remove(); return /county post/i.test(clone.innerText + clone.innerHTML); })).toBe(false);
   for (const link of await page.locator('a[href^="mailto:"]').all())
     await expect(link).toHaveAttribute(
       "href",

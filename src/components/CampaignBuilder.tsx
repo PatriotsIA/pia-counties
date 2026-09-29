@@ -4,7 +4,8 @@ import { states } from "../data/states";
 import { countyDisplayName, countySlug } from "../data/county-geography";
 import { advertiserContactEmail } from "../data/advertiser-contact";
 import { countyRateTiers, monthlyCountyPlacementPrice, monthlyStatePlacementPrice, countyCampaignMonthly, checkoutPrice, formatAdPrice, sponsorableFeeds, type BillingCadence, type CountyPlacement, type StatePlacement, type SponsorableFeed } from "../data/campaign-pricing";
-import { fetchCountyPopulation, startCampaignCheckout, type CampaignCheckout, type CheckoutSession } from "../lib/campaign-checkout";
+import { fetchCountyPopulation, startCampaignCheckout, uploadArtwork, type CampaignCheckout, type CheckoutSession } from "../lib/campaign-checkout";
+import { artworkSizeLabel, artworkSpecs, readArtwork, type Artwork, type ArtworkKind } from "../lib/ad-artwork";
 import { sendSiteContactEmail } from "../lib/email";
 
 type Scope = "county" | "state" | "national";
@@ -16,7 +17,9 @@ const packages = [
   { scope: "state", placement: "state-feed-sponsorship", name: "State section sponsorship", rate: 20, unit: "per county, per section", detail: "Sponsor your selected sections throughout each state and its counties." },
 ] as const;
 
-export function CampaignBuilder({ businessName, setBusinessName, onLocationChange }: { businessName: string; setBusinessName: (value: string) => void; onLocationChange: (value: string) => void }) {
+type ArtworkProps = { artwork: Partial<Record<ArtworkKind, Artwork>>; setArtwork: (kind: ArtworkKind, value?: Artwork) => void };
+
+export function CampaignBuilder({ businessName, setBusinessName, onLocationChange, artwork, setArtwork }: { businessName: string; setBusinessName: (value: string) => void; onLocationChange: (value: string) => void } & ArtworkProps) {
   const [scope, setScope] = useState<Scope>("county");
   const [countyPlacement, setCountyPlacement] = useState<CountyPlacement>("color-card");
   const [statePlacement, setStatePlacement] = useState<StatePlacement>("state-ad");
@@ -32,6 +35,9 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
   const [submittedUrl, setSubmittedUrl] = useState<string>();
   const submitting = useRef(false);
   const cachedSession = useRef<{ input: string; session: CheckoutSession } | null>(null);
+  // Reusing asset keys keeps a retried submission on the same unpaid checkout session.
+  const uploadedArtwork = useRef(new Map<File, string>());
+  const [artworkError, setArtworkError] = useState("");
   const busy = adding || status === "sending";
   const state = states.find((entry) => entry.abbr === stateAbbr);
   const counties = state ? getCountyByState(state.name).map((county) => ({
@@ -61,8 +67,8 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
     document.getElementById("campaign")?.scrollIntoView({ behavior: "smooth" });
   }
 
-  async function addCounty() {
-    const county = counties.find((entry) => entry.fips === countyFips);
+  async function addCounty(fips: string) {
+    const county = counties.find((entry) => entry.fips === fips);
     if (!state || !county || busy || selectedCounties.some((entry) => entry.fips === county.fips)) return;
     if (selectedCounties.length >= 25) { setError("You can select up to 25 counties. For broader reach, choose state coverage or contact us."); return; }
     reset(); setAdding(true);
@@ -71,8 +77,21 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
       if (population.fips !== county.fips || population.stateSlug !== state.slug || population.countySlug !== county.slug) throw new Error("County pricing could not be verified. Please try again.");
       setSelectedCounties((current) => current.some((entry) => entry.fips === county.fips) ? current : [...current, { ...population, name: `${county.name}, ${state.name}` }]);
       setCountyFips("");
-    } catch (failure) { setError(failure instanceof Error ? failure.message : "Unable to look up county pricing. Please try again."); }
+    } catch (failure) { setCountyFips(""); setError(failure instanceof Error ? failure.message : "Unable to look up county pricing. Please try again."); }
     finally { setAdding(false); }
+  }
+
+  async function chooseArtwork(kind: ArtworkKind, input: HTMLInputElement) {
+    const file = input.files?.[0];
+    if (!file) return;
+    try { setArtwork(kind, await readArtwork(file, kind)); setArtworkError(""); }
+    catch (failure) { setArtworkError(failure instanceof Error ? failure.message : "This image could not be used."); }
+    input.value = "";
+  }
+
+  function describeArtwork(kind: ArtworkKind, assetKey?: string) {
+    const chosen = artwork[kind];
+    return chosen && assetKey ? `${assetKey} (${chosen.width}×${chosen.height}, ${chosen.file.name})` : "Not uploaded; to be sent after checkout";
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -84,10 +103,18 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
     const email = String(data.get("email") || "").trim();
     const referredBy = String(data.get("referredBy") || "").trim();
     try {
+      const assetKeys: Partial<Record<ArtworkKind, string>> = {};
+      for (const kind of Object.keys(artworkSpecs) as ArtworkKind[]) {
+        const file = artwork[kind]?.file;
+        if (!file) continue;
+        assetKeys[kind] = uploadedArtwork.current.get(file) ?? await uploadArtwork(file);
+        uploadedArtwork.current.set(file, assetKeys[kind]!);
+      }
       let checkoutUrl: string | undefined;
       let sessionId: string | undefined;
       if (scope !== "national") {
-        const contact = { billing, customerEmail: email, businessName: businessName.trim(), ...(referredBy ? { referredBy } : {}) };
+        const contact = { billing, customerEmail: email, businessName: businessName.trim(), ...(referredBy ? { referredBy } : {}),
+          ...(assetKeys.square ? { creativeAssetKey: assetKeys.square } : {}), ...(assetKeys.banner ? { bannerCreativeAssetKey: assetKeys.banner } : {}) };
         const input: CampaignCheckout = scope === "county"
           ? { ...contact, scope, placement: countyPlacement, counties: selectedCounties.map(({ stateSlug, countySlug }) => ({ stateSlug, countySlug })) }
           : { ...contact, scope, placement: statePlacement, states: selectedStates, ...(needsFeeds ? { feeds } : {}) };
@@ -104,6 +131,7 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
         advertisedRate: scope === "national" ? "Custom quote" : `${formatAdPrice(total)}/${billing === "annual" ? "year" : "month"}`,
         coverage: scope === "county" ? selectedCounties.map((entry) => `${entry.name} (FIPS ${entry.fips}; population ${entry.population}; Census ${entry.estimateVintage})`).join("; ") : scope === "state" ? selectedStateObjects.map((entry) => `${entry.name} (${getCountyByState(entry.name).length} counties)`).join("; ") : "Nationwide",
         sections: needsFeeds ? sponsorableFeeds.filter((entry) => feeds.includes(entry.key)).map((entry) => entry.label).join(", ") : undefined,
+        squareArtwork: describeArtwork("square", assetKeys.square), bannerArtwork: describeArtwork("banner", assetKeys.banner),
         referredBy, message: String(data.get("message") || "").trim(), contactConsent: data.get("consent") === "on",
         checkoutSessionId: sessionId, paymentStatus: "Request received; payment has not been confirmed.",
       } });
@@ -153,15 +181,26 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
           {scope !== "national" && <>
             <div className="form-grid"><label>Placement<select aria-label="Placement" value={placement} onChange={(event) => scope === "county" ? setCountyPlacement(event.target.value as CountyPlacement) : setStatePlacement(event.target.value as StatePlacement)}>{packages.filter((item) => item.scope === scope).map((item) => <option key={item.placement} value={item.placement}>{item.name}</option>)}</select></label><label>Billing preference<select aria-label="Billing preference" value={billing} onChange={(event) => setBilling(event.target.value as BillingCadence)}><option value="monthly">Monthly</option><option value="annual">Annual — 12 months for 10</option></select></label></div>
             <label>State<select aria-label="State" value={stateAbbr} onChange={(event) => { setStateAbbr(event.target.value); setCountyFips(""); }}><option value="">Choose a state</option>{states.map((entry) => <option key={entry.abbr} value={entry.abbr}>{entry.name}</option>)}</select></label>
-            {scope === "county" ? <><label>County<select aria-label="County" value={countyFips} disabled={!state} onChange={(event) => setCountyFips(event.target.value)}><option value="">Choose a county</option>{counties.map((entry) => <option key={entry.fips} value={entry.fips} disabled={selectedCounties.some((selected) => selected.fips === entry.fips)}>{entry.name}</option>)}</select></label><button className="button button-outline" type="button" disabled={!countyFips || selectedCounties.length >= 25} onClick={() => void addCounty()}>{adding ? "Looking up population…" : "Add county"}</button>
+            {scope === "county" ? <><label>County<select aria-label="County" value={countyFips} disabled={!state || selectedCounties.length >= 25} onChange={(event) => { setCountyFips(event.target.value); if (event.target.value) void addCounty(event.target.value); }}><option value="">{adding ? "Looking up population…" : selectedCounties.length ? "Add another county" : "Choose a county"}</option>{counties.map((entry) => <option key={entry.fips} value={entry.fips} disabled={selectedCounties.some((selected) => selected.fips === entry.fips)}>{entry.name}</option>)}</select></label>{adding && <p className="form-note" role="status">Looking up county population…</p>}
               <ul className="coverage-list" aria-label="Selected counties">{[...selectedCounties].sort((a, b) => b.population - a.population).map((entry, index) => <li key={entry.fips}><span><strong>{entry.name}</strong><small>Population {entry.population.toLocaleString("en-US")} · Census {entry.estimateVintage}</small><small>{formatAdPrice(monthlyCountyPlacementPrice(entry.population, countyPlacement) * (index === 0 ? 1 : 0.5))}/month{index ? " · 50% additional-county rate" : " · full rate"}</small></span><button type="button" className="inline-button" aria-label={`Remove ${entry.name}`} onClick={() => { setSelectedCounties((current) => current.filter((county) => county.fips !== entry.fips)); reset(); }}>Remove</button></li>)}</ul>
             </> : <><button className="button button-outline" type="button" disabled={!state || selectedStates.includes(state.slug)} onClick={() => { if (state) setSelectedStates((current) => [...current, state.slug]); setStateAbbr(""); reset(); }}>Add state</button><ul className="coverage-list" aria-label="Selected states">{selectedStateObjects.map((entry) => <li key={entry.slug}><span><strong>{entry.name}</strong><small>{getCountyByState(entry.name).length} counties</small></span><button type="button" className="inline-button" aria-label={`Remove ${entry.name}`} onClick={() => { setSelectedStates((current) => current.filter((slug) => slug !== entry.slug)); reset(); }}>Remove</button></li>)}</ul></>}
             {needsFeeds && <div className="section-picker" role="group" aria-label="Sections to sponsor"><strong>Sections to sponsor *</strong><p>Each section is $20 per county per month across every selected state.</p>{sponsorableFeeds.map((entry) => <label key={entry.key}><input type="checkbox" checked={feeds.includes(entry.key)} onChange={() => setFeeds((current) => current.includes(entry.key) ? current.filter((key) => key !== entry.key) : [...current, entry.key])} /> {entry.label}</label>)}</div>}
           </>}
+          <div className="artwork-fields" role="group" aria-label="Ad artwork"><strong>Ad artwork <span>(optional)</span></strong>
+            <p>PNG or JPG up to 10 MB; larger images with the same proportions are fine. Artwork is uploaded privately when you submit, or you can send it after checkout.</p>
+            {(Object.keys(artworkSpecs) as ArtworkKind[]).map((kind) => <div className="artwork-field" key={kind}>
+              <label>{artworkSpecs[kind].label} — {artworkSizeLabel(kind)} px<small>{artworkSpecs[kind].use}</small>
+                <input type="file" accept="image/png,image/jpeg" onChange={(event) => void chooseArtwork(kind, event.currentTarget)} /></label>
+              {artwork[kind] && <span className="artwork-chosen"><img src={artwork[kind]!.url} alt={`${artworkSpecs[kind].label} preview`} /><small>{artwork[kind]!.file.name} · {artwork[kind]!.width}×{artwork[kind]!.height}</small>
+                <button type="button" className="inline-button" aria-label={`Remove ${artworkSpecs[kind].label.toLowerCase()}`} onClick={() => setArtwork(kind)}>Remove</button></span>}
+            </div>)}
+            {artworkError && <p className="form-error" role="alert">{artworkError}</p>}
+          </div>
           <label>Referred by <span>(optional)</span><input name="referredBy" maxLength={120} /></label><label>Campaign notes <span>(optional)</span><textarea name="message" rows={3} placeholder="Timing, audience, or placement preferences" maxLength={4000} /></label>
           <div className="honeypot" aria-hidden="true"><label>Company fax<input name="companyFax" tabIndex={-1} autoComplete="off" /></label></div>
           <label className="consent"><input name="consent" type="checkbox" required /><span>I agree to be contacted about this campaign and accept the <a href="https://patriotsinaction.com/terms">terms</a> and <a href="https://patriotsinaction.com/privacy">privacy statement</a>.</span></label>
           <button className="button submit-button" type="submit" disabled={!hasSelection || busy}>{status === "sending" ? "Preparing your request…" : scope === "national" ? "Request a quote →" : `Send request & open Stripe — ${formatAdPrice(total)}/${billing === "annual" ? "year" : "month"}`}</button>
+          {!hasSelection && <p className="form-note">{scope === "county" ? "Choose at least one county to see your total and continue to checkout." : needsFeeds ? "Choose at least one state and one section to continue." : "Add at least one state to continue."}</p>}
           <p className="form-note">{scope === "national" ? "Our team will prepare a national proposal." : "Secure Stripe checkout opens after your campaign details are sent. Placement availability and creative are confirmed before launch."}</p>
         </fieldset>
         {error && <p className="form-error" role="alert">{error} <a href={`mailto:${advertiserContactEmail}`}>Email {advertiserContactEmail}</a></p>}

@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { adAssetSpecs } from "./data/ad-pricing";
+import { useCallback, useEffect, useState } from "react";
 import { PlacementExamples } from "./components/PlacementExamples";
 import { CampaignBuilder } from "./components/CampaignBuilder";
 import { advertiserContactEmail } from "./data/advertiser-contact";
+import { artworkSizeLabel, readArtwork, type Artwork, type ArtworkKind } from "./lib/ad-artwork";
 const mainSite = "https://patriotsinaction.com";
 
 export default function App() {
   const [businessName, setBusinessName] = useState("");
   const [countyName, setCountyName] = useState("Your County");
-  const [creativeUrl, setCreativeUrl] = useState("");
+  const [artwork, setArtworkState] = useState<Partial<Record<ArtworkKind, Artwork>>>({});
   const [creativeError, setCreativeError] = useState("");
 
   useEffect(() => {
@@ -35,12 +35,13 @@ export default function App() {
       );
   }, []);
 
-  useEffect(
-    () => () => {
-      if (creativeUrl) URL.revokeObjectURL(creativeUrl);
-    },
-    [creativeUrl],
-  );
+  const setArtwork = useCallback((kind: ArtworkKind, value?: Artwork) => {
+    setArtworkState((current) => {
+      const previous = current[kind];
+      if (previous && previous.url !== value?.url) URL.revokeObjectURL(previous.url);
+      return { ...current, [kind]: value };
+    });
+  }, []);
 
   return (
     <>
@@ -162,7 +163,7 @@ export default function App() {
           </div>
         </div>
 
-        <CampaignBuilder businessName={businessName} setBusinessName={setBusinessName} onLocationChange={setCountyName} />
+        <CampaignBuilder businessName={businessName} setBusinessName={setBusinessName} onLocationChange={setCountyName} artwork={artwork} setArtwork={setArtwork} />
 
         <section id="examples" className="section-wrap section-space">
           <div className="section-heading">
@@ -183,63 +184,38 @@ export default function App() {
             <div>
               <strong>Try your artwork</strong>
               <p>
-                PNG, JPG, or WebP · up to 5 MB. Preview stays in your browser.
-                Email final artwork to{" "}
-                <a href={`mailto:${advertiserContactEmail}`}>
-                  {adAssetSpecs.email}
-                </a>
-                .
+                {artworkSizeLabel("square")} square, PNG or JPG up to 10 MB. It
+                is only uploaded when you submit your campaign below, where you
+                can also add a {artworkSizeLabel("banner")} banner.
               </p>
             </div>
             <label className="upload-label">
               Choose artwork
               <input
                 type="file"
-                accept="image/png,image/jpeg,image/webp"
+                accept="image/png,image/jpeg"
                 onChange={async (event) => {
                   const input = event.currentTarget;
                   const file = input.files?.[0];
                   if (!file) return;
-                  if (
-                    !["image/png", "image/jpeg", "image/webp"].includes(
-                      file.type,
-                    ) ||
-                    file.size > 5 * 1024 * 1024
-                  ) {
-                    setCreativeError(
-                      "Choose a PNG, JPG, or WebP image up to 5 MB.",
-                    );
-                    input.value = "";
-                    return;
-                  }
-                  const url = URL.createObjectURL(file);
-                  const image = new Image();
-                  image.src = url;
                   try {
-                    await image.decode();
-                    setCreativeUrl(url);
+                    setArtwork("square", await readArtwork(file, "square"));
                     setCreativeError("");
-                  } catch {
-                    URL.revokeObjectURL(url);
+                  } catch (failure) {
                     setCreativeError(
-                      "This image could not be opened. Please choose another file.",
+                      failure instanceof Error
+                        ? failure.message
+                        : "This image could not be opened. Please choose another file.",
                     );
-                    input.value = "";
                   }
+                  input.value = "";
                 }}
               />
             </label>
-            {creativeUrl && (
+            {artwork.square && (
               <button
                 className="inline-button"
-                onClick={() => {
-                  setCreativeUrl("");
-                  const input =
-                    document.querySelector<HTMLInputElement>(
-                      'input[type="file"]',
-                    );
-                  if (input) input.value = "";
-                }}
+                onClick={() => setArtwork("square")}
               >
                 Remove artwork
               </button>
@@ -252,7 +228,8 @@ export default function App() {
           )}
           <PlacementExamples
             businessName={businessName.trim() || "Your Business"}
-            creativeUrl={creativeUrl}
+            creativeUrl={artwork.square?.url ?? ""}
+            bannerUrl={artwork.banner?.url ?? ""}
             countyName={countyName || "Your County"}
           />
           <div className="asset-note">
@@ -350,14 +327,15 @@ export default function App() {
             <details>
               <summary>What artwork should I send?</summary>
               <p>
-                Email finished PNG files to{" "}
+                250 × 250 pixels for square placements and 980 × 300 pixels for
+                banners, as PNG or JPG with a
+                white or transparent background. Upload them with your campaign
+                request, or email them later to{" "}
                 <a href={`mailto:${advertiserContactEmail}`}>
                   {advertiserContactEmail}
                 </a>
-                : 250 × 250 pixels for square placements and 980 × 300 pixels
-                for banners, with a white or transparent background. The preview
-                tool does not upload or submit your artwork. If you need design
-                help, ask us about creative production pricing.
+                . If you need design help, ask us about creative production
+                pricing.
               </p>
             </details>
             <details>
@@ -371,6 +349,18 @@ export default function App() {
               </p>
             </details>
           </div>
+        </section>
+        <section className="section-wrap section-space" aria-labelledby="expand-reach">
+          <aside className="national-callout">
+            <div>
+              <p className="eyebrow">WANT TO EXPAND YOUR REACH?</p>
+              <h3 id="expand-reach">Advertise on The County Post</h3>
+              <p>Local news for every county in the country, with its own advertising options.</p>
+            </div>
+            <a className="button button-light" href="https://www.advertise.thecountypost.com/" target="_blank" rel="noopener">
+              Advertise on The County Post ↗
+            </a>
+          </aside>
         </section>
       </main>
       <footer className="site-footer section-wrap">

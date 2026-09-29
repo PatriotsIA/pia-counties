@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-type Props = { businessName: string; creativeUrl: string; countyName: string };
+type Props = { businessName: string; creativeUrl: string; bannerUrl: string; countyName: string };
 
 function Creative({
   businessName,
   creativeUrl,
   wide = false,
-}: Omit<Props, "countyName"> & { wide?: boolean }) {
+}: Pick<Props, "businessName" | "creativeUrl"> & { wide?: boolean }) {
   return (
     <div className={`example-creative ${wide ? "wide" : ""}`}>
       {creativeUrl ? (
@@ -26,6 +26,7 @@ function Creative({
 export function PlacementExamples({
   businessName,
   creativeUrl,
+  bannerUrl,
   countyName,
 }: Props) {
   const [slide, setSlide] = useState(0);
@@ -99,7 +100,7 @@ export function PlacementExamples({
             <div className="banner-preview">
               <Creative
                 businessName={slide === 0 ? businessName : "Community Partner"}
-                creativeUrl={slide === 0 ? creativeUrl : ""}
+                creativeUrl={slide === 0 ? bannerUrl || creativeUrl : ""}
                 wide
               />
             </div>
