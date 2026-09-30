@@ -73,3 +73,12 @@ for (const path of ["/counties", "/tx"]) {
     await expect(page).toHaveURL(/\/tx\/jefferson$/);
   });
 }
+
+test("site navigation places White House News between Candidates and PIA TV", async ({ page }) => {
+  await page.goto("/");
+  const nav = page.locator("#site-navigation");
+  const whiteHouse = nav.getByRole("link", { name: "White House News" });
+  await expect(whiteHouse).toHaveAttribute("href", "https://www.whitehouse.gov/live/");
+  await expect(nav.getByRole("link", { name: "Candidates" }).locator("xpath=following-sibling::a[1]")).toHaveText("White House News");
+  await expect(whiteHouse.locator("xpath=following-sibling::a[1]")).toHaveText("PIA TV");
+});

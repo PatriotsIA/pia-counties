@@ -2200,6 +2200,7 @@ function Shell({
             <Link to="/partners">Partners</Link>
             <a href={site.links.community}>Community</a>
             <Link to="/candidates">Candidates</Link>
+            <a href="https://www.whitehouse.gov/live/" target="_blank" rel="noreferrer">White House News</a>
             <Link to="/tv">PIA TV</Link>
             <Link to="/contact">Contact</Link>
             <a href={site.links.merch} target="_blank" rel="noreferrer">Merch</a>
