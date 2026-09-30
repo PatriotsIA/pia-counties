@@ -209,6 +209,10 @@ test("County Post-sized artwork uploads privately before checkout and is reused 
   page.on("request", (request) => { if (request.url() === sessionEndpoint) checkout = request.postDataJSON(); });
   await page.route(emailEndpoint, (route) => route.fulfill({ status: 429, body: "Rate limited" }));
   await page.goto("/"); await fillRequest(page); await addCounty(page);
+  const fields = page.getByRole("group", { name: "Ad artwork" });
+  await expect(fields).toContainText("or you can send it after checkout to erik@patriotsinaction.com");
+  await expect(fields.getByRole("link", { name: "erik@patriotsinaction.com" })).toHaveAttribute("href", "mailto:erik@patriotsinaction.com");
+  await expect(fields).toContainText("Exclusive feed sponsor ad assets should be 250×250 px.");
   const square = page.getByLabel("Square ad — 250×250 px"), banner = page.getByLabel("Wide banner — 980×300 px");
   await square.setInputFiles({ name: "wrong.png", mimeType: "image/png", buffer: png(300, 250) });
   await expect(page.getByRole("alert")).toContainText("must be 250×250 pixels");
@@ -250,19 +254,19 @@ test("county selection, local artwork, Dan contact, straight preview, and suppli
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(3);
+  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(4);
   // The County Post is only named in its own expand-your-reach section.
   const expand = page.getByRole("region", { name: "Advertise on The County Post" });
   await expect(expand.getByRole("link", { name: "Advertise on The County Post" })).toHaveAttribute("href", "https://www.advertise.thecountypost.com/");
   expect(await page.evaluate(() => { const clone = document.body.cloneNode(true) as HTMLElement; clone.querySelector('[aria-labelledby="expand-reach"]')?.remove(); return /county post/i.test(clone.innerText + clone.innerHTML); })).toBe(false);
-  for (const link of await page.locator('a[href^="mailto:"]').all())
+  // Sales contact is Dan everywhere; the artwork field alone names Erik, where post-checkout artwork is sent.
+  for (const link of await page.locator('a[href^="mailto:"]:not(.artwork-fields a)').all())
     await expect(link).toHaveAttribute(
       "href",
       "mailto:dan@patriotsinaction.com",
     );
-  await expect(page.locator("body")).not.toContainText(
-    "erik@patriotsinaction.com",
-  );
+  await expect(page.locator(".artwork-fields a[href^='mailto:']")).toHaveAttribute("href", "mailto:erik@patriotsinaction.com");
+  await expect(page.getByText("erik@patriotsinaction.com")).toHaveCount(1);
   expect(
     await page
       .locator(".hero-preview")
