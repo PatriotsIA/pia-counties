@@ -213,10 +213,14 @@ test("County Post-sized artwork uploads privately before checkout and is reused 
   await expect(fields).toContainText("or you can send it after checkout to erik@patriotsinaction.com");
   await expect(fields.getByRole("link", { name: "erik@patriotsinaction.com" })).toHaveAttribute("href", "mailto:erik@patriotsinaction.com");
   await expect(fields).toContainText("Exclusive feed sponsor ad assets should be 250×250 px.");
-  const square = page.getByLabel("Square ad — 250×250 px"), banner = page.getByLabel("Wide banner — 980×300 px");
-  await square.setInputFiles({ name: "wrong.png", mimeType: "image/png", buffer: png(300, 250) });
-  await expect(page.getByRole("alert")).toContainText("must be 250×250 pixels");
-  await square.setInputFiles({ name: "square.png", mimeType: "image/png", buffer: png(500, 500) });
+  const square = page.getByLabel("Square ad — 250×250 or 300×250 px"), banner = page.getByLabel("Wide banner — 980×300 px");
+  await square.setInputFiles({ name: "notes.txt", mimeType: "text/plain", buffer: Buffer.from("not artwork") });
+  await expect(page.getByRole("alert")).toContainText("PNG, JPG, WebP or GIF");
+  // Off-size artwork is accepted with a note; 300×250 and larger same-ratio files are recommended sizes.
+  await square.setInputFiles({ name: "odd.png", mimeType: "", buffer: png(851, 315) });
+  await expect(page.locator(".artwork-note")).toContainText("851×315 image will be scaled to fit");
+  await square.setInputFiles({ name: "square.png", mimeType: "image/png", buffer: png(300, 250) });
+  await expect(page.locator(".artwork-note")).toHaveCount(0);
   await expect(page.getByAltText("Square ad preview")).toBeVisible();
   await banner.setInputFiles({ name: "banner.png", mimeType: "image/png", buffer: png(980, 300) });
   await expect(page.getByAltText("Wide banner preview")).toBeVisible();
@@ -228,7 +232,7 @@ test("County Post-sized artwork uploads privately before checkout and is reused 
   await expect(page).toHaveURL(checkoutUrl);
   expect(uploads).toEqual(["POST", "POST"]);
   expect(checkout).toMatchObject({ creativeAssetKey: "ad-creatives/2026-09-29/square.png", bannerCreativeAssetKey: "ad-creatives/2026-09-29/banner.png" });
-  for (const detail of ["squareArtwork: ad-creatives/2026-09-29/square.png (500×500, square.png)", "bannerArtwork: ad-creatives/2026-09-29/banner.png (980×300, banner.png)"]) expect(mail?.template_params.message).toContain(detail);
+  for (const detail of ["squareArtwork: ad-creatives/2026-09-29/square.png (300×250, square.png)", "bannerArtwork: ad-creatives/2026-09-29/banner.png (980×300, banner.png)"]) expect(mail?.template_params.message).toContain(detail);
 });
 
 test("consent and honeypot prevent incomplete or automated submissions", async ({ page }) => {

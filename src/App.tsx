@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { PlacementExamples } from "./components/PlacementExamples";
 import { CampaignBuilder } from "./components/CampaignBuilder";
 import { advertiserContactEmail } from "./data/advertiser-contact";
-import { artworkSizeLabel, readArtwork, type Artwork, type ArtworkKind } from "./lib/ad-artwork";
+import { artworkAccept, artworkSizeLabel, readArtwork, type Artwork, type ArtworkKind } from "./lib/ad-artwork";
 const mainSite = "https://patriotsinaction.com";
 
 export default function App() {
@@ -184,7 +184,8 @@ export default function App() {
             <div>
               <strong>Try your artwork</strong>
               <p>
-                {artworkSizeLabel("square")} square, PNG or JPG up to 10 MB. It
+                {artworkSizeLabel("square")} square ad, PNG, JPG, WebP or GIF up
+                to 10 MB. It
                 is only uploaded when you submit your campaign below, where you
                 can also add a {artworkSizeLabel("banner")} banner.
               </p>
@@ -193,7 +194,7 @@ export default function App() {
               Choose artwork
               <input
                 type="file"
-                accept="image/png,image/jpeg"
+                accept={artworkAccept}
                 onChange={async (event) => {
                   const input = event.currentTarget;
                   const file = input.files?.[0];
@@ -327,8 +328,8 @@ export default function App() {
             <details>
               <summary>What artwork should I send?</summary>
               <p>
-                250 × 250 pixels for square placements and 980 × 300 pixels for
-                banners, as PNG or JPG with a
+                250 × 250 or 300 × 250 pixels for square placements and 980 × 300
+                pixels for banners, as PNG, JPG, WebP or GIF with a
                 white or transparent background. Upload them with your campaign
                 request, or email them later to{" "}
                 <a href={`mailto:${advertiserContactEmail}`}>

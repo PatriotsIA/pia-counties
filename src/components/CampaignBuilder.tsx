@@ -5,7 +5,7 @@ import { countyDisplayName, countySlug } from "../data/county-geography";
 import { advertiserContactEmail, advertiserSubmissionEmail } from "../data/advertiser-contact";
 import { countyRateTiers, monthlyCountyPlacementPrice, monthlyStatePlacementPrice, countyCampaignMonthly, checkoutPrice, formatAdPrice, sponsorableFeeds, type BillingCadence, type CountyPlacement, type StatePlacement, type SponsorableFeed } from "../data/campaign-pricing";
 import { fetchCountyPopulation, startCampaignCheckout, uploadArtwork, type CampaignCheckout, type CheckoutSession } from "../lib/campaign-checkout";
-import { artworkSizeLabel, artworkSpecs, readArtwork, type Artwork, type ArtworkKind } from "../lib/ad-artwork";
+import { artworkAccept, artworkSizeLabel, artworkSpecs, readArtwork, type Artwork, type ArtworkKind } from "../lib/ad-artwork";
 import { sendSiteContactEmail } from "../lib/email";
 
 type Scope = "county" | "state" | "national";
@@ -187,12 +187,12 @@ export function CampaignBuilder({ businessName, setBusinessName, onLocationChang
             {needsFeeds && <div className="section-picker" role="group" aria-label="Sections to sponsor"><strong>Sections to sponsor *</strong><p>Each section is $20 per county per month across every selected state.</p>{sponsorableFeeds.map((entry) => <label key={entry.key}><input type="checkbox" checked={feeds.includes(entry.key)} onChange={() => setFeeds((current) => current.includes(entry.key) ? current.filter((key) => key !== entry.key) : [...current, entry.key])} /> {entry.label}</label>)}</div>}
           </>}
           <div className="artwork-fields" role="group" aria-label="Ad artwork"><strong>Ad artwork <span>(optional)</span></strong>
-            <p>PNG or JPG up to 10 MB; larger images with the same proportions are fine. Artwork is uploaded privately when you submit, or you can send it after checkout to <a href={`mailto:${advertiserSubmissionEmail}`}>{advertiserSubmissionEmail}</a>.</p>
+            <p>PNG, JPG, WebP or GIF up to 10 MB. Other sizes are scaled to fit and checked by our team before launch. Artwork is uploaded privately when you submit, or you can send it after checkout to <a href={`mailto:${advertiserSubmissionEmail}`}>{advertiserSubmissionEmail}</a>.</p>
             <p>Exclusive feed sponsor ad assets should be 250×250 px.</p>
             {(Object.keys(artworkSpecs) as ArtworkKind[]).map((kind) => <div className="artwork-field" key={kind}>
               <label>{artworkSpecs[kind].label} — {artworkSizeLabel(kind)} px<small>{artworkSpecs[kind].use}</small>
-                <input type="file" accept="image/png,image/jpeg" onChange={(event) => void chooseArtwork(kind, event.currentTarget)} /></label>
-              {artwork[kind] && <span className="artwork-chosen"><img src={artwork[kind]!.url} alt={`${artworkSpecs[kind].label} preview`} /><small>{artwork[kind]!.file.name} · {artwork[kind]!.width}×{artwork[kind]!.height}</small>
+                <input type="file" accept={artworkAccept} onChange={(event) => void chooseArtwork(kind, event.currentTarget)} /></label>
+              {artwork[kind] && <span className="artwork-chosen"><img src={artwork[kind]!.url} alt={`${artworkSpecs[kind].label} preview`} /><small>{artwork[kind]!.file.name} · {artwork[kind]!.width}×{artwork[kind]!.height}{artwork[kind]!.note && <span className="artwork-note">{artwork[kind]!.note}</span>}</small>
                 <button type="button" className="inline-button" aria-label={`Remove ${artworkSpecs[kind].label.toLowerCase()}`} onClick={() => setArtwork(kind)}>Remove</button></span>}
             </div>)}
             {artworkError && <p className="form-error" role="alert">{artworkError}</p>}

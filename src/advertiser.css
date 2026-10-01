@@ -1410,6 +1410,7 @@ h1 em {
 .artwork-chosen { display: flex; align-items: center; gap: 12px; margin: -6px 0 16px; min-width: 0; }
 .artwork-chosen img { width: 56px; height: 56px; object-fit: contain; border: 1px solid var(--line); background: white; flex: none; }
 .artwork-chosen small { flex: 1; min-width: 0; overflow-wrap: anywhere; color: var(--muted); font-size: 11px; }
+.artwork-note { display: block; margin-top: 4px; color: var(--navy); }
 @media (max-width: 600px) { .rate-table { font-size: 11px; } .rate-table th, .rate-table td { padding: 10px 7px; } }
 
 @media (max-width: 600px) { .campaign-form .form-grid { grid-template-columns: 1fr; } }
