@@ -15,7 +15,7 @@ form offers three submission types:
 - **Pending profile update:** enter the original submission reference and describe
   the changes. The reference is in the original receipt, and the new-submission
   success screen links back to this mode. If the reference is unavailable, contact
-  `<site-contact-address>`.
+  `erik@patriotsinaction.com`.
 
 Pending updates intentionally do **not** offer a public draft lookup. A reference
 or an email address is not authentication. Draft content and original submitter

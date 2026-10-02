@@ -12,7 +12,7 @@ else
   files=$(git ls-files)
 fi
 [ -z "$files" ] && exit 0
-pattern='arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:|[0-9]{12}\.dkr\.ecr\.|[Aa]ccount[^0-9A-Za-z]{1,6}[0-9]{12}([^0-9]|$)|hostedzone/Z[0-9A-Z]{8,}|HostedZoneId"?\s*[:=]\s*"?Z[0-9A-Z]{8,}|[A-Za-z0-9._%+-]+@(gmail|yahoo|outlook|hotmail|proton)\.(com|me)'
+pattern='arn:aws:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:|[0-9]{12}\.dkr\.ecr\.|[Aa]ccount[^0-9A-Za-z]{1,6}[0-9]{12}([^0-9]|$)|hostedzone/Z[0-9A-Z]{8,}|HostedZoneId"?\s*[:=]\s*"?Z[0-9A-Z]{8,}|[Hh]osted[ -]?[Zz]one[^0-9A-Za-z]{1,6}Z[0-9A-Z]{8,}|`Z[0-9A-Z]{10,}`|[A-Za-z0-9._%+-]+@(gmail|yahoo|outlook|hotmail|proton)\.(com|me)'
 hits=$(printf '%s\n' "$files" | grep -Ev "$EXCLUDE" | while read -r f; do
   [ -f "$f" ] && grep -EnHI "$pattern" "$f" 2>/dev/null | sed -E 's/[0-9]{12}/<12 digits>/g; s/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<email>/g' || true
 done)
