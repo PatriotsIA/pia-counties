@@ -45,17 +45,6 @@
     "variants": []
   },
   {
-    "source": "NewAds/CBT4.jpg",
-    "width": 300,
-    "height": 250,
-    "frames": 1,
-    "originalBytes": 66682,
-    "fullBytes": 66682,
-    "losslessVerified": true,
-    "full": "NewAds/CBT4.jpg",
-    "variants": []
-  },
-  {
     "source": "NewAds/CanyonRidge250.jpg",
     "width": 300,
     "height": 250,
@@ -1566,17 +1555,6 @@
     "fullBytes": 35488,
     "losslessVerified": true,
     "full": "src/assets/optimized/patriot-dispatch-214ff66fa13d.webp",
-    "variants": []
-  },
-  {
-    "source": "public/sponsors/pia-ad-cbt.jpg",
-    "width": 300,
-    "height": 250,
-    "frames": 1,
-    "originalBytes": 66682,
-    "fullBytes": 66682,
-    "losslessVerified": true,
-    "full": "public/sponsors/pia-ad-cbt.jpg",
     "variants": []
   },
   {

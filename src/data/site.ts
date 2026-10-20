@@ -16,7 +16,6 @@ export const site = {
     merch: "https://shop.patriotsinaction.com/",
     rewards: "/rewards",
     partner: "/partners",
-    cbtRealEstate: "https://www.facebook.com/CBTRealEstateServices/",
     lemcRealty: "https://www.331-rent.com/",
     patriotsForAction: "https://patriotsforaction.org/",
     patriotDispatch: "https://patriotsforaction.org/messaging",

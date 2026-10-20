@@ -7,7 +7,6 @@ import america250AdImageSmall from "../../NewAds/Banner-America250-Small.jpg";
 import brownGmcAdImage from "../../NewAds/BrownGMC-250.jpg";
 import canyonRidgeAdImage from "../../NewAds/CanyonRidge250.jpg";
 import catchingsAdImage from "../../NewAds/Catchings250.jpg";
-import cbt4AdImage from "../../NewAds/CBT4.jpg";
 import dyersAdImage from "../../NewAds/Dyers250.jpg";
 import joinPiaAdImage from "../../NewAds/JoinPIALarge.jpg";
 import joinPiaAdImageSmall from "../../NewAds/JoinPIASm.jpg";
@@ -182,29 +181,6 @@ export const ads: AdCreative[] = [
       alt: "LEMC Realty",
     },
     priority: 110,
-    active: true,
-    targeting: {
-      slots: ["county-home-inline"],
-      routes: ["county", "home"],
-      pages: ["home"],
-    },
-  },
-  {
-    id: "cbt-county-home-2026",
-    campaignId: "pia-county-sponsors",
-    sponsor: "CBT Real Estate Services",
-    title: "CBT Real Estate Services",
-    body: "Connect with local Patriots in Action partners.",
-    cta: "View Partner",
-    href: "https://www.facebook.com/CBTRealEstateServices/",
-    placement: "compact",
-    display: "image-only",
-    image: {
-      desktop: cbt4AdImage,
-      mobile: cbt4AdImage,
-      alt: "CBT Real Estate Services",
-    },
-    priority: 109,
     active: true,
     targeting: {
       slots: ["county-home-inline"],
@@ -740,52 +716,6 @@ export const ads: AdCreative[] = [
       slots: ["county-page-footer", "site-footer"],
       routes: ["county", "home", "directory", "tv", "rewards", "partners", "contact"],
       pages: ["home", "about", "events", "news", "tv", "contact", "partners"],
-    },
-  },
-  {
-    id: "cbt-real-estate-services-2026",
-    campaignId: "cbt-real-estate-services",
-    sponsor: "CBT Real Estate Services",
-    title: "CBT Real Estate Services",
-    body: "Connect with CBT Real Estate Services for local real estate support.",
-    cta: "Visit CBT Real Estate Services",
-    href: "https://www.facebook.com/CBTRealEstateServices/",
-    placement: "compact",
-    display: "image-only",
-    image: {
-      desktop: "/sponsors/pia-ad-cbt.jpg",
-      mobile: "/sponsors/pia-ad-cbt.jpg",
-      alt: "CBT Real Estate Services",
-    },
-    priority: 82,
-    active: true,
-    targeting: {
-      slots: ["county-home-inline", "site-footer"],
-      routes: ["county", "directory", "state"],
-      pages: ["home"],
-    },
-  },
-  {
-    id: "cbt-real-estate-services-contact-2026",
-    campaignId: "cbt-real-estate-services",
-    sponsor: "CBT Real Estate Services",
-    title: "CBT Real Estate Services",
-    body: "Connect with CBT Real Estate Services for local real estate support.",
-    cta: "Visit CBT Real Estate Services",
-    href: "https://www.facebook.com/CBTRealEstateServices/",
-    placement: "compact",
-    display: "image-only",
-    image: {
-      desktop: "/sponsors/pia-ad-cbt.jpg",
-      mobile: "/sponsors/pia-ad-cbt.jpg",
-      alt: "CBT Real Estate Services",
-    },
-    priority: 82,
-    active: true,
-    targeting: {
-      slots: ["county-page-footer"],
-      routes: ["county"],
-      pages: ["contact"],
     },
   },
   {
