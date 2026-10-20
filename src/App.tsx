@@ -32,7 +32,6 @@ import type { NewsFeedItem } from "./lib/rss-feed";
 import { fetchSpaceEvents as fetchMightyEvents, fetchSpaceFeed as fetchMightyFeed, mightyIsConfigured, normalizeMightyEvents } from "./lib/mighty";
 import { useCandidateCatalog } from "./lib/candidate-catalog-context";
 import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
-import cbtPartnerImage from "../NewAds/CBT4.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
 import lemcPartnerImage from "../NewAds/LEMC250.jpg";
 import mattressPartnerImage from "../NewAds/matress-ad.jpg";
@@ -126,19 +125,12 @@ const nationwidePartners: Partner[] = [
 const countySpecificPartners: Partner[] = [
   ...parallelPartners,
   {
-    name: "CBT Real Estate Services",
-    description: "Connect with CBT Real Estate Services on Facebook.",
-    href: site.links.cbtRealEstate,
-    image: cbtPartnerImage,
-    countyKeys: panhandleCountySponsorKeys,
-    presentsCountyPages: true,
-  },
-  {
     name: "LEMC Realty",
     description: "Find Amarillo and Canyon area rental homes, apartments, and property management services.",
     href: site.links.lemcRealty,
     image: lemcPartnerImage,
     countyKeys: panhandleCountySponsorKeys,
+    presentsCountyPages: true,
   },
   {
     name: "Mattress By Appointment",
