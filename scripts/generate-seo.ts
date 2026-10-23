@@ -75,6 +75,7 @@ const staticUrls: UrlEntry[] = [
   urlEntry("/candidates", "weekly", "0.9"),
   urlEntry("/tv", "weekly", "0.8"),
   urlEntry("/rewards", "monthly", "0.75"),
+  urlEntry("/recover-america", "monthly", "0.75"),
   urlEntry("/contact", "monthly", "0.7"),
   urlEntry("/privacy", "yearly", "0.3"),
   urlEntry("/terms", "yearly", "0.3"),
@@ -130,6 +131,7 @@ Important URLs:
 - County finder: ${absoluteUrl("/counties")}
 - National candidates: ${absoluteUrl("/candidates")}
 - PIA TV: ${absoluteUrl("/tv")}
+- Recover America partnership: ${absoluteUrl("/recover-america")}
 - Contact: ${absoluteUrl("/contact")}
 - Privacy: ${absoluteUrl("/privacy")}
 - Terms: ${absoluteUrl("/terms")}

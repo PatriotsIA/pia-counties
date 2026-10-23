@@ -21,6 +21,8 @@ import { getCountyMightySpaceId } from "./data/calendarFeeds";
 import { site } from "./data/site";
 import { parallelPartners } from "./data/parallel-partners";
 import { gopConnectPartner } from "./data/gopconnect";
+import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
+import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -72,6 +74,7 @@ const panhandleCountySponsorKeys = ["texas/potter", "texas/randall"];
 
 const nationwidePartners: Partner[] = [
   gopConnectPartner,
+  recoverAmericaPartner,
   {
     name: "Patriots For Action",
     description: "Connect with the Patriots For Action organization for civic engagement, grassroots action, and community resources.",
@@ -424,6 +427,7 @@ function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoDat
   if (pathname === "/tv") return { title: "PIA TV", description: "Watch Patriots in Action TV videos, candidate interviews, civic updates, and community stories.", canonicalPath: "/tv" };
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
   if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
+  if (pathname === recoverAmerica.path) return { title: "Recover America — PIA Partner", description: recoverAmerica.description, canonicalPath: recoverAmerica.path };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
@@ -574,6 +578,7 @@ function App() {
         <Route path="/tv" element={<MainTvPage />} />
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
+        <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
