@@ -24,6 +24,9 @@ import { gopConnectPartner } from "./data/gopconnect";
 import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
 import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { IssuesPage } from "./components/IssuesPage";
+import { CampaignLandingPage } from "./components/CampaignLandingPage";
+import { CampaignSupportAds, PinnedSupportCandidates } from "./components/CampaignSupport";
+import { supportCampaigns } from "./data/campaigns";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -382,6 +385,8 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
 }
 
 function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
+  const campaign = supportCampaigns.find(c => c.path === pathname);
+  if (campaign) return { title: `Vote ${campaign.name} — PIA Supports`, description: campaign.summary, canonicalPath: campaign.path };
   if (pathname === "/") {
     return {
       title: "Nationwide & Local Civic Hub",
@@ -581,6 +586,7 @@ function App() {
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
+        {supportCampaigns.map(c => <Route key={c.id} path={c.path} element={<CampaignLandingPage key={c.id} campaign={c} />} />)}
         <Route path="/issues" element={<Shell route="static" suppressAdRails><IssuesPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
@@ -636,6 +642,7 @@ function HomePage() {
           <InfoCard title="Move Patriots To Action" body="Follow local news, submit events, watch PIA TV, join the community, discover partners, and turn civic concern into practical action in your county." />
         </div>
       </section>
+      <CampaignSupportAds format="square" />
       <FoundingPartnerCallout />
       <AdSlot route="home" slot="site-inline" limit={3} />
       <section className="section">
@@ -1165,12 +1172,13 @@ function NationalCandidatesPage() {
   const candidates = catalog.filter((candidate) => (state === "all" || getStateBySlug(candidate.stateSlug)?.slug === state) && (level === "all" || getCandidateOfficeLevel(candidate) === level) && `${candidate.name} ${candidate.office} ${candidate.countyName || ""} ${getStateBySlug(candidate.stateSlug)?.name || ""}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
   return <Shell route="directory">
     <PageHero eyebrow="Candidate Directory" title="National candidate directory" subtitle="Explore federal, state, and local candidates across the United States." />
+    <PinnedSupportCandidates search={search} state={state} level={level} />
     <CandidateDirectorySponsors />
     <section className="candidate-filters" aria-label="Filter candidates">
       <label className="field"><span>Search candidates</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
       <label className="field"><span>State</span><select aria-label="State" value={state} onChange={(event) => setState(event.target.value)}><option value="all">All states</option>{states.map((state) => <option key={state.slug} value={state.slug}>{state.name}</option>)}</select></label>
       <label className="field"><span>Office level</span><select aria-label="Office level" value={level} onChange={(event) => setLevel(event.target.value)}><option value="all">All offices</option><option value="federal">Federal / national</option><option value="state">State</option><option value="local">Local / county / city</option></select></label>
-      <p className="candidate-filter-count">{candidates.length} of {catalog.length} candidates shown</p>
+      <p className="candidate-filter-count">{candidates.length} of {catalog.length} directory profiles shown</p>
     </section>
     {loading ? <LoadingIndicator label="Refreshing approved candidate profiles" /> : null}
     <CandidateGrid candidates={candidates} emptyText="No candidate profiles match these filters." showCounty />
@@ -2213,6 +2221,7 @@ function Shell({
         <div className={showAdRails ? "container shell-main-content" : "shell-page-stack"}>
           {children}
           <div className="shell-pre-footer">
+            {route === "home" || !suppressAdRails ? <CampaignSupportAds /> : null}
             {route !== "directory" && route !== "state" && !(route === "county" && page === "candidates") ? (
               <PatriotNetworkCommunityBanner />
             ) : null}

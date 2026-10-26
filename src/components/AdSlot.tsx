@@ -29,14 +29,14 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds 
     return <CountySponsorCarousel ads={resolvedAds} county={county} page={page} placement={placement} slot={slot} />;
   }
 
-  if (slot === "county-page-footer" || slot === "site-footer") {
+  if (slot === "county-page-footer" || slot === "site-footer" || slot === "campaign-support-banner") {
     const bannerAds = resolvedAds.filter((ad) => ad.placement === "leaderboard" && ad.display === "image-only").slice(0, limit);
     if (!bannerAds.length) return null;
     return <BannerAdCarousel ads={bannerAds} county={county} page={page} placement={placement} slot={slot} />;
   }
 
   return (
-    <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label="Sponsored message">
+    <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label={slot === "campaign-support-square" ? "Unpaid PIA support message" : "Sponsored message"}>
       {slot === "site-inline" ? <p className="sponsor-label">Sponsored by {[...new Set(resolvedAds.map((ad) => ad.sponsor))].join(", ")}</p> : null}
       {resolvedAds.map((ad) => (
         <AdCard ad={ad} county={county} key={ad.id} page={page} placement={placement || ad.placement} slot={slot} />
@@ -76,10 +76,10 @@ function BannerAdCarousel({
   }
 
   return (
-    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel`} aria-label="Sponsored banner messages">
+    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel`} aria-label={slot === "campaign-support-banner" ? "Unpaid PIA support banners" : "Sponsored banner messages"}>
       <div className="sponsor-banner-carousel-shell">
         {ads.length > 1 ? (
-          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-prev" type="button" onClick={() => handleCarouselClick(-1)} aria-label="Previous sponsor banner">
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-prev" type="button" onClick={() => handleCarouselClick(-1)} aria-label={slot === "campaign-support-banner" ? "Previous PIA support banner" : "Previous sponsor banner"}>
             <span aria-hidden="true">&lt;</span>
           </button>
         ) : null}
@@ -91,7 +91,7 @@ function BannerAdCarousel({
           ))}
         </div>
         {ads.length > 1 ? (
-          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-next" type="button" onClick={() => handleCarouselClick(1)} aria-label="Next sponsor banner">
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-next" type="button" onClick={() => handleCarouselClick(1)} aria-label={slot === "campaign-support-banner" ? "Next PIA support banner" : "Next sponsor banner"}>
             <span aria-hidden="true">&gt;</span>
           </button>
         ) : null}

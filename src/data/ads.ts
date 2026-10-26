@@ -2,6 +2,7 @@ import type { CountyPageKey } from "./counties";
 import { parallelPartners } from "./parallel-partners";
 import { gopConnectPartner, GOPCONNECT_AD_ID } from "./gopconnect";
 import { countyPostAds } from "./county-post-ads";
+import { campaignSupportAds } from "./campaign-ads";
 import america250AdImage from "../../NewAds/Banner-America250-Large.jpg";
 import america250AdImageSmall from "../../NewAds/Banner-America250-Small.jpg";
 import brownGmcAdImage from "../../NewAds/BrownGMC-250.jpg";
@@ -26,6 +27,8 @@ import plainsBankAdImage from "../../NewAds/PlainsBank250.jpg";
 import trailerLargeAdImage from "../../NewAds/TrailerLarge.jpg";
 
 export type AdSlotId =
+  | "campaign-support-banner"
+  | "campaign-support-square"
   | "county-home-inline"
   | "county-calendar-inline"
   | "county-news-inline"
@@ -81,6 +84,7 @@ export type AdCreative = {
 };
 
 export const ads: AdCreative[] = [
+  ...campaignSupportAds,
   ...countyPostAds,
   {
     id: GOPCONNECT_AD_ID,

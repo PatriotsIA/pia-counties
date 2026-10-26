@@ -55,7 +55,7 @@ test("offscreen sponsors load on navigation, preserving banner controls", async 
   await row.locator("a").last().scrollIntoViewIfNeeded();
   await expect(last).toHaveAttribute("src", /.+/);
   await last.evaluate((img: HTMLImageElement) => img.decode());
-  const banner = page.locator(".sponsor-banner-carousel-track");
+  const banner = page.locator(".sponsor-slot-county-page-footer .sponsor-banner-carousel-track");
   await banner.scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Next sponsor banner", exact: true }).click();
   await expect.poll(() => banner.evaluate((track) => track.scrollLeft)).toBeGreaterThan(0);
