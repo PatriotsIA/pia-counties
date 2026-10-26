@@ -1,0 +1,20 @@
+[
+  {
+    "id": "paper-voting",
+    "version": "2026-10-26-v1",
+    "question": "Should every ballot cast in an election have a voter-verifiable paper record?",
+    "options": [{"id": "yes", "label": "Yes"}, {"id": "no", "label": "No"}, {"id": "unsure", "label": "Not sure"}]
+  },
+  {
+    "id": "protect-children",
+    "version": "2026-10-26-v1",
+    "question": "Should parents have a formal role in reviewing materials in public school libraries?",
+    "options": [{"id": "yes", "label": "Yes"}, {"id": "no", "label": "No"}, {"id": "unsure", "label": "Not sure"}]
+  },
+  {
+    "id": "constitutional-law",
+    "version": "2026-10-26-v1",
+    "question": "Should Texas courts be prohibited from applying foreign or religious law when it conflicts with Texas or U.S. constitutional rights?",
+    "options": [{"id": "yes", "label": "Yes"}, {"id": "no", "label": "No"}, {"id": "unsure", "label": "Not sure"}]
+  }
+]

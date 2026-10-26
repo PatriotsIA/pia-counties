@@ -23,6 +23,7 @@ import { parallelPartners } from "./data/parallel-partners";
 import { gopConnectPartner } from "./data/gopconnect";
 import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
 import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
+import { IssuesPage } from "./components/IssuesPage";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -428,6 +429,7 @@ function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoDat
   if (pathname === "/rewards") return { title: "Patriot Rewards", description: "Learn how Patriots Rewards connects local Patriots with community updates, partner resources, events, media, and county action.", canonicalPath: "/rewards" };
   if (pathname === "/partners") return { title: "Patriot Partners", description: "Discover Patriots in Action partners, founding partner opportunities, community resources, events, rewards, media, and merchandise.", canonicalPath: "/partners" };
   if (pathname === recoverAmerica.path) return { title: "Recover America — PIA Partner", description: recoverAmerica.description, canonicalPath: recoverAmerica.path };
+  if (pathname === "/issues") return { title: "Issues & Opinion Polls", description: "Explore paper voting, Recover America’s Protect Children initiative, and Texas Sharia Watch. Read the resources and share your views in visitor opinion polls.", canonicalPath: "/issues" };
   if (pathname === "/contact") return { title: "Contact Patriots in Action", description: "Contact Patriots in Action about county information, candidate profiles, interviews, events, partnerships, and civic action.", canonicalPath: "/contact" };
   if (pathname === "/privacy") return { title: "Privacy Policy", description: "Read the Patriots in Action privacy policy covering forms, contact information, SMS consent data, analytics, donations, community links, and merchandise links.", canonicalPath: "/privacy" };
   if (pathname === "/terms") return { title: "Terms & Conditions", description: "Read the Patriots in Action terms and conditions for website use, mobile communications, donations, payment processing, entity relationships, and user submissions.", canonicalPath: "/terms" };
@@ -579,6 +581,7 @@ function App() {
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
+        <Route path="/issues" element={<Shell route="static" suppressAdRails><IssuesPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
@@ -2195,6 +2198,7 @@ function Shell({
             <Link to="/counties">Counties</Link>
             <Link to="/rewards">Rewards</Link>
             <Link to="/partners">Partners</Link>
+            <Link to="/issues">Issues</Link>
             <a href={site.links.community}>Community</a>
             <Link to="/candidates">Candidates</Link>
             <a href="https://www.whitehouse.gov/live/" target="_blank" rel="noreferrer">White House News</a>
@@ -2311,6 +2315,7 @@ function Footer() {
           <Link to="/counties">County Directory</Link>
           <Link to="/rewards">Patriot Rewards</Link>
           <Link to="/partners">Patriot Partners</Link>
+          <Link to="/issues">Issues &amp; Opinion Polls</Link>
           <a href={site.links.community}>Join Our Interactive Community</a>
           <a href={site.links.merch} target="_blank" rel="noreferrer">Merch Store</a>
         </div>
@@ -2741,6 +2746,16 @@ function PrivacyPage() {
         </p>
 
         <h3>2. Use of information</h3>
+        <h4 id="opinion-polls">Opinion poll responses</h4>
+        <p>
+          Our optional issue polls do not ask for your name or email. We store a random identifier and your response for each
+          question in your browser to help prevent repeat submissions. The poll service stores a one-way digest of that
+          identifier with your response and publishes only aggregate counts. We also use a keyed, hourly-changing digest
+          of the request IP address to limit excessive submissions; these rate-limit records expire after 24 hours and are
+          removed asynchronously. Raw IP addresses are not stored in the poll database. Response records and totals are
+          retained while the poll remains available. Clearing browser storage removes the local receipt, not the saved response.
+          Poll participation does not sign a pledge, opt you into messages, or make a donation.
+        </p>
         <h4>a) General uses</h4>
         <p>We may use the personal information you provide to:</p>
         <ul>

@@ -6,6 +6,7 @@ Simple nationwide React app for data-driven The County Banner county sites.
 
 - `/` landing page
 - `/counties` state directory
+- `/issues` issue resources and opinion polls
 - `/:state/:county` county home, for example `/texas/potter`
 - `/:state/:county/about`
 - `/:state/:county/elections`
@@ -21,6 +22,10 @@ Simple nationwide React app for data-driven The County Banner county sites.
 County pages are generated from `@nickgraffis/us-counties` in `src/data/counties.ts`. Add county-specific content, links, calendars, feeds, and custom blocks through the `countyOverrides` map using keys like `texas/potter`.
 
 ## Forms
+
+The Issues page has an independent anonymous poll API with shared results and
+repeat-response protection. See [issue polls](docs/issues-polls.md) for the
+question catalog, privacy behavior, tests, and backend deployment.
 
 Contact and event submission forms use EmailJS. Set:
 

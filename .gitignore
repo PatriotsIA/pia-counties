@@ -9,3 +9,5 @@ public/feeds/
 coverage/
 test-results/
 playwright-report/
+__pycache__/
+.pytest_cache/

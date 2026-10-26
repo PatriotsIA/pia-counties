@@ -1,0 +1,9 @@
+{
+  "stack": "pia-issues-polls",
+  "region": "us-west-2",
+  "api": "https://wzwkmvtund.execute-api.us-west-2.amazonaws.com",
+  "table": "pia-issues-polls-Polls-1S982TZK7HTJI",
+  "status": "CREATE_COMPLETE",
+  "artifactsBucketPattern": "pia-issues-poll-artifacts-<account>-us-west-2",
+  "alertsTopicName": "patriot-paper-pledges-Alerts-Dw5ZEd6jsf0T"
+}

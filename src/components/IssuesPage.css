@@ -1,0 +1,73 @@
+.issues-page { margin-top: 28px; color: #17233f; }
+.issues-page h1, .issues-page h2, .issues-page p { margin: 0; }
+.issues-page p { line-height: 1.75; }
+.issues-page a { text-underline-offset: 4px; }
+.issues-page :is(a, button, input):focus-visible { outline: 3px solid #b18b38; outline-offset: 4px; }
+.issues-hero { padding: clamp(28px, 5vw, 64px); background: #111b47; color: #fff; border-bottom: 4px solid #c9a659; }
+.issues-page .issues-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: #9f202c; margin-bottom: 18px; }
+.issues-hero .issues-eyebrow { color: #e1c480; }
+.issues-page h1 { font: 400 clamp(38px, 5.5vw, 66px)/1.08 Georgia, serif; letter-spacing: -.035em; }
+.issues-page h1 em { color: #e1c480; }
+.issues-hero > p:not(.issues-eyebrow) { max-width: 650px; color: #e0e5ef; font-size: 17px; margin-top: 26px; }
+.issues-jump { margin-top: 38px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.issues-jump a { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid #64708f; font-size: 14px; font-weight: 700; text-decoration: none; }
+.issues-jump a span:first-child { color: #e1c480; font: 400 17px Georgia, serif; }
+.issues-jump a span:last-child { margin-left: auto; }
+.issues-jump a:hover { background: #26345b; }
+.issues-intro { display: flex; align-items: center; gap: 40px; padding: 28px 36px; border: 1px solid var(--border); border-top: 0; background: #fff; }
+.issues-intro strong { flex-shrink: 0; font: 400 21px Georgia, serif; }
+.issues-intro p { font-size: 13px; color: #586176; }
+.issue-section { display: grid; grid-template-columns: 1.05fr 1fr; align-items: start; gap: clamp(28px, 5vw, 68px); padding: clamp(28px, 5vw, 60px); background: #fffdf8; border: 1px solid var(--border); border-top: 0; scroll-margin-top: 120px; }
+.issue-section:nth-of-type(2) { background: #f1ede4; }
+.issue-copy .issues-eyebrow span { display: inline-block; margin-right: 10px; padding-right: 14px; border-right: 1px solid #bfc4ce; }
+.issue-brand { height: 100px; display: flex; align-items: center; justify-content: start; margin: 22px 0 25px; }
+.issue-brand img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; object-position: left center; }
+.issue-brand-paper-voting img { width: 88px; height: 88px; }
+.issue-brand-protect-children img { width: 360px; height: auto; }
+.issue-brand-constitutional-law { height: 155px; }
+.issue-brand-constitutional-law img { width: 155px; height: 155px; }
+.issue-copy .issue-organization { font-size: 13px; font-weight: 750; color: #586176; margin-bottom: 10px; }
+.issues-page h2 { font: 400 clamp(28px, 3vw, 39px)/1.15 Georgia, serif; letter-spacing: -.02em; }
+.issue-copy .issue-description { margin-top: 22px; font-size: 15px; color: #4c586e; }
+.issue-link { display: inline-flex; gap: 20px; align-items: center; font-size: 14px; font-weight: 750; margin-top: 26px; }
+.issue-secondary-link { display: block; font-size: 12px; margin-top: 18px; }
+.opinion-poll { min-width: 0; background: #fff; border: 1px solid #d6dbe5; border-top: 3px solid #b3212c; padding: clamp(22px, 3vw, 32px); box-shadow: 0 10px 30px #111b4707; }
+.opinion-poll fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.opinion-poll legend { padding: 0; font-size: 20px; line-height: 1.45; font-weight: 700; }
+.poll-choices { display: grid; gap: 9px; margin: 24px 0 18px; }
+.poll-choice { display: flex; align-items: center; gap: 12px; min-height: 49px; border: 1px solid #ccd2de; padding: 12px; font-size: 14px; cursor: pointer; }
+.poll-choice input { width: 17px; height: 17px; margin: 0; accent-color: #15386f; }
+.poll-choice.is-selected { background: #f0f3f9; border-color: #15386f; }
+.poll-choice small { margin-left: auto; color: #4c586e; font-size: 11px; }
+.opinion-poll fieldset:disabled .poll-choice { cursor: default; }
+.issues-button { display: inline-flex; justify-content: center; width: 100%; min-height: 48px; padding: 13px 20px; background: #b3212c; border: 1px solid #b3212c; color: #fff; font-size: 14px; font-weight: 750; line-height: 1.5; font-family: inherit; cursor: pointer; }
+.issues-button:hover:enabled { background: #8e1a24; }
+.issues-button:disabled { background: #e2e5ec; border-color: #d0d5df; color: #586176; cursor: not-allowed; }
+.poll-result-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; font-size: 12px; color: #586176; }
+.poll-text-button { border: 0; padding: 5px 0; background: transparent; color: #15386f; font: inherit; font-size: 12px; font-weight: 750; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.poll-text-button:disabled { color: #586176; cursor: wait; }
+.poll-results { margin-top: 20px; border-top: 1px solid #d6dbe5; padding-top: 10px; }
+.poll-result { margin: 14px 0; }
+.poll-result > div:first-child { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.poll-result small { color: #586176; margin-left: 4px; }
+.poll-result-track { height: 7px; background: #e9ecf1; margin-top: 8px; overflow: hidden; }
+.poll-result-track span { display: block; height: 100%; background: #15386f; }
+.opinion-poll .poll-note { font-size: 11px; line-height: 1.7; color: #586176; margin-top: 20px; }
+.opinion-poll .poll-error, .opinion-poll .poll-message { padding: 12px; margin-top: 16px; font-size: 13px; line-height: 1.6; }
+.poll-error { background: #fff0f1; color: #8e1a24; }
+.poll-message { background: #eef4ef; color: #2c5637; }
+.issues-methodology { padding: 32px 36px; background: #eee9de; }
+.issues-methodology h2 { font-size: 25px; margin-bottom: 14px; }
+.issues-methodology p { font-size: 12px; color: #4c586e; max-width: 900px; }
+.issues-methodology p + p { margin-top: 10px; }
+@media (max-width: 760px) {
+  .issue-section { grid-template-columns: 1fr; }
+  .issues-intro { display: block; padding: 24px; }
+  .issues-intro p { margin-top: 10px; }
+  .issues-jump { grid-template-columns: 1fr; gap: 8px; }
+  .issues-jump a { padding: 13px; }
+  .issue-brand { margin: 12px 0 20px; height: 70px; }
+  .issue-brand-constitutional-law { height: 130px; }
+  .issue-brand-constitutional-law img { width: 130px; height: 130px; }
+  .issues-methodology { padding: 28px; }
+}
