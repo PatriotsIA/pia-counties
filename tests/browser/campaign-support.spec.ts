@@ -43,6 +43,16 @@ for (const candidate of [{ id: "greg-abbott", name: "Greg Abbott" }, { id: "ken-
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`/${candidate.id}`);
+      await expect(page.locator(".site-header .brand")).toContainText("Patriots in Action");
+      const menu = page.getByRole("button", { name: "Toggle navigation" });
+      if (await menu.isVisible()) {
+        await menu.click();
+        await expect(menu).toHaveAttribute("aria-expanded", "true");
+      }
+      await expect(page.locator("#site-navigation").getByRole("link", { name: "Candidates", exact: true })).toBeVisible();
+      await expect(page.locator("#site-navigation").getByRole("link", { name: "Issues", exact: true })).toHaveAttribute("href", "/issues");
+      await expect(page.locator('#site-navigation a[href="/greg-abbott"], #site-navigation a[href="/ken-paxton"]')).toHaveCount(0);
+      if (await menu.isVisible()) await menu.click();
       for (const image of await page.locator("img").all()) {
         await image.scrollIntoViewIfNeeded();
         await expect.poll(() => image.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
@@ -88,4 +98,26 @@ test("square and banner support ads lead to the landing pages without navigation
   const ad = page.locator('[data-ad-id="greg-abbott-square"]');
   await ad.click();
   await expect(page).toHaveURL(/\/greg-abbott\?pia_ad=greg-abbott-square/);
+});
+
+test("original banner ads remain ahead of the candidate banners in shared rotations", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const [path, legacy] of [
+    ["/", ["mattress-banner-2026", "pasture-exchange-2026"]],
+    ["/tx/potter", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "mattress-banner-2026", "pasture-exchange-2026"]],
+    ["/tx/randall", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "mattress-banner-2026", "pasture-exchange-2026"]],
+  ] as const) {
+    await page.goto(path);
+    const carousel = page.locator(".sponsor-banner-carousel");
+    await expect(carousel).toHaveCount(1);
+    const ids = await carousel.locator("[data-ad-id]").evaluateAll(ads => ads.map(ad => ad.getAttribute("data-ad-id")));
+    expect(ids).toEqual([...legacy, "greg-abbott-banner", "ken-paxton-banner"]);
+    for (const ad of await carousel.locator("[data-ad-id]").all()) {
+      await ad.scrollIntoViewIfNeeded();
+      await expect.poll(() => ad.locator("img").evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
+    }
+    await expect(carousel.getByText("Unpaid support message created by Patriots in Action.", { exact: true })).toHaveCount(0);
+  }
+  await page.goto("/");
+  await expect(page.locator(".campaign-support-square").getByText("Unpaid support message created by Patriots in Action.", { exact: true })).toHaveCount(0);
 });

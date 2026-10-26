@@ -56,6 +56,8 @@ export const supportCampaigns: SupportCampaign[] = [
     videoArchive: "https://www.youtube.com/user/KenPaxtonTX",
   },
 ];
+export const campaignBannerAdIds = supportCampaigns.map(c => `${c.id}-banner`);
+
 export function campaignLink(campaign: SupportCampaign, destination: string, content: string) {
   const url = new URL(destination);
   url.searchParams.set("utm_source", "patriotsinaction");

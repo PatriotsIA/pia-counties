@@ -26,7 +26,7 @@ import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { IssuesPage } from "./components/IssuesPage";
 import { CampaignLandingPage } from "./components/CampaignLandingPage";
 import { CampaignSupportAds, PinnedSupportCandidates } from "./components/CampaignSupport";
-import { supportCampaigns } from "./data/campaigns";
+import { campaignBannerAdIds, campaignLink, supportCampaigns, type SupportCampaign } from "./data/campaigns";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -586,7 +586,7 @@ function App() {
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
-        {supportCampaigns.map(c => <Route key={c.id} path={c.path} element={<CampaignLandingPage key={c.id} campaign={c} />} />)}
+        {supportCampaigns.map(c => <Route key={c.id} path={c.path} element={<CampaignLandingPage key={c.id} campaign={c} header={<SiteHeader campaign={c} />} />} />)}
         <Route path="/issues" element={<Shell route="static" suppressAdRails><IssuesPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
@@ -642,7 +642,7 @@ function HomePage() {
           <InfoCard title="Move Patriots To Action" body="Follow local news, submit events, watch PIA TV, join the community, discover partners, and turn civic concern into practical action in your county." />
         </div>
       </section>
-      <CampaignSupportAds format="square" />
+      <CampaignSupportAds />
       <FoundingPartnerCallout />
       <AdSlot route="home" slot="site-inline" limit={3} />
       <section className="section">
@@ -2158,25 +2158,10 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
   );
 }
 
-function Shell({
-  county,
-  children,
-  page,
-  route,
-  suppressAdRails = false,
-}: {
-  county?: CountySite;
-  children: ReactNode;
-  page?: CountyPageKey;
-  route: AdRouteType;
-  suppressAdRails?: boolean;
-}) {
+function SiteHeader({ campaign }: { campaign?: SupportCampaign }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const showAdRails = false;
-
-  return (
-    <>
-      <TopTicker county={county} weatherSponsor={county ? countyWeatherSponsor(county) : undefined} />
+  const outbound = (url: string, content: string) => campaign ? campaignLink(campaign, url, content) : url;
+  return <>
       <header className="topbar">
         <div className="container topbar-inner">
           <span>Meet Your Neighbors!</span>
@@ -2207,28 +2192,49 @@ function Shell({
             <Link to="/rewards">Rewards</Link>
             <Link to="/partners">Partners</Link>
             <Link to="/issues">Issues</Link>
-            <a href={site.links.community}>Community</a>
+            <a href={outbound(site.links.community, "header_community")} target={campaign ? "_blank" : undefined} rel={campaign ? "noopener noreferrer" : undefined}>Community</a>
             <Link to="/candidates">Candidates</Link>
-            <a href="https://www.whitehouse.gov/live/" target="_blank" rel="noreferrer">White House News</a>
+            <a href={outbound("https://www.whitehouse.gov/live/", "header_white_house")} target="_blank" rel="noopener noreferrer">White House News</a>
             <Link to="/tv">PIA TV</Link>
             <Link to="/contact">Contact</Link>
-            <a href={site.links.merch} target="_blank" rel="noreferrer">Merch</a>
+            <a href={outbound(site.links.merch, "header_merch")} target="_blank" rel="noopener noreferrer">Merch</a>
           </nav>
         </div>
       </header>
+  </>;
+}
+
+function Shell({
+  county,
+  children,
+  page,
+  route,
+  suppressAdRails = false,
+}: {
+  county?: CountySite;
+  children: ReactNode;
+  page?: CountyPageKey;
+  route: AdRouteType;
+  suppressAdRails?: boolean;
+}) {
+  const showAdRails = false;
+
+  return (
+    <>
+      <TopTicker county={county} weatherSponsor={county ? countyWeatherSponsor(county) : undefined} />
+      <SiteHeader />
       <main className={showAdRails ? "shell-content-frame" : "container"}>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
         <div className={showAdRails ? "container shell-main-content" : "shell-page-stack"}>
           {children}
           <div className="shell-pre-footer">
-            {route === "home" || !suppressAdRails ? <CampaignSupportAds /> : null}
             {route !== "directory" && route !== "state" && !(route === "county" && page === "candidates") ? (
               <PatriotNetworkCommunityBanner />
             ) : null}
             {route === "county" && county ? (
-              <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} />
-            ) : !suppressAdRails ? (
-              <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} />
+              <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} additionalBannerAdIds={campaignBannerAdIds} />
+            ) : route === "home" || !suppressAdRails ? (
+              <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} additionalBannerAdIds={campaignBannerAdIds} />
             ) : null}
           </div>
         </div>

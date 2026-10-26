@@ -14,23 +14,31 @@ type AdSlotProps = {
   limit?: number;
   placement?: AdPlacement;
   adIds?: readonly string[];
+  additionalBannerAdIds?: readonly string[];
 };
 
-export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds }: AdSlotProps) {
+export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds, additionalBannerAdIds = [] }: AdSlotProps) {
   const resolveLimit = slot === "county-page-footer" || slot === "site-footer" ? Math.max(limit, 20) : limit;
   const resolvedAds = useMemo(
     () => (adIds?.length ? resolveAdsByIds([...adIds]) : resolveAdsForSlot({ slot, route, county, page, limit: resolveLimit })),
     [adIds, county, page, resolveLimit, route, slot],
   );
 
-  if (!resolvedAds.length) return null;
+  if (!resolvedAds.length && !additionalBannerAdIds.length) return null;
 
   if (slot === "county-home-inline") {
     return <CountySponsorCarousel ads={resolvedAds} county={county} page={page} placement={placement} slot={slot} />;
   }
 
-  if (slot === "county-page-footer" || slot === "site-footer" || slot === "campaign-support-banner") {
+  if (slot === "county-page-footer" || slot === "site-footer") {
     const bannerAds = resolvedAds.filter((ad) => ad.placement === "leaderboard" && ad.display === "image-only").slice(0, limit);
+    const includedIds = new Set(bannerAds.map(ad => ad.id));
+    for (const ad of resolveAdsByIds([...additionalBannerAdIds])) {
+      if (ad.placement === "leaderboard" && ad.display === "image-only" && !includedIds.has(ad.id)) {
+        bannerAds.push(ad);
+        includedIds.add(ad.id);
+      }
+    }
     if (!bannerAds.length) return null;
     return <BannerAdCarousel ads={bannerAds} county={county} page={page} placement={placement} slot={slot} />;
   }
@@ -76,10 +84,10 @@ function BannerAdCarousel({
   }
 
   return (
-    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel`} aria-label={slot === "campaign-support-banner" ? "Unpaid PIA support banners" : "Sponsored banner messages"}>
+    <aside className={`sponsor-slot sponsor-slot-${slot} sponsor-banner-carousel`} aria-label="Sponsored banner messages">
       <div className="sponsor-banner-carousel-shell">
         {ads.length > 1 ? (
-          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-prev" type="button" onClick={() => handleCarouselClick(-1)} aria-label={slot === "campaign-support-banner" ? "Previous PIA support banner" : "Previous sponsor banner"}>
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-prev" type="button" onClick={() => handleCarouselClick(-1)} aria-label="Previous sponsor banner">
             <span aria-hidden="true">&lt;</span>
           </button>
         ) : null}
@@ -91,7 +99,7 @@ function BannerAdCarousel({
           ))}
         </div>
         {ads.length > 1 ? (
-          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-next" type="button" onClick={() => handleCarouselClick(1)} aria-label={slot === "campaign-support-banner" ? "Next PIA support banner" : "Next sponsor banner"}>
+          <button className="sponsor-carousel-arrow sponsor-carousel-arrow-next" type="button" onClick={() => handleCarouselClick(1)} aria-label="Next sponsor banner">
             <span aria-hidden="true">&gt;</span>
           </button>
         ) : null}
@@ -205,7 +213,7 @@ function AdCard({ ad, county, page, placement, slot }: { ad: AdCreative; county?
 
   return (
     <a
-      className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}${ad.campaignId === COUNTY_POST_CAMPAIGN ? " sponsor-card-county-post" : ""}`}
+      className={`sponsor-card sponsor-card-${placement} sponsor-card-${ad.display}${ad.campaignId === COUNTY_POST_CAMPAIGN ? " sponsor-card-county-post" : ""}${ad.campaignId.startsWith("pia-support-") ? " sponsor-card-pia-support" : ""}`}
       data-ad-id={ad.id}
       href={ad.href}
       onClick={() => trackAdClick(trackingPayload)}

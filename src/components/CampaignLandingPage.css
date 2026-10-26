@@ -4,11 +4,6 @@
 .campaign-page a:focus-visible, .campaign-page button:focus-visible, .campaign-pins a:focus-visible { outline: 3px solid #d49e36; outline-offset: 5px; }
 .campaign-skip { position: absolute; top: -100px; left: 15px; z-index: 10; padding: 15px; background: white; }
 .campaign-skip:focus { top: 10px; }
-.campaign-header { max-width: 1400px; margin: auto; padding: 22px 5%; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.campaign-pia-brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 800; text-decoration: none; }
-.campaign-pia-brand img { object-fit: contain; }
-.campaign-pia-brand small { display: block; margin-top: 5px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 600; }
-.campaign-back { font-size: 12px; font-weight: 700; text-decoration: none; }
 .campaign-hero { display: grid; grid-template-columns: 1.12fr 1fr; background: var(--cp-navy); color: #fff; min-height: 670px; }
 .campaign-hero-copy { padding: 68px max(6vw, calc((100vw - 1200px) / 2)); padding-right: 35px; align-self: center; }
 .campaign-page .campaign-kicker { margin: 0 0 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; line-height: 1.6; font-weight: 700; }
@@ -84,18 +79,12 @@
 .campaign-pin p { font-size: 13px; margin: 0 0 20px; }
 .campaign-pin a { font-size: 12px; font-weight: 700; color: #a01f30; }
 .campaign-support-ads { margin: 38px auto; width: 100%; }
-.campaign-support-ads > p { font-size: 11px; color: #526173; text-align: center; }
 .campaign-support-squares { display: grid; grid-template-columns: repeat(2,minmax(0,400px)); justify-content: center; gap: 24px; }
 .campaign-support-squares .sponsor-slot { margin: 0; padding: 0; background: transparent; border: 0; }
 .campaign-support-squares .sponsor-label { display: none; }
 .campaign-support-squares .sponsor-card { width: 100%; max-width: none; border: 0; margin: 0; border-radius: 0; padding: 0; }
 .campaign-support-squares .sponsor-card img { width: 100%; height: auto; max-height: none; border-radius: 0; }
 @media(max-width: 800px) {
-  .campaign-header { padding: 18px 22px; }
-  .campaign-pia-brand { font-size: 15px; gap: 8px; }
-  .campaign-pia-brand img { width: 34px; height: 34px; }
-  .campaign-pia-brand small { font-size: 8px; letter-spacing: 1px; }
-  .campaign-back { font-size: 10px; max-width: 95px; text-align: right; }
   .campaign-hero { min-height: 580px; grid-template-columns: 1.1fr 1fr; }
   .campaign-hero-copy { padding: 40px 25px; }
   .campaign-hero h1 { font-size: 64px; letter-spacing: -3px; }
@@ -143,4 +132,4 @@
 .campaign-support-ads .sponsor-card-image-only picture { border-radius: 0; border: 0; box-shadow: none; padding: 0; background: transparent; }
 .campaign-support-ads .sponsor-card-image-only::before,
 .campaign-support-ads .sponsor-card-image-only::after { display: none; }
-.campaign-support-banner .sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img { max-height: none; height: auto; }
+.sponsor-banner-carousel .sponsor-card-pia-support.sponsor-card-leaderboard.sponsor-card-image-only img { max-height: none; height: auto; }

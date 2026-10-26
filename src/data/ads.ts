@@ -27,7 +27,6 @@ import plainsBankAdImage from "../../NewAds/PlainsBank250.jpg";
 import trailerLargeAdImage from "../../NewAds/TrailerLarge.jpg";
 
 export type AdSlotId =
-  | "campaign-support-banner"
   | "campaign-support-square"
   | "county-home-inline"
   | "county-calendar-inline"

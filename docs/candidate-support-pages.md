@@ -10,14 +10,17 @@ These are support landing pages, not candidate-submitted or PIA interview profil
 - Both candidates are pinned, Abbott first, above the national `/candidates`
   directory. The cards honor its search, state and office filters. Counts refer
   to directory profiles; no public API records or private submissions are changed.
-- Square ads appear on the PIA homepage. Banners rotate in a separate PIA support
-  carousel above existing footer promotions throughout the regular site shell.
-  Existing sponsor ordering is preserved. Both formats link to the landing pages.
-- No links were added to the main navigation or global navigation footer.
+- Square ads appear on the PIA homepage. The candidate banners are appended to
+  the existing sponsor banner carousels, including the homepage, after the original
+  banners without reducing their limit or changing their order. Both formats link
+  to the landing pages. The attribution appears within the creative, without an
+  extra attribution sentence above the ads.
+- Both pages use the shared PIA header and desktop/mobile navigation. No candidate
+  links were added to that menu. Campaign-page external header links also carry UTMs.
 - Placements are public and uniform; no visitor demographic or geographic ad targeting.
 - Internal ad URLs use `pia_ad=<candidate>-<format>` so attribution does not reset
   the visitor's analytics acquisition. Existing `ad_click` and `ad_impression`
-  events identify each creative and the dedicated support placement.
+  events identify each creative and the placement.
 - Every external content link on each standalone landing page uses
   `utm_source=patriotsinaction`, `utm_medium=referral`,
   `utm_campaign=vote_<candidate>_2026`, and a placement-specific `utm_content`.
@@ -92,8 +95,9 @@ live check; browser tests mock the third-party player for determinism.
 
 ## Release validation
 
-October 26: production build, lint, and all 38 unit tests passed. All six new
-campaign browser tests passed. The full regression run passed 55 of 56 existing
+October 26: production build, lint, and all 38 unit tests passed. All seven campaign
+browser tests passed, including shared desktop/mobile navigation and the original
+banner inventory alongside both candidate banners. The full regression run passed 55 of 56 existing
 browser tests; the previously observed County Post promotion-logo visibility
 assertion in `integration.spec.ts:159` still fails. Existing sponsor carousel
 controls, candidate intake/review, directory filters, and opinion polls passed.
