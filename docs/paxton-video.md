@@ -17,14 +17,17 @@ the two pages; this does not create a second candidate directory entry.
 Source: https://www.facebook.com/watch/?v=1137628245392101
 
 The publicly available source is 1280×720, H.264 with AAC audio. The full file is
-2239.766 seconds (37:20 rounded); its streams were copied without re-encoding.
+2239.767 seconds (37:20 rounded); its streams were copied without re-encoding.
 The opening clip is re-encoded at CRF 18 to end both streams at exactly 453
 seconds. Both MP4s have their metadata moved to the beginning for streaming.
 The poster is an unaltered frame at 00:30. Do not describe the opening excerpt
 as Paxton's speech: the recording includes introductory remarks.
 
-`ops/media/paxton-manifest.json` records durations, codecs, sizes, and SHA-256
-hashes. Local prepared files live in ignored `coverage/paxton-media/` in the
+`ops/media/paxton-manifest.json` records published durations, codecs, sizes, and
+SHA-256 hashes separately from local preparation files. The slow workstation
+upload was replaced by temporary CodeBuild jobs that fetched the public source
+and prepared the media directly in AWS. No persistent build service is required.
+Local prepared files live in ignored `coverage/paxton-media/` in the
 release worktree; large video files do not belong in Git.
 
 CloudFormation: `ops/media/template.json`, stack `pia-site-media`, `us-west-1`,
