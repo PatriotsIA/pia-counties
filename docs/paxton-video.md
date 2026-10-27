@@ -59,7 +59,9 @@ uses `main`; the redesign deploys from `editorial-staging` and retains its
 staging noindex configuration. Do not merge the whole redesign into production.
 
 Node 22 build, lint, 38 unit tests, and the eight focused campaign/Paxton browser
-tests pass. The new browser check covers distinct routes/canonicals, the correct
+tests pass on both designs. The full production browser suite also passed all
+64 tests; the final section-link check passed again on both designs. Desktop
+and mobile screenshots were visually reviewed. The new browser check covers distinct routes/canonicals, the correct
 excerpt source, no autoplay, the existing ad, six primary-source links, four
 responsive widths, full-video ordering, and preservation of all four older
 Paxton videos. Live media playback and seeking require a separate hosted check.
