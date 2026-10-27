@@ -1,0 +1,2 @@
+.vimeo-embed { position: relative; aspect-ratio: 16 / 9; background: #0b1230; }
+.vimeo-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }

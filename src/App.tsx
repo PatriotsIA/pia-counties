@@ -23,6 +23,7 @@ import { parallelPartners } from "./data/parallel-partners";
 import { gopConnectPartner } from "./data/gopconnect";
 import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
 import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
+import { VimeoEmbed, type VimeoVideo } from "./components/VimeoEmbed";
 import { IssuesPage } from "./components/IssuesPage";
 import { CampaignLandingPage } from "./components/CampaignLandingPage";
 import { PaxtonPage } from "./components/PaxtonPage";
@@ -75,6 +76,7 @@ type Partner = {
   image?: string;
   countyKeys?: string[];
   presentsCountyPages?: boolean;
+  video?: VimeoVideo;
 };
 
 const panhandleCountySponsorKeys = ["texas/potter", "texas/randall"];
@@ -1578,37 +1580,50 @@ function CountyPartners({ county }: { county: CountySite }) {
 }
 
 function PartnerList({ county, partners, showCountyScope = false }: { county?: CountySite; partners: Partner[]; showCountyScope?: boolean }) {
+  const videoPartners = partners.filter((partner) => partner.video);
   return (
-    <ul className="partner-list">
-      {partners.map((partner) => (
-        <li key={partner.name}>
-          <article className="partner-card">
-            {partner.image ? <SiteImage sizes="(max-width: 780px) 200px, 300px" src={partner.image} alt="" loading="lazy" /> : null}
-            <div className="partner-card-copy">
-              <a className="partner-card-title" href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
-                {partner.name}
-              </a>
-              <p>{partner.description}</p>
-              {showCountyScope && partner.countyKeys?.length ? (
-                <div className="partner-county-scope">
-                  <span>County founding partners:</span>
-                  <div className="partner-county-links">
-                    {partner.countyKeys.map((key) => {
-                      const countyScope = countyScopeForKey(key);
-                      return (
-                        <Link className="partner-county-link" key={key} to={countyScope.path}>
-                          {countyScope.label}
-                        </Link>
-                      );
-                    })}
+    <>
+      <ul className="partner-list">
+        {partners.map((partner) => (
+          <li key={partner.name}>
+            <article className="partner-card">
+              {partner.image ? <SiteImage sizes="(max-width: 780px) 200px, 300px" src={partner.image} alt="" loading="lazy" /> : null}
+              <div className="partner-card-copy">
+                <a className="partner-card-title" href={county && partner.name === "The Patriot Merch Store" ? county.links.merch : partner.href} target="_blank" rel="noreferrer">
+                  {partner.name}
+                </a>
+                <p>{partner.description}</p>
+                {showCountyScope && partner.countyKeys?.length ? (
+                  <div className="partner-county-scope">
+                    <span>County founding partners:</span>
+                    <div className="partner-county-links">
+                      {partner.countyKeys.map((key) => {
+                        const countyScope = countyScopeForKey(key);
+                        return (
+                          <Link className="partner-county-link" key={key} to={countyScope.path}>
+                            {countyScope.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-          </article>
-        </li>
-      ))}
-    </ul>
+                ) : null}
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+      {videoPartners.map(({ name, video }) => video ? (
+        <figure className="partner-video" key={name}>
+          <figcaption>
+            <span className="eyebrow">Partner video · {name}</span>
+            <strong>{video.label}</strong>
+            <span>{video.details} · <a href={video.watchUrl} target="_blank" rel="noreferrer">Watch on Vimeo ↗</a></span>
+          </figcaption>
+          <VimeoEmbed video={video} />
+        </figure>
+      ) : null)}
+    </>
   );
 }
 

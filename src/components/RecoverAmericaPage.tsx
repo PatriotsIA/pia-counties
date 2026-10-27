@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { recoverAmerica as ra } from "../data/recover-america";
+import { recoverAmerica as ra, recoverAmericaVideo as video } from "../data/recover-america";
+import { VimeoEmbed } from "./VimeoEmbed";
 import "./RecoverAmericaPage.css";
 
 export function RecoverAmericaPage() {
@@ -29,11 +30,20 @@ export function RecoverAmericaPage() {
       </section>
 
       <nav className="recover-section-nav" aria-label="On this page">
+        <a href="#recover-video">Watch the video</a>
         <a href="#recover-goals">Their goals</a>
         <a href="#recover-partnership">Our partnership</a>
         <a href="#protect-children">Protect Children pledge</a>
         <a href="#support-recover-america">Ways to support</a>
       </nav>
+
+      <section className="recover-section recover-video" id="recover-video" aria-labelledby="recover-video-title">
+        <div className="recover-section-heading">
+          <div><p className="recover-eyebrow">Watch · {video.details}</p><h2 id="recover-video-title">{video.label}</h2></div>
+          <a className="recover-text-link" href={video.watchUrl} target="_blank" rel="noopener noreferrer">Watch on Vimeo <span aria-hidden="true">↗</span></a>
+        </div>
+        <VimeoEmbed video={video} />
+      </section>
 
       <section className="recover-section" id="recover-goals" aria-labelledby="recover-goals-title">
         <div className="recover-section-heading">

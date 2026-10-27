@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import catalog from "../data/issue-polls.json";
 import config from "../data/issues-poll-api.json";
-import { recoverAmerica } from "../data/recover-america";
+import { recoverAmerica, recoverAmericaVideo } from "../data/recover-america";
 import { OpinionPoll, type Poll } from "./OpinionPoll";
+import { VimeoEmbed } from "./VimeoEmbed";
 import "./IssuesPage.css";
 
 const issues = [
@@ -57,6 +58,7 @@ export function IssuesPage() {
         <p className="issue-description">{issue.description}</p>
         {issue.href.startsWith("/") ? <Link className="issue-link" to={issue.href}>{issue.link} <span aria-hidden="true">→</span></Link> : <a className="issue-link" href={issue.href} target="_blank" rel="noopener noreferrer">{issue.link} <span aria-hidden="true">↗</span></a>}
         {issue.id === "protect-children" && <a className="issue-secondary-link" href={recoverAmerica.pledge} target="_blank" rel="noopener noreferrer">Read the official Protect Children pledge ↗</a>}
+        {issue.id === "protect-children" && <figure className="issue-video"><VimeoEmbed video={recoverAmericaVideo} /><figcaption><strong>{recoverAmericaVideo.label}</strong> {recoverAmericaVideo.details} · <a href={recoverAmericaVideo.watchUrl} target="_blank" rel="noopener noreferrer">Watch on Vimeo ↗</a></figcaption></figure>}
       </div>
       <OpinionPoll poll={pollsById[issue.id]} result={results[issue.id]} loading={loading} loadError={error} refresh={() => { setLoading(true); void refresh(); }} onResult={poll => setResults(current => ({ ...current, [poll.id]: (current[poll.id]?.total || 0) > (poll.total || 0) ? current[poll.id] : poll }))} />
     </section>)}

@@ -37,6 +37,25 @@ Self-hosted WebP assets total 41,230 bytes: lossless 916×100 logo and an 800×1
 portrait. Explicit image dimensions reserve space; the hero portrait has high
 fetch priority. No remote image hotlinks or new dependencies are needed.
 
+## Video — October 27, 2026
+
+The Patriots in Action TV video "BONNIE WALLACE RECOVERAMERICA"
+(https://vimeo.com/1239959908, 1 hr 6 min) appears wherever PIA presents
+Recover America:
+
+- `/recover-america`: a "Watch the video" section directly after the hero, with
+  its own entry in the on-page navigation.
+- `/issues`: beneath the Protect Children links in that issue's column.
+- `/partners` and every county partners page: a feature beneath the sitewide
+  partner cards, labelled as Recover America's partner video. The partner grid
+  itself is unchanged.
+
+`VimeoEmbed` uses Vimeo's supplied player URL, permissions and title in a lazily
+loaded 16:9 frame. Vimeo's `player.js` is omitted because nothing uses its
+scripting API. Vimeo's oEmbed endpoint answers without a referring domain, so
+embedding is not domain-restricted. Its bot check blocks headless browsers, so
+the browser test pins the player URL and playback is confirmed by hand.
+
 ## Validation
 
 - Node 22: 38 unit tests pass; ESLint, TypeScript, and production build pass.
