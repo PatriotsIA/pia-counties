@@ -265,7 +265,9 @@ a { text-underline-offset: 4px; }
 .card-grid.three > .card:nth-child(3n + 1) { background: #e8eef3; border-top-color: var(--navy); }
 .card-grid.three > .card:nth-child(3n + 2) { background: #f5e8e8; border-top-color: var(--red); }
 .card-grid.three > .card:nth-child(3n) { background: #f3eddc; border-top-color: #ad873c; }
-.directory-search, .candidate-filters { background: #e8eef3; border-top: 3px solid var(--navy); }
+.candidate-filters { background: #e8eef3; border-top: 3px solid var(--navy); }
+.directory-search { background: var(--red); color: #fff; border-color: var(--red); }
+.directory-search > p, .directory-search .directory-search-tooltip { color: #fff; }
 .directory-card { background: #f0f4f7; border-top-color: var(--blue); }
 .directory-card:nth-child(3n + 2) { background: #fbf1f0; border-top-color: var(--red); }
 .directory-card:nth-child(3n) { background: #f5f0e3; border-top-color: #ad873c; }
