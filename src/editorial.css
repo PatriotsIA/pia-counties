@@ -273,6 +273,9 @@ a { text-underline-offset: 4px; }
 .directory-card:nth-child(3n) { background: #f5f0e3; border-top-color: #ad873c; }
 .partner-card, .candidate-card { border-top: 3px solid var(--navy); }
 .partner-card:nth-child(even), .candidate-card:nth-child(even) { border-top-color: var(--red); }
+.partner-video { border: 1px solid var(--border); border-top: 3px solid var(--navy); border-radius: 0; background: #fff; box-shadow: none; }
+.partner-video strong { font: 400 25px/1.2 Georgia, serif; }
+.partner-video .vimeo-embed { border-radius: 0; }
 .founding-partner-callout { background: #e5edf3; border-left: 4px solid var(--gold); }
 .compact-about { background: var(--navy); border: 0; border-left: 4px solid var(--gold); color: white; }
 .compact-about h2 { color: white; }
