@@ -1,0 +1,43 @@
+.paxton-intro { background: #102a45; color: #fff; border-bottom: 5px solid #ba2635; }
+.paxton-intro-inner { max-width: 1200px; margin: auto; padding: 65px 35px 55px; }
+.paxton-intro .campaign-kicker { color: #d4b77c; }
+.paxton-intro h1 { font: 400 clamp(44px, 5.5vw, 76px)/1.06 Georgia, serif; letter-spacing: -2px; margin: 0 0 25px; }
+.paxton-intro h1 span { color: #e7d7b4; }
+.paxton-deck { max-width: 720px; font-size: 17px; line-height: 1.8; margin: 0 0 28px; color: #e1e7ec; }
+.paxton-feature { display: grid; grid-template-columns: minmax(0, 2.45fr) minmax(0, 1fr); gap: 35px; align-items: start; padding-top: 45px; padding-bottom: 55px; }
+.paxton-event-video { min-width: 0; border: 1px solid #deded7; background: #fff; }
+.paxton-event-video video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #081b32; }
+.paxton-video-caption { padding: 24px; }
+.paxton-video-caption .campaign-kicker { margin-bottom: 12px; }
+.paxton-video-caption h3 { margin-bottom: 10px; }
+.paxton-video-caption p { margin-top: 0; }
+.paxton-video-links { display: flex; flex-wrap: wrap; gap: 15px 25px; }
+.paxton-video-links a { font-size: 12px; font-weight: 700; }
+.paxton-support .sponsor-slot, .paxton-support .sponsor-card { padding: 0; margin: 0; border: 0; background: transparent; border-radius: 0; width: 100%; max-width: none; }
+.paxton-support .sponsor-card img { width: 100%; max-height: none; height: auto; border-radius: 0; }
+.paxton-support h2 { font-size: 27px; margin: 24px 0 10px; }
+.paxton-support p { font-size: 14px; margin: 0 0 15px; }
+.paxton-record { border-top: 1px solid #deded7; padding-top: 55px; }
+.paxton-record-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #526173; }
+.paxton-record-intro { max-width: 800px; }
+.paxton-accomplishments { padding: 0; margin: 36px 0 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 55px; }
+.paxton-accomplishments li { position: relative; padding: 30px 0 32px 45px; border-top: 1px solid #deded7; }
+.paxton-accomplishments .campaign-number { position: absolute; left: 0; top: 31px; }
+.paxton-accomplishments .campaign-kicker { margin-bottom: 15px; font-size: 10px; }
+.paxton-accomplishments h3 { font-size: 25px; }
+.paxton-record-source { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 22px; }
+.paxton-record-source span { color: #526173; font-size: 11px; }
+.campaign-full-event { margin-bottom: 35px; }
+@media(max-width: 800px) {
+  .paxton-feature { grid-template-columns: minmax(0, 1fr); }
+  .paxton-support { max-width: 350px; margin: 0 auto; }
+  .paxton-accomplishments { gap: 0 28px; }
+}
+@media(max-width: 580px) {
+  .paxton-intro-inner { padding: 45px 25px 38px; }
+  .paxton-intro h1 { letter-spacing: -1px; }
+  .paxton-deck { font-size: 15px; }
+  .paxton-accomplishments { grid-template-columns: 1fr; }
+  .paxton-video-caption { padding: 20px; }
+  .paxton-record-label { display: block; margin-top: 20px; }
+}

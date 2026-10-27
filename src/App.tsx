@@ -25,6 +25,8 @@ import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
 import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { IssuesPage } from "./components/IssuesPage";
 import { CampaignLandingPage } from "./components/CampaignLandingPage";
+import { PaxtonPage } from "./components/PaxtonPage";
+import { paxtonCampaign } from "./data/paxton";
 import { CampaignSupportAds, PinnedSupportCandidates } from "./components/CampaignSupport";
 import { featuredBannerAdIds } from "./data/recover-america-ads";
 import { campaignLink, supportCampaigns, type SupportCampaign } from "./data/campaigns";
@@ -386,6 +388,7 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
 }
 
 function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
+  if (pathname === "/paxton") return { title: "Ken Paxton — Big Texan Video & Accomplishments", description: "Watch the opening 7:33 of Ken Paxton’s Come and Take It event at The Big Texan and explore sourced accomplishments from his service as Texas attorney general.", canonicalPath: "/paxton" };
   const campaign = supportCampaigns.find(c => c.path === pathname);
   if (campaign) return { title: `Vote ${campaign.name} — PIA Supports`, description: campaign.summary, canonicalPath: campaign.path };
   if (pathname === "/") {
@@ -587,6 +590,7 @@ function App() {
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
+        <Route path="/paxton" element={<PaxtonPage header={<SiteHeader campaign={paxtonCampaign} />} />} />
         {supportCampaigns.map(c => <Route key={c.id} path={c.path} element={<CampaignLandingPage key={c.id} campaign={c} header={<SiteHeader campaign={c} />} />} />)}
         <Route path="/issues" element={<Shell route="static" suppressAdRails><IssuesPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />

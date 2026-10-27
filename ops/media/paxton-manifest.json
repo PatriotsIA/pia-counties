@@ -1,0 +1,56 @@
+{
+  "source": "https://www.facebook.com/watch/?v=1137628245392101",
+  "sourceFile": "Ken Paxton\u2019s \u201cCome and Take It\u201d tour at The Big Texan [1137628245392101].mp4",
+  "prepared": "2026-10-27",
+  "posterFrameSeconds": 30,
+  "files": [
+    {
+      "key": "paxton/big-texan-full-v1.mp4",
+      "sha256": "e8848bf1d09b6b3882738589fb41edffdc2567e22106431f6e2adf3f8c5a6caf",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1280,
+            "height": 720,
+            "duration": "2239.766000"
+          },
+          {
+            "codec_name": "aac",
+            "duration": "2239.616333"
+          }
+        ],
+        "format": {
+          "duration": "2239.766000",
+          "size": "238360381"
+        }
+      }
+    },
+    {
+      "key": "paxton/big-texan-opening-7m33s-v1.mp4",
+      "sha256": "03e25c771e30fdb771b8e12db26fe60f694fcf7fd9e2bad45ddaa66f3b7f01fc",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1280,
+            "height": 720,
+            "duration": "453.000000"
+          },
+          {
+            "codec_name": "aac",
+            "duration": "453.000000"
+          }
+        ],
+        "format": {
+          "duration": "453.000000",
+          "size": "112902425"
+        }
+      }
+    }
+  ]
+}
