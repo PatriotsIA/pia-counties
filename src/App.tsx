@@ -26,7 +26,8 @@ import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { IssuesPage } from "./components/IssuesPage";
 import { CampaignLandingPage } from "./components/CampaignLandingPage";
 import { CampaignSupportAds, PinnedSupportCandidates } from "./components/CampaignSupport";
-import { campaignBannerAdIds, campaignLink, supportCampaigns, type SupportCampaign } from "./data/campaigns";
+import { featuredBannerAdIds } from "./data/recover-america-ads";
+import { campaignLink, supportCampaigns, type SupportCampaign } from "./data/campaigns";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -624,7 +625,6 @@ function HomePage() {
             <a className="button" href={site.links.community}>Join Our Community</a>
             <a className="button red" href={site.links.merch} target="_blank" rel="noreferrer">Shop Merchandise</a>
           </div>
-          <SiteImage loading="eager" sizes="140px" className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -1356,7 +1356,6 @@ function CountyHome({ county }: { county: CountySite }) {
             <Link className="button" to={`${countyPath(county)}/events`}>Community Calendar</Link>
             <Link className="button" to={`${countyPath(county)}/submit-event`}>Submit an Event</Link>
           </div>
-          <SiteImage loading="eager" sizes="140px" className="hero-patriot-mark" src={site.brand.patriot} alt="Patriots in Action patriot mark" />
         </div>
         <HeroMedia />
       </section>
@@ -2187,16 +2186,16 @@ function SiteHeader({ campaign }: { campaign?: SupportCampaign }) {
             <span />
             <span className="sr-only">Toggle navigation</span>
           </button>
-          <nav id="site-navigation" className={menuOpen ? "site-nav open" : "site-nav"} onClick={() => setMenuOpen(false)}>
-            <Link to="/counties">Counties</Link>
-            <Link to="/rewards">Rewards</Link>
-            <Link to="/partners">Partners</Link>
-            <Link to="/issues">Issues</Link>
+          <nav aria-label="Main navigation" id="site-navigation" className={menuOpen ? "site-nav open" : "site-nav"} onClick={() => setMenuOpen(false)}>
+            <NavLink to="/counties">Counties</NavLink>
+            <NavLink to="/rewards">Rewards</NavLink>
+            <NavLink to="/partners">Partners</NavLink>
+            <NavLink to="/issues">Issues</NavLink>
             <a href={outbound(site.links.community, "header_community")} target={campaign ? "_blank" : undefined} rel={campaign ? "noopener noreferrer" : undefined}>Community</a>
-            <Link to="/candidates">Candidates</Link>
+            <NavLink to="/candidates">Candidates</NavLink>
             <a href={outbound("https://www.whitehouse.gov/live/", "header_white_house")} target="_blank" rel="noopener noreferrer">White House News</a>
-            <Link to="/tv">PIA TV</Link>
-            <Link to="/contact">Contact</Link>
+            <NavLink to="/tv">PIA TV</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
             <a href={outbound(site.links.merch, "header_merch")} target="_blank" rel="noopener noreferrer">Merch</a>
           </nav>
         </div>
@@ -2232,9 +2231,9 @@ function Shell({
               <PatriotNetworkCommunityBanner />
             ) : null}
             {route === "county" && county ? (
-              <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} additionalBannerAdIds={campaignBannerAdIds} />
+              <AdSlot county={county} page={page} route="county" slot="county-page-footer" limit={6} additionalBannerAdIds={featuredBannerAdIds} />
             ) : route === "home" || !suppressAdRails ? (
-              <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} additionalBannerAdIds={campaignBannerAdIds} />
+              <AdSlot county={county} page={page} route={route} slot="site-footer" limit={6} additionalBannerAdIds={featuredBannerAdIds} />
             ) : null}
           </div>
         </div>
@@ -2342,6 +2341,7 @@ function Footer() {
           <Link to="/terms">Terms</Link>
         </div>
       </div>
+      <div className="container footer-bottom"><span>Patriots in Action</span><span>{site.tagline}</span></div>
     </footer>
   );
 }
@@ -2349,7 +2349,7 @@ function Footer() {
 function HeroMedia() {
   return (
     <div className="hero-media">
-      <SiteImage loading="eager" sizes="(max-width: 780px) 90vw, 420px" className="hero-main-image" src={site.brand.americanHeader} alt="American flag and civic action artwork" />
+      <SiteImage loading="eager" sizes="(max-width: 780px) 90vw, (max-width: 1500px) 43vw, 650px" className="hero-main-image" src={site.brand.americanHeader} alt="American flag and civic action artwork" />
     </div>
   );
 }

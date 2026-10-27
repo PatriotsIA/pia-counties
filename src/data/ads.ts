@@ -2,6 +2,7 @@ import type { CountyPageKey } from "./counties";
 import { parallelPartners } from "./parallel-partners";
 import { gopConnectPartner, GOPCONNECT_AD_ID } from "./gopconnect";
 import { countyPostAds } from "./county-post-ads";
+import { recoverAmericaAds } from "./recover-america-ads";
 import { campaignSupportAds } from "./campaign-ads";
 import america250AdImage from "../../NewAds/Banner-America250-Large.jpg";
 import america250AdImageSmall from "../../NewAds/Banner-America250-Small.jpg";
@@ -84,6 +85,7 @@ export type AdCreative = {
 
 export const ads: AdCreative[] = [
   ...campaignSupportAds,
+  ...recoverAmericaAds,
   ...countyPostAds,
   {
     id: GOPCONNECT_AD_ID,

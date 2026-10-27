@@ -111,7 +111,7 @@ test("original banner ads remain ahead of the candidate banners in shared rotati
     const carousel = page.locator(".sponsor-banner-carousel");
     await expect(carousel).toHaveCount(1);
     const ids = await carousel.locator("[data-ad-id]").evaluateAll(ads => ads.map(ad => ad.getAttribute("data-ad-id")));
-    expect(ids).toEqual([...legacy, "greg-abbott-banner", "ken-paxton-banner"]);
+    expect(ids).toEqual([...legacy, "greg-abbott-banner", "ken-paxton-banner", "recover-america-banner"]);
     for (const ad of await carousel.locator("[data-ad-id]").all()) {
       await ad.scrollIntoViewIfNeeded();
       await expect.poll(() => ad.locator("img").evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);

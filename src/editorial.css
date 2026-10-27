@@ -1,0 +1,296 @@
+/* Shared PIA editorial system. Structural and interactive component styles stay
+   in styles.css; this final layer owns presentation across every public route. */
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #102a45;
+  background: #faf8f3;
+  --navy: #102a45;
+  --blue: #244866;
+  --red: #ba2635;
+  --cream: #faf8f3;
+  --gold: #d4b77c;
+  --muted: #526173;
+  --border: #dcdedb;
+  --shadow: 0 12px 32px #102a4510;
+  --patriot-glow: none;
+  --page-gutter: clamp(20px, 3.4vw, 80px);
+}
+body { background: var(--cream); line-height: 1.6; }
+.container { width: calc(100% - var(--page-gutter) * 2); max-width: none; }
+::selection { background: #e7d5ae; color: #102a45; }
+:where(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid #a47824; outline-offset: 4px; }
+:where(h1, h2, h3) { text-wrap: balance; }
+:where(p) { text-wrap: pretty; }
+a { text-underline-offset: 4px; }
+
+/* Masthead and navigation */
+.topbar { background: var(--navy); color: #e1e7ee; border: 0; font-size: 11px; letter-spacing: .025em; }
+.topbar a { color: inherit; text-decoration: none; }
+.topbar-inner { padding-block: 7px; }
+.site-header { background: #faf8f3fa; border-bottom: 1px solid #d7d9d5; backdrop-filter: blur(16px); }
+.header-inner { min-height: 88px; gap: 24px; padding-block: 14px; }
+.brand { gap: 12px; color: var(--navy); font: 400 25px/1.1 Georgia, serif; letter-spacing: -.7px; flex-shrink: 0; }
+.brand img { width: 48px; height: 48px; }
+.site-nav { gap: clamp(12px, 1.35vw, 28px); }
+.site-nav a { font-size: 12px; font-weight: 700; padding-block: 10px; border-bottom: 2px solid transparent; }
+.site-nav a:hover, .site-nav a[aria-current=page] { color: var(--red); border-bottom-color: var(--gold); }
+.menu-toggle { border-radius: 0; background: transparent; }
+.market-weather-bar, .precious-metals-ticker { box-shadow: none; border-color: var(--border); }
+
+/* Full-width editorial heroes; reading measures remain comfortable. */
+.hero, .county-hero {
+  margin: 0 calc(-1 * var(--page-gutter)) 0;
+  padding: clamp(36px, 5vw, 92px) var(--page-gutter);
+  gap: clamp(32px, 6vw, 100px);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  border: 0; border-bottom: 4px solid var(--gold); border-radius: 0;
+  box-shadow: none; background: var(--navy); color: #e0e6ec;
+}
+.hero h1, .county-hero h1, .page-hero h1, .candidate-profile-header h1 {
+  color: inherit; font-family: Georgia, 'Times New Roman', serif; font-weight: 400;
+  text-transform: none; text-shadow: none; line-height: 1.05; letter-spacing: -.045em;
+  font-size: clamp(44px, 5.5vw, 100px);
+}
+.hero h1, .county-hero h1 { color: white; margin-block: 20px 24px; }
+.hero p, .county-hero p { max-width: 66ch; font-size: 16px; line-height: 1.8; }
+.hero .eyebrow, .county-hero .eyebrow { color: var(--gold); font-size: 11px; line-height: 1.7; }
+.hero .hero-subtitle-eyebrow { color: #e0e6ec; letter-spacing: .12em; max-width: 60ch; }
+.hero .hero-tagline, .county-hero .hero-tagline { font: 400 21px/1.5 Georgia, serif; color: var(--gold); margin-top: 24px; }
+.hero .actions { max-width: 650px; gap: 12px; margin-top: 30px; }
+.hero .button:not(.primary):not(.red), .county-hero .button:not(.primary):not(.red) { background: transparent; color: white; border-color: #8593a1; }
+.hero .button.primary, .county-hero .button.primary { background: var(--red); border-color: var(--red); }
+.hero-patriot-mark { margin: 26px 0 0; width: 64px; }
+.hero-media { width: 100%; max-width: 650px; }
+.hero-main-image { border: 1px solid #ffffff38; border-radius: 0; background: transparent; box-shadow: none; }
+.page-hero {
+  max-width: none; margin: 0 calc(-1 * var(--page-gutter)) 40px;
+  padding: clamp(40px, 5vw, 80px) var(--page-gutter);
+  background: var(--navy); color: white; border-bottom: 4px solid var(--gold);
+}
+.page-hero h1 { font-size: clamp(40px, 5vw, 80px); max-width: 24ch; margin-block: 16px 22px; }
+.page-hero .eyebrow { color: var(--gold); }
+.page-hero p:not(.eyebrow) { max-width: 75ch; color: #d4dee7; font-size: 16px; line-height: 1.8; }
+.page-hero a:not(.button) { color: inherit; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .17em; }
+.section { margin-block: clamp(36px, 4vw, 72px); }
+.section-heading { max-width: 920px; margin-bottom: 32px; }
+.section h2, .panel h2, .section-heading h2, .campaign-pins-heading h2 { font: 400 clamp(28px, 3vw, 46px)/1.15 Georgia, serif; letter-spacing: -.025em; text-transform: none; text-shadow: none; }
+.section-heading p:not(.eyebrow) { color: var(--muted); line-height: 1.8; }
+.card h3, .candidate-card h3, .feed-widget h3, .directory-card h3, .partner-card-title { font: 400 25px/1.2 Georgia, serif; }
+
+/* Cards, controls, directories, and operational forms use one quiet surface. */
+.narrow { width: 100%; max-width: none; }
+.legal-content { padding: clamp(24px, 4vw, 64px); background: #fff; border: 1px solid var(--border); border-top: 2px solid var(--gold); }
+.legal-content > * { max-width: 90ch; }
+
+.card, .candidate-card, .directory-card, .resource-card, .panel, .form-card,
+.feed-widget, .partner-card, .candidate-profile, .candidate-preview-card,
+.directory-search, .candidate-filters, .candidate-directory-notice,
+.candidate-directory-empty-banner, .compact-about, .show-up-meter,
+.founding-partner-callout, .county-post-news-section, .partner-sponsor-banner {
+  border: 1px solid var(--border); border-radius: 0; background: #fff;
+  box-shadow: none; animation: none;
+}
+.card, .directory-card, .resource-card, .partner-card { border-top: 2px solid var(--gold); }
+.card, .panel, .form-card, .feed-widget { padding: clamp(22px, 2vw, 36px); }
+.card-grid, .candidate-grid, .directory-grid, .video-grid, .feed-grid, .partner-list { gap: 24px; }
+.card p, .panel p { line-height: 1.8; }
+.directory-card:hover, .resource-card:hover, .candidate-card-clickable:hover,
+.candidate-preview-card:hover, .partner-card:hover {
+  animation: none; box-shadow: 0 8px 25px #102a450c; filter: none;
+  border-color: #b8a274; transform: translateY(-2px);
+}
+.candidate-card-clickable:focus-visible { outline: 3px solid #a47824; outline-offset: 4px; animation: none; }
+.button, .button.primary, .button.red {
+  min-height: 48px; padding: 13px 22px; border: 1px solid var(--navy); border-radius: 0;
+  background: #fff; color: var(--navy); font: 700 13px/1.5 Arial, sans-serif;
+  box-shadow: none; transition: background .15s, border-color .15s;
+}
+.button.primary { background: var(--navy); color: white; }
+.button.red { background: var(--red); border-color: var(--red); color: white; }
+.button:hover { transform: none; animation: none; filter: none; box-shadow: none; border-color: var(--red); }
+.button.primary:hover { background: #244866; }
+.button.red:hover { background: #98202c; }
+.field input, .field select, .field textarea { border-radius: 0; border: 1px solid #b9c1c8; background: white; min-height: 46px; box-shadow: none; }
+.candidate-profile-form fieldset, .candidate-form-consents, .candidate-review-toolbar { border-radius: 0; }
+.directory-card strong, .resource-card strong { font: 400 22px/1.25 Georgia, serif; }
+.field { font-size: 13px; gap: 9px; }
+.form-card { max-width: none; }
+.candidate-profile-header h1 { color: var(--navy); font-size: clamp(36px, 4vw, 64px); }
+.candidate-video-preview, .candidate-profile-photo, .candidate-profile-main iframe,
+.candidate-profile-main img, .candidate-profile-empty-video, .candidate-preview-card img,
+.video-modal-panel, .video-modal-panel iframe, .candidate-preview-dialog { border-radius: 0; }
+.candidate-profile-bio, .candidate-questionnaire-public { border-radius: 0; box-shadow: none; background: #fff; }
+.directory-search, .candidate-filters { padding: 26px; }
+.county-tabs { border-bottom: 1px solid var(--border); gap: 0; border-radius: 0; background: var(--cream); padding: 8px 0; }
+.county-tabs a { padding: 14px 22px; border-radius: 0; border: 0; border-bottom: 2px solid transparent; font-size: 13px; background: transparent; }
+.county-tabs a.active { background: var(--navy); color: white; border-bottom-color: var(--gold); }
+.state-flag { border-radius: 0; border-color: #ccd1d4; box-shadow: none; }
+.show-up-meter { width: 100%; color: var(--navy); }
+.show-up-meter h2 { font: 400 28px/1.2 Georgia, serif; text-transform: none; letter-spacing: -.02em; }
+.show-up-meter p { color: var(--muted); }
+.show-up-meter .eyebrow { color: var(--red); }
+.show-up-meter-fill { background: var(--red); }
+.founding-partner-callout { padding: clamp(26px, 4vw, 64px); background: #efebe2; }
+.founding-partner-callout h2 { font: 400 clamp(28px, 3vw, 44px)/1.2 Georgia, serif; }
+.compact-about, .partner-sponsor-banner { padding: 28px; }
+.bookmark-toast { right: var(--page-gutter); border-radius: 0; border-top: 3px solid var(--gold); box-shadow: 0 10px 40px #102a4526; }
+
+/* Home utility panels and preserved sponsor placements. */
+.home-county-finder { background: #eee9df; color: var(--navy); border: 1px solid #dad5ca; box-shadow: none; padding: 28px; margin-block: 32px; text-align: left; }
+.home-county-finder h2 { color: var(--navy); font: 400 28px/1.2 Georgia, serif; text-transform: none; letter-spacing: -.02em; margin-bottom: 18px; }
+.home-county-finder input { height: 50px; padding: 12px 16px; border-color: #b9c1c8; }
+.home-county-finder button { padding-inline: 24px; background: var(--navy); min-height: 50px; border: 1px solid var(--navy); }
+.election-countdown { background: var(--navy); border-top: 3px solid var(--gold); box-shadow: none; margin-block: 24px; }
+.election-countdown-inner { width: 100%; }
+.election-countdown h2 { font: 400 clamp(30px, 3vw, 46px)/1.2 Georgia, serif; max-width: none; }
+.election-countdown .eyebrow { color: var(--gold); }
+.election-countdown-card { border-radius: 0; box-shadow: none; background: #faf8f3; }
+.election-countdown-card strong { font-family: Georgia, serif; font-weight: 400; }
+.sponsor-card, .sponsor-card-image-only, .sponsor-card picture { border-radius: 0; box-shadow: none; }
+.sponsor-card::before { display: none; }
+.sponsor-carousel .sponsor-card-image-only, .sponsor-banner-carousel .sponsor-card-image-only { box-shadow: none; padding: 0; }
+.sponsor-card:hover { animation: none; box-shadow: none; transform: none; }
+.sponsor-carousel-shell { width: 100%; }
+.sponsor-carousel-track { width: calc(100% - 104px); }
+.sponsor-banner-carousel-shell { max-width: none; }
+.sponsor-banner-carousel .sponsor-card-leaderboard.sponsor-card-image-only img { max-height: 360px; }
+.sponsor-carousel-arrow { border-radius: 0; background: var(--navy); color: white; box-shadow: none; border: 1px solid var(--navy); }
+.campaign-support-squares { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.campaign-support-squares .sponsor-card img { aspect-ratio: 1; object-fit: contain; }
+.county-post-news-section { background: #f0ede6; }
+.county-post-news-logo-link { border-radius: 0; }
+.county-post-news-logo-link picture { display: block; width: 100%; }
+
+.patriot-network-community-banner { border: 1px solid var(--border); border-top: 2px solid var(--gold); border-radius: 0; background: #efebe2; box-shadow: none; padding: 28px; }
+.patriot-network-community-banner-icon { border-radius: 0; }
+.patriot-network-community-banner-copy h2 { font: 400 clamp(25px, 2.4vw, 34px)/1.2 Georgia, serif; }
+.patriot-network-community-banner-copy p { font-size: 14px; line-height: 1.7; }
+.feed-hero { background: #f0ede6; box-shadow: none; margin: 0; padding: 22px; }
+.feed-presented-by, .county-hero-sponsor { background: white; border: 1px solid var(--border); border-radius: 0; box-shadow: none; }
+.feed-presented-by img, .county-hero-sponsor img { border-radius: 0; }
+.feed-item { border-radius: 0; border-bottom: 1px solid var(--border); background: #fff; padding: 18px 0; gap: 20px; }
+.feed-item img { border-radius: 0; }
+.feed-item:hover { background: #faf8f3; }
+.county-tabs { box-shadow: none; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid #a47824; outline-offset: 2px; border-color: var(--navy); box-shadow: none; }
+/* Preserve the complete square creative when banners change format on mobile. */
+.sponsor-banner-carousel .sponsor-card-leaderboard[data-ad-id="recover-america-banner"] img { max-height: none; height: auto; }
+
+/* The newer editorial landing pages inherit the same wider geometry. */
+.campaign-section { width: 100%; max-width: none; padding-inline: var(--page-gutter); scroll-margin-top: 110px; }
+.campaign-hero-copy { padding-left: var(--page-gutter); }
+.campaign-footer { padding-inline: var(--page-gutter); background: var(--navy); color: white; }
+.campaign-footer > p { color: #d4dee7; }
+.campaign-pin h3 { font: 400 30px/1.15 Georgia, serif; }
+.issues-page, .recover-page { margin-top: 0; }
+.issues-hero, .recover-hero, .recover-support { background: var(--navy); }
+.issues-hero, .recover-page { border-radius: 0; }
+.issues-page h1, .recover-page h1 { font-size: clamp(40px, 5vw, 76px); }
+.issue-section, .recover-section { padding-block: clamp(38px, 5vw, 82px); }
+.issue-description, .recover-partnership p { max-width: 75ch; }
+
+/* A spacious footer with the original destinations and disclosure intact. */
+.footer { margin-top: 72px; padding: 64px 0 0; border-top: 4px solid var(--gold); background: var(--navy); }
+.footer-grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, .8fr); gap: clamp(32px, 6vw, 110px); padding-bottom: 48px; }
+.footer img { width: 210px; }
+.footer p { color: #c1cbd6; font-size: 13px; line-height: 1.9; max-width: 62ch; }
+.footer h3 { font: 400 25px/1.2 Georgia, serif; color: var(--gold); margin: 0 0 24px; }
+.footer a { font-size: 13px; text-decoration: none; margin-block: 12px; width: fit-content; }
+.footer a:hover { color: var(--gold); text-decoration: underline; }
+.footer-bottom { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid #ffffff26; padding-block: 22px; color: #c1cbd6; font-size: 11px; letter-spacing: .08em; }
+
+@media (min-width: 1800px) {
+  .card-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .card-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .candidate-grid { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+}
+@media (max-width: 1200px) {
+  .header-inner { position: relative; flex-wrap: nowrap; min-height: 76px; }
+  .menu-toggle { display: grid; margin-left: auto; flex-shrink: 0; }
+  .site-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; padding: 20px; border: 1px solid var(--border); background: var(--cream); border-radius: 0; box-shadow: 0 14px 25px #102a451a; max-height: calc(100dvh - 90px); overflow-y: auto; }
+  .site-nav.open { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .site-nav a { padding: 12px; border-radius: 0; background: transparent; }
+}
+@media (max-width: 780px) {
+  :root { --page-gutter: 20px; }
+  .brand { font-size: 23px; }
+  .brand span { max-width: none; white-space: normal; overflow: visible; }
+  .brand img { width: 40px; height: 40px; }
+  .hero, .county-hero { grid-template-columns: 1fr; gap: 32px; padding-block: 40px; }
+  .hero h1, .county-hero h1 { font-size: clamp(44px, 8vw, 62px); }
+  .hero-media { max-width: 520px; }
+  .hero p, .county-hero p { font-size: 15px; }
+  .hero-patriot-mark { width: 56px; }
+  .page-hero { margin-bottom: 26px; }
+  .county-tabs { top: 76px; }
+  .directory-search, .candidate-filters { padding: 20px; }
+  .campaign-support-squares { gap: 14px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid > div:first-child { grid-column: 1 / -1; }
+  .footer-bottom { flex-wrap: wrap; }
+  .campaign-section { scroll-margin-top: 90px; }
+}
+@media (max-width: 580px) {
+  .header-inner { gap: 10px; }
+  .brand { font-size: 21px; gap: 8px; }
+  .site-nav.open { grid-template-columns: 1fr; }
+  .site-nav { padding: 12px; }
+  .topbar-inner { font-size: 10px; }
+  .card-grid, .card-grid.three, .card-grid.four, .candidate-grid, .directory-grid, .partner-list { grid-template-columns: minmax(0, 1fr); }
+  .campaign-support-squares { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .sponsor-carousel-track { width: calc(100% - 76px); grid-auto-columns: 100%; }
+  .sponsor-banner-carousel-shell:has(.sponsor-carousel-arrow) { padding-inline: 38px; }
+  .sponsor-carousel-arrow { width: 32px; height: 40px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-grid > div:first-child { grid-column: auto; }
+  .footer { padding-top: 42px; }
+  .home-county-finder { padding: 22px; }
+  .bookmark-toast { right: 20px; left: 20px; width: auto; }
+  .county-tabs a { padding: 12px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button, .card, .candidate-card, .directory-card, .resource-card, .partner-card { transition: none; }
+}
+
+/* Color accents requested during the local design review. */
+.home-county-finder { background: var(--red); color: white; border-color: var(--red); }
+.home-county-finder h2 { color: white; }
+.home-county-finder input { background: #9d1e2c; color: white; border: 1px solid #ffffff99; }
+.home-county-finder input::placeholder { color: #fff0f1; opacity: 1; }
+.home-county-finder input:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+.home-county-finder button { border-color: #ffffff99; }
+.home-county-finder button:disabled { opacity: .8; }
+.home-county-finder-results a { background: #fff; }
+.card-grid.three > .card:nth-child(3n + 1) { background: #e8eef3; border-top-color: var(--navy); }
+.card-grid.three > .card:nth-child(3n + 2) { background: #f5e8e8; border-top-color: var(--red); }
+.card-grid.three > .card:nth-child(3n) { background: #f3eddc; border-top-color: #ad873c; }
+.directory-search, .candidate-filters { background: #e8eef3; border-top: 3px solid var(--navy); }
+.directory-card { background: #f0f4f7; border-top-color: var(--blue); }
+.directory-card:nth-child(3n + 2) { background: #fbf1f0; border-top-color: var(--red); }
+.directory-card:nth-child(3n) { background: #f5f0e3; border-top-color: #ad873c; }
+.partner-card, .candidate-card { border-top: 3px solid var(--navy); }
+.partner-card:nth-child(even), .candidate-card:nth-child(even) { border-top-color: var(--red); }
+.founding-partner-callout { background: #e5edf3; border-left: 4px solid var(--gold); }
+.compact-about { background: var(--navy); border: 0; border-left: 4px solid var(--gold); color: white; }
+.compact-about h2 { color: white; }
+.compact-about > p { color: #dce6ee; }
+.compact-about .eyebrow { color: var(--gold); }
+.show-up-meter { background: #f4ecd8; border-color: #d9c99f; border-left: 4px solid var(--red); }
+.county-tabs { background: #e6edf3; }
+.county-tabs a.active { background: var(--red); }
+.county-tabs a:not(.active):hover { background: #d6e1ea; }
+.resource-card { background: #e8eef3; border-top-color: var(--navy); }
+.resource-card:nth-child(4n + 2) { background: #f5e8e8; border-top-color: var(--red); }
+.resource-card:nth-child(4n + 3) { background: #f3eddc; border-top-color: #ad873c; }
+.county-post-news-section { background: #e5edf3; border-top: 3px solid var(--gold); }
+.feed-hero { background: var(--navy); border-bottom: 3px solid var(--gold); }
+.feed-hero .feed-hero-title h3, .feed-hero-description a { color: white; }
+.feed-hero .feed-hero-title .eyebrow { color: var(--gold); }
+.feed-hero-description { color: #dce6ee; }
+.patriot-network-community-banner { background: var(--navy); border-color: var(--navy); border-top-color: var(--gold); }
+.patriot-network-community-banner-copy h2 { color: white; }
+.patriot-network-community-banner-copy p { color: #dce6ee; }
+.recover-partnership, .issues-intro { background: #e8eef3; }
+.issues-methodology { background: #e5edf3; }
+.issue-section:nth-of-type(2) { background: #f7eeee; }

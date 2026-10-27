@@ -13,7 +13,7 @@ export function CountyPostNewsSection({ locationName }: { locationName: string }
         rel="noreferrer"
         aria-label="Visit The County Post"
       >
-        <SiteImage sizes="(max-width: 780px) 240px, 320px" src={countyPostLogo} alt="The County Post" />
+        <SiteImage width="1536" height="1024" sizes="(max-width: 780px) 80vw, 520px" src={countyPostLogo} alt="The County Post" />
       </a>
       <div className="county-post-news-copy">
         <p className="eyebrow">Every County. Every Community. One Nation.</p>

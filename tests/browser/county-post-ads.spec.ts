@@ -28,12 +28,11 @@ for (const width of [1280, 390]) {
         await ad.screenshot({ path: `test-results/${await ad.getAttribute("data-ad-id")}-${width}-${path.replaceAll("/", "_")}.png` });
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-      const heroMark = page.locator(".hero-patriot-mark");
-      if (await heroMark.count()) {
-        await heroMark.scrollIntoViewIfNeeded();
-        await heroMark.evaluate((img: HTMLImageElement) => img.decode());
-        expect((await heroMark.boundingBox())!.height).toBeLessThan(160);
-        const hero = (await page.locator(".hero-main-image").boundingBox())!;
+      const heroImage = page.locator(".hero-main-image");
+      if (await heroImage.count()) {
+        await heroImage.scrollIntoViewIfNeeded();
+        await heroImage.evaluate((img: HTMLImageElement) => img.decode());
+        const hero = (await heroImage.boundingBox())!;
         expect(Math.abs(hero.width - hero.height)).toBeLessThan(2);
       }
       const footerLogo = page.locator(".site-footer img");
