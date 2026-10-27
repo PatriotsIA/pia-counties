@@ -256,8 +256,8 @@ a { text-underline-offset: 4px; }
 /* Color accents requested during the local design review. */
 .home-county-finder { background: var(--red); color: white; border-color: var(--red); }
 .home-county-finder h2 { color: white; }
-.home-county-finder input { background: #9d1e2c; color: white; border: 1px solid #ffffff99; }
-.home-county-finder input::placeholder { color: #fff0f1; opacity: 1; }
+.home-county-finder input { background: #fff; color: #000; border: 1px solid #b9c1c8; }
+.home-county-finder input::placeholder { color: #526173; opacity: 1; }
 .home-county-finder input:focus-visible { outline: 2px solid white; outline-offset: 3px; }
 .home-county-finder button { border-color: #ffffff99; }
 .home-county-finder button:disabled { opacity: .8; }
@@ -294,3 +294,6 @@ a { text-underline-offset: 4px; }
 .recover-partnership, .issues-intro { background: #e8eef3; }
 .issues-methodology { background: #e5edf3; }
 .issue-section:nth-of-type(2) { background: #f7eeee; }
+
+/* County directory controls use the same readable white input surface. */
+.directory-search input, .directory-search select { background: #fff; color: #000; }

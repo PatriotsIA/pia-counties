@@ -323,7 +323,7 @@ function applySeoData(data: SeoData) {
 
   document.title = title;
   setMeta("description", data.description);
-  setMeta("robots", "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1");
+  setMeta("robots", import.meta.env.VITE_DEPLOYMENT_ENV === "staging" ? "noindex,nofollow,noarchive" : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1");
   setMeta("og:site_name", site.name, "property");
   setMeta("og:type", data.type || "website", "property");
   setMeta("og:title", title, "property");

@@ -115,7 +115,7 @@ ${urls
 </urlset>
 `;
 
-const robots = `User-agent: *
+const robots = process.env.VITE_DEPLOYMENT_ENV === "staging" ? "User-agent: *\nDisallow: /\n" : `User-agent: *
 Allow: /
 
 Sitemap: ${absoluteUrl("/sitemap.xml")}

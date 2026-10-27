@@ -224,7 +224,12 @@ export default defineConfig(({ mode }) => {
   const candidateApiBase = env.VITE_CANDIDATE_API_BASE?.replace(/\/+$/, "");
 
   return {
-    plugins: [vimeoApiDevMiddleware(vimeoToken), calendarApiDevMiddleware(), rssApiDevMiddleware(), react()],
+    plugins: [
+      ...(env.VITE_DEPLOYMENT_ENV === "staging" ? [{
+        name: "pia-staging-noindex",
+        transformIndexHtml: (html: string) => html.replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex,nofollow,noarchive" />'),
+      }] : []),
+      vimeoApiDevMiddleware(vimeoToken), calendarApiDevMiddleware(), rssApiDevMiddleware(), react()],
     server: mightyApiBase || candidateApiBase
       ? {
           proxy: {
