@@ -31,6 +31,9 @@
 .issue-copy .issue-description { margin-top: 22px; font-size: 15px; color: #4c586e; }
 .issue-link { display: inline-flex; gap: 20px; align-items: center; font-size: 14px; font-weight: 750; margin-top: 26px; }
 .issue-secondary-link { display: block; font-size: 12px; margin-top: 18px; }
+.issue-video { margin: 28px 0 0; }
+.issue-video figcaption { margin-top: 10px; font-size: 12px; line-height: 1.6; color: #586176; }
+.issue-video figcaption strong { display: block; font-size: 13px; color: #17233f; }
 .opinion-poll { min-width: 0; background: #fff; border: 1px solid #d6dbe5; border-top: 3px solid #b3212c; padding: clamp(22px, 3vw, 32px); box-shadow: 0 10px 30px #111b4707; }
 .opinion-poll fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .opinion-poll legend { padding: 0; font-size: 20px; line-height: 1.45; font-weight: 700; }
