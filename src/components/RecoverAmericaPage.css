@@ -36,6 +36,8 @@
 .recover-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 26px; }
 .recover-text-link { font-size: 14px; font-weight: 750; }
 .recover-section-heading > a { flex-shrink: 0; }
+.recover-video { border-bottom: 1px solid var(--border); }
+.recover-video .vimeo-embed { margin-top: 30px; }
 .recover-goals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 36px; }
 .recover-goals > div { border-top: 2px solid #c3a463; padding-top: 20px; }
 .recover-number { display: block; color: #a5202c; font: 400 25px Georgia, serif; margin-bottom: 16px; }

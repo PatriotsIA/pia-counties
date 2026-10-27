@@ -53,6 +53,14 @@ for (const width of [1280, 390, 320]) {
   });
 }
 
+test("the Recover America video appears on its landing, issues and partner pages", async ({ page }) => {
+  await fixture(page);
+  for (const path of ["/recover-america", "/issues", "/partners"]) {
+    await page.goto(path);
+    await expect(page.locator('iframe[title="BONNIE WALLACE RECOVERAMERICA"]')).toHaveAttribute("src", "https://player.vimeo.com/video/1239959908?badge=0&autopause=0&player_id=0&app_id=58479");
+  }
+});
+
 test("a lost success response retries with the same ID and is counted once", async ({ page }) => {
   const { submitted, polls } = await fixture(page, { loseFirstReply: true });
   await page.goto("/issues");

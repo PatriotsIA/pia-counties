@@ -2949,6 +2949,43 @@ nav a {
   box-shadow: 0 8px 22px rgba(17, 27, 71, 0.08);
 }
 
+.partner-video {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 1.25rem;
+  align-items: center;
+  margin: 1rem 0 0;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #f8fafc;
+  box-shadow: 0 8px 22px rgba(17, 27, 71, 0.08);
+}
+
+.partner-video figcaption {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.partner-video strong {
+  color: var(--navy);
+  font-size: 1.15rem;
+}
+
+.partner-video figcaption > span:last-child {
+  color: var(--muted);
+}
+
+.partner-video .vimeo-embed {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (max-width: 780px) {
+  .partner-video {
+    grid-template-columns: 1fr;
+  }
+}
+
 .partner-card-copy {
   display: grid;
   gap: 0.35rem;
