@@ -24,6 +24,7 @@ test("Paxton excerpt page is distinct, sourced, responsive, and links to the ful
   }
   await page.getByRole("link", { name: "Watch the full event", exact: true }).click();
   await expect(page).toHaveURL(/\/ken-paxton#campaign-videos$/);
+  await expect.poll(async () => Math.abs((await page.locator("#campaign-videos").boundingBox())!.y)).toBeLessThan(50);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://patriotsinaction.com/ken-paxton");
   await expect(page.locator("video")).toHaveAttribute("src", /big-texan-full-v1\.mp4$/);
   const full = await page.locator(".campaign-full-event").boundingBox();
