@@ -5,8 +5,12 @@ export type SupportCampaign = {
   disclosureText: string; portrait: string; portraitSource: string; portraitPosition: string;
   slogan: string; quote: string; summary: string; priorities: { title: string; text: string }[];
   videos: CampaignVideo[]; videoArchive: string;
+  /** Who the ads, landing pages and directory pins name as supporter and publisher. */
+  supporter: string; publisher: string; publisherWebsite?: string;
 };
-export const supportAttribution = "Unpaid support message created by Patriots in Action.";
+export const notAuthorized = "Not authorized by any candidate or candidate’s committee.";
+export const campaignAttribution = (c: SupportCampaign) =>
+  `Published by ${c.publisher}.${c.publisherWebsite ? ` ${c.publisherWebsite}.` : ""} ${notAuthorized}`;
 export const supportCampaigns: SupportCampaign[] = [
   {
     id: "greg-abbott", name: "Greg Abbott", firstName: "Greg", lastName: "Abbott", office: "Texas Governor", level: "state",
@@ -32,6 +36,8 @@ export const supportCampaigns: SupportCampaign[] = [
       { id: "9szd5w0eXgc", title: "Get Out the Vote event in Lindale", kind: "Campaign event", source: "https://www.gregabbott.com/" },
     ],
     videoArchive: "https://www.gregabbott.com/media-news/",
+    supporter: "Patriots for Action",
+    publisher: "Patriots Connect, LLC, d/b/a Patriots in Action", publisherWebsite: "PatriotsInAction.com",
   },
   {
     id: "ken-paxton", name: "Ken Paxton", firstName: "Ken", lastName: "Paxton", office: "U.S. Senate · Texas", level: "federal",
@@ -54,6 +60,7 @@ export const supportCampaigns: SupportCampaign[] = [
       { id: "9RUJdj83quk", title: "Remarks at the Cypress rally", kind: "Campaign event", source: "https://www.youtube.com/user/KenPaxtonTX" },
     ],
     videoArchive: "https://www.youtube.com/user/KenPaxtonTX",
+    supporter: "GOP Connect", publisher: "GOP Connect LLC",
   },
 ];
 export const campaignBannerAdIds = supportCampaigns.map(c => `${c.id}-banner`);

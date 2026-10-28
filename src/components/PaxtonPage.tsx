@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { campaignLink, supportAttribution } from "../data/campaigns";
+import { campaignAttribution, campaignLink } from "../data/campaigns";
 import { paxtonAccomplishments, paxtonCampaign } from "../data/paxton";
 import { AdSlot } from "./AdSlot";
 import { PaxtonEventVideo } from "./PaxtonEventVideo";
@@ -13,11 +13,11 @@ export function PaxtonPage({ header }: { header: ReactNode }) {
     <main id="paxton-main">
       <section className="paxton-intro">
         <div className="paxton-intro-inner">
-          <p className="campaign-kicker">Patriots in Action supports Ken Paxton</p>
+          <p className="campaign-kicker">{paxtonCampaign.supporter} supports Ken Paxton</p>
           <h1>Ken Paxton.<br /><span>A record for Texas.</span></h1>
           <p className="paxton-deck">Watch the opening of the “Come and Take It” tour at The Big Texan, then explore accomplishments from his service as Texas attorney general.</p>
           <div className="campaign-actions"><a className="campaign-button" href="#paxton-video">Watch the opening 7:33 ↓</a><a className="campaign-button campaign-button-outline" href="#paxton-accomplishments">Explore his record ↓</a></div>
-          <p className="campaign-attribution">{supportAttribution}</p>
+          <p className="campaign-attribution">{campaignAttribution(paxtonCampaign)}</p>
         </div>
       </section>
       <section className="campaign-section paxton-feature" id="paxton-video" aria-label="Event video and Vote Paxton message">
@@ -33,6 +33,6 @@ export function PaxtonPage({ header }: { header: ReactNode }) {
       </section>
       <section className="campaign-cta"><p className="campaign-kicker">More from Ken Paxton</p><h2>Keep watching. Get involved.</h2><p>See the full Big Texan event, more interviews, and campaign information.</p><Link className="campaign-button" to="/ken-paxton#campaign-videos">Watch the full event →</Link></section>
     </main>
-    <footer className="campaign-footer"><strong>Patriots in Action</strong><p>{supportAttribution}</p><div><Link to="/ken-paxton#campaign-disclosure">Campaign disclosures</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Contact PIA</Link></div></footer>
+    <footer className="campaign-footer"><strong>{paxtonCampaign.supporter}</strong><p>{campaignAttribution(paxtonCampaign)}</p><div><Link to="/ken-paxton#campaign-disclosure">Campaign disclosures</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/contact">Contact PIA</Link></div></footer>
   </div></>;
 }

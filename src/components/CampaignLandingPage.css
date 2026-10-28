@@ -69,7 +69,6 @@
 .campaign-pins { margin: 25px 0 35px; }
 .campaign-pins-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 18px; }
 .campaign-pins-heading h2 { margin: 0; font-size: 22px; }
-.campaign-pins-heading > p { margin: 0; font-size: 11px; color: #526173; }
 .campaign-pin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 .campaign-pin { display: grid; grid-template-columns: 135px 1fr; background: #fff; border: 1px solid #d5dce3; border-top: 4px solid #b82b3b; }
 .campaign-pin > img { width: 135px; height: 100%; min-height: 190px; object-fit: cover; }
@@ -78,6 +77,7 @@
 .campaign-pin h3 { margin: 0 0 10px; font-size: 26px; }
 .campaign-pin p { font-size: 13px; margin: 0 0 20px; }
 .campaign-pin a { font-size: 12px; font-weight: 700; color: #a01f30; }
+.campaign-pin .campaign-pin-attribution { margin: 14px 0 0; font-size: 11px; line-height: 1.6; color: #526173; }
 .campaign-support-ads { margin: 38px auto; width: 100%; }
 .campaign-support-squares { display: grid; grid-template-columns: repeat(2,minmax(0,400px)); justify-content: center; gap: 24px; }
 .campaign-support-squares .sponsor-slot { margin: 0; padding: 0; background: transparent; border: 0; }
@@ -121,7 +121,6 @@
   .campaign-number { margin-bottom: 16px; }
   .campaign-video-copy { padding: 22px; }
   .campaign-pins-heading { display: block; }
-  .campaign-pins-heading > p { margin-top: 10px; line-height: 1.7; }
   .campaign-pin-grid { grid-template-columns: 1fr; }
   .campaign-pin > img { min-height: 180px; }
   .campaign-support-squares { grid-template-columns: minmax(0, 400px); }

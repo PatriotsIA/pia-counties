@@ -1,9 +1,27 @@
 # PIA candidate support pages
 
-Published pages: `/greg-abbott` and `/ken-paxton`. Both are PIA-created unpaid
-support messages, as specified by the owner. Campaign payer statements are
-attributed separately and link directly to the campaigns' disclosure text.
-These are support landing pages, not candidate-submitted or PIA interview profiles.
+Published pages: `/greg-abbott`, `/ken-paxton` and the `/paxton` excerpt page.
+Campaign payer statements are attributed separately and link directly to the
+campaigns' disclosure text. These are support landing pages, not candidate-submitted
+or PIA interview profiles.
+
+## Supporter and publisher
+
+On October 28, 2026 the owner replaced the earlier "Patriots in Action supports"
+and "Unpaid support message created by Patriots in Action" wording. Each candidate
+now names its own supporter and publisher (`supporter`, `publisher` and
+`publisherWebsite` in `src/data/campaigns.ts`), followed by the same
+not-authorized line:
+
+| Candidate | Supporter line | Disclaimer |
+| --- | --- | --- |
+| Greg Abbott | Patriots for Action supports | Published by Patriots Connect, LLC, d/b/a Patriots in Action. PatriotsInAction.com. Not authorized by any candidate or candidate’s committee. |
+| Ken Paxton | GOP Connect supports | Published by GOP Connect LLC. Not authorized by any candidate or candidate’s committee. |
+
+The wording appears in the four ad creatives and their alt text, the landing-page
+hero, disclosure section and footer, the `/paxton` page, the page titles, and the
+pinned `/candidates` cards. The County Post runs byte-identical copies of the four
+WebP files in its `ad-assets/`; refresh them whenever the artwork is rebuilt here.
 
 ## Placement and attribution
 
@@ -76,7 +94,7 @@ availability remains controlled by YouTube and the uploader.
 
 Each `public/campaigns/<candidate>/` directory contains a 600×600 square and
 980×250 banner in WebP plus editable SVG originals. Mobile banner placements
-use the square version for legibility. All four include the PIA support attribution.
+use the square version for legibility. All four include the supporter and disclaimer above.
 
 ```sh
 node --import tsx scripts/campaigns/build-ads.ts
