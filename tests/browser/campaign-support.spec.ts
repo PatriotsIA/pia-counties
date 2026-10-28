@@ -83,18 +83,18 @@ test("PIA support candidates stay pinned above the directory and honor filters",
   await expect(page).toHaveURL(/\/greg-abbott\?pia_source=candidate_directory/);
 });
 
-// The supporter and payer the owner specified on October 28, 2026.
-const notAuthorized = "Not authorized by any candidate or candidate’s campaign or committees.";
+// The supporter and publisher the owner specified on October 28, 2026.
+const notAuthorized = "Not authorized by any candidate or candidate’s committee.";
 const attribution = {
-  "greg-abbott": { supporter: "Patriots for Action", text: `Paid for by PatriotsForAction.org. ${notAuthorized}` },
-  "ken-paxton": { supporter: "GOP Connect", text: `Paid for by GOP Connect LLC. ${notAuthorized}` },
+  "greg-abbott": { supporter: "Patriots for Action", text: `Published by Patriots Connect, LLC, d/b/a Patriots in Action. PatriotsInAction.com. ${notAuthorized}` },
+  "ken-paxton": { supporter: "GOP Connect", text: `Published by GOP Connect LLC. ${notAuthorized}` },
 };
 const adAlt = {
   "greg-abbott": `Vote Greg Abbott for Texas Governor. ${attribution["greg-abbott"].text} View campaign information.`,
   "ken-paxton": `Vote Ken Paxton for U.S. Senate · Texas. ${attribution["ken-paxton"].text} View campaign information.`,
 };
 
-test("candidate pages and directory pins name the supporter and payer, not PIA", async ({ page }) => {
+test("candidate pages and directory pins name the supporter and publisher", async ({ page }) => {
   const oldWording = page.getByText(/Unpaid support message|Patriots in Action supports|PIA supports/i);
   for (const [path, id] of [["/greg-abbott", "greg-abbott"], ["/ken-paxton", "ken-paxton"], ["/paxton", "ken-paxton"]] as const) {
     await page.goto(path);
@@ -148,8 +148,8 @@ test("original banner ads remain ahead of the candidate banners in shared rotati
       await ad.scrollIntoViewIfNeeded();
       await expect.poll(() => ad.locator("img").evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
     }
-    await expect(carousel.getByText(/Paid for by/)).toHaveCount(0);
+    await expect(carousel.getByText(/Published by/)).toHaveCount(0);
   }
   await page.goto("/");
-  await expect(page.locator(".campaign-support-square").getByText(/Paid for by/)).toHaveCount(0);
+  await expect(page.locator(".campaign-support-square").getByText(/Published by/)).toHaveCount(0);
 });

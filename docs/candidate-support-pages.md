@@ -5,19 +5,18 @@ Campaign payer statements are attributed separately and link directly to the
 campaigns' disclosure text. These are support landing pages, not candidate-submitted
 or PIA interview profiles.
 
-## Supporter and payer
+## Supporter and publisher
 
 On October 28, 2026 the owner replaced the earlier "Patriots in Action supports"
 and "Unpaid support message created by Patriots in Action" wording. Each candidate
-now names its own supporter and payer (`supporter` and `payer` in
-`src/data/campaigns.ts`), and every placement adds the same not-authorized line:
+now names its own supporter and publisher (`supporter`, `publisher` and
+`publisherWebsite` in `src/data/campaigns.ts`), followed by the same
+not-authorized line:
 
-| Candidate | Supporter line | Payer line |
+| Candidate | Supporter line | Disclaimer |
 | --- | --- | --- |
-| Greg Abbott | Patriots for Action supports | Paid for by PatriotsForAction.org. |
-| Ken Paxton | GOP Connect supports | Paid for by GOP Connect LLC. |
-
-Both: "Not authorized by any candidate or candidate’s campaign or committees."
+| Greg Abbott | Patriots for Action supports | Published by Patriots Connect, LLC, d/b/a Patriots in Action. PatriotsInAction.com. Not authorized by any candidate or candidate’s committee. |
+| Ken Paxton | GOP Connect supports | Published by GOP Connect LLC. Not authorized by any candidate or candidate’s committee. |
 
 The wording appears in the four ad creatives and their alt text, the landing-page
 hero, disclosure section and footer, the `/paxton` page, the page titles, and the
@@ -95,7 +94,7 @@ availability remains controlled by YouTube and the uploader.
 
 Each `public/campaigns/<candidate>/` directory contains a 600×600 square and
 980×250 banner in WebP plus editable SVG originals. Mobile banner placements
-use the square version for legibility. All four include the supporter and payer above.
+use the square version for legibility. All four include the supporter and disclaimer above.
 
 ```sh
 node --import tsx scripts/campaigns/build-ads.ts
