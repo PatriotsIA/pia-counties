@@ -78,7 +78,14 @@ The player loads metadata and seeks once it knows the duration; it stays paused
 until the visitor presses Play. Missing or invalid timestamps retain normal
 on-demand loading. Timestamps past the end are clamped just before the end.
 
-The production link is encoded in the PNG and SVG QR files at
+The QR destination includes attribution parameters:
+
+`https://patriotsinaction.com/paxton?t=115&utm_source=qr_code&utm_medium=offline&utm_campaign=paxton_video&utm_content=1m55s#paxton-video`
+
+Source `qr_code`, medium `offline`, campaign `paxton_video`, and content `1m55s`
+identify visits from this QR creative in analytics. These measure visits after
+opening the link, not scans that never open the page. The tracked production
+link is encoded in the PNG and SVG QR files at
 `public/campaigns/ken-paxton/paxton-1m55s.{png,svg}`. They use black modules on
 white with a four-module quiet zone and medium error correction. Generate with
 `qrencode -t PNG -l M -s 20 -m 4` (or `-t SVG`) and verify the decoded PNG with
