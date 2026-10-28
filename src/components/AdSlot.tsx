@@ -44,7 +44,7 @@ export function AdSlot({ slot, route, county, page, limit = 1, placement, adIds,
   }
 
   return (
-    <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label={slot === "campaign-support-square" ? "Unpaid PIA support message" : "Sponsored message"}>
+    <aside className={`sponsor-slot sponsor-slot-${slot}`} aria-label={slot === "campaign-support-square" ? "Political advertisement" : "Sponsored message"}>
       {slot === "site-inline" ? <p className="sponsor-label">Sponsored by {[...new Set(resolvedAds.map((ad) => ad.sponsor))].join(", ")}</p> : null}
       {resolvedAds.map((ad) => (
         <AdCard ad={ad} county={county} key={ad.id} page={page} placement={placement || ad.placement} slot={slot} />

@@ -391,7 +391,7 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
 function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
   if (pathname === "/paxton") return { title: "Ken Paxton — Big Texan Video & Accomplishments", description: "Watch the opening 7:33 of Ken Paxton’s Come and Take It event at The Big Texan and explore sourced accomplishments from his service as Texas attorney general.", canonicalPath: "/paxton" };
   const campaign = supportCampaigns.find(c => c.path === pathname);
-  if (campaign) return { title: `Vote ${campaign.name} — PIA Supports`, description: campaign.summary, canonicalPath: campaign.path };
+  if (campaign) return { title: `Vote ${campaign.name} — ${campaign.supporter} Supports`, description: campaign.summary, canonicalPath: campaign.path };
   if (pathname === "/") {
     return {
       title: "Nationwide & Local Civic Hub",
