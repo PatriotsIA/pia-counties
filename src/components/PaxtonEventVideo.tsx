@@ -1,14 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { campaignLink } from "../data/campaigns";
 import { paxtonCampaign, paxtonVideo } from "../data/paxton";
 import "./PaxtonPage.css";
 
 export function PaxtonEventVideo({ excerpt = false }: { excerpt?: boolean }) {
   const [failed, setFailed] = useState(false);
+  const [searchParams] = useSearchParams();
+  const timestamp = searchParams.get("t") || "";
+  const seconds = /^\d+(?:\.\d+)?$/.test(timestamp) ? Number(timestamp) : NaN;
+  const startAt = Number.isFinite(seconds) && seconds > 0 ? seconds : null;
   const title = excerpt ? "At The Big Texan: opening 7:33" : "Come and Take It tour at The Big Texan — full video";
   return <article className="paxton-event-video" aria-label={title}>
-    <video controls playsInline preload="none" poster={paxtonVideo.poster} aria-label={title}
+    <video key={`${excerpt}:${startAt}`} controls playsInline preload={startAt === null ? "none" : "metadata"} poster={paxtonVideo.poster} aria-label={title}
+      onLoadedMetadata={event => {
+        const video = event.currentTarget;
+        if (startAt !== null && Number.isFinite(video.duration) && video.duration > 0) {
+          video.currentTime = Math.min(startAt, Math.max(0, video.duration - 0.1));
+        }
+      }}
       src={excerpt ? paxtonVideo.opening : paxtonVideo.full} onError={() => setFailed(true)}>
       Your browser does not support this video. Use the original Facebook video link below.
     </video>

@@ -1,4 +1,40 @@
 import { expect, test } from "@playwright/test";
+import { fileURLToPath } from "node:url";
+import { readFile } from "node:fs/promises";
+
+test("timestamp links scroll to the player and cue real media without autoplay", async ({ page, context }) => {
+  const media = await readFile(fileURLToPath(new URL("../fixtures/timestamp-video.mp4", import.meta.url)));
+  await context.route("**/*", route => {
+    const url = new URL(route.request().url());
+    if (url.hostname === "d2mwhhov0un9j4.cloudfront.net") {
+      const range = /bytes=(\d+)-(\d*)/.exec(route.request().headers().range || "");
+      const start = range ? Number(range[1]) : 0;
+      const end = range?.[2] ? Math.min(Number(range[2]), media.length - 1) : media.length - 1;
+      return route.fulfill({ status: range ? 206 : 200, contentType: "video/mp4", body: media.subarray(start, end + 1), headers: {
+        "Accept-Ranges": "bytes",
+        ...(range ? { "Content-Range": `bytes ${start}-${end}/${media.length}` } : {}),
+      } });
+    }
+    return ["127.0.0.1", "localhost"].includes(url.hostname) ? route.continue() : route.abort();
+  });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const [path, anchor] of [["/paxton", "paxton-video"], ["/ken-paxton", "campaign-videos"]]) {
+      await page.goto(`${path}?t=115#${anchor}`);
+      const video = page.locator("video");
+      await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBe(115);
+      expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+      await expect.poll(() => page.locator(`#${anchor}`).evaluate(el => Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop)))).toBeLessThan(2);
+    }
+  }
+  await page.goto("/paxton?t=99999#paxton-video");
+  await expect.poll(() => page.locator("video").evaluate((v: HTMLVideoElement) => v.currentTime)).toBeCloseTo(119.9, 1);
+  for (const value of ["", "-1", "invalid", "Infinity"]) {
+    await page.goto(`/paxton?t=${value}#paxton-video`);
+    await expect(page.locator("video")).toHaveAttribute("preload", "none");
+    expect(await page.locator("video").evaluate((v: HTMLVideoElement) => v.currentTime)).toBe(0);
+  }
+});
 
 test("Paxton excerpt page is distinct, sourced, responsive, and links to the full event", async ({ page, context }) => {
   await context.route("**/*", route => ["127.0.0.1", "localhost"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort());

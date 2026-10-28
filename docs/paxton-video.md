@@ -68,3 +68,26 @@ and mobile screenshots were visually reviewed. The new browser check covers dist
 excerpt source, no autoplay, the existing ad, six primary-source links, four
 responsive widths, full-video ordering, and preservation of all four older
 Paxton videos. Live media playback and seeking require a separate hosted check.
+
+## Timestamp links and QR code
+
+`https://patriotsinaction.com/paxton?t=115#paxton-video` opens the excerpt at
+1:55 and scrolls to the player. `t` is a positive number of seconds. The full
+recording supports the same parameter at `/ken-paxton?t=115#campaign-videos`.
+The player loads metadata and seeks once it knows the duration; it stays paused
+until the visitor presses Play. Missing or invalid timestamps retain normal
+on-demand loading. Timestamps past the end are clamped just before the end.
+
+The production link is encoded in the PNG and SVG QR files at
+`public/campaigns/ken-paxton/paxton-1m55s.{png,svg}`. They use black modules on
+white with a four-module quiet zone and medium error correction. Generate with
+`qrencode -t PNG -l M -s 20 -m 4` (or `-t SVG`) and verify the decoded PNG with
+`zbarimg --quiet --raw`. Preserve the entire URL, including the fragment.
+
+The browser test uses a small, synthetic two-minute MP4 to check actual media
+seeking, paused state, scroll position, invalid values, and bounds on desktop and
+mobile. Its fixture is generated with:
+
+```sh
+ffmpeg -f lavfi -i color=c=black:s=16x16:r=1:d=120 -an -c:v libx264 -pix_fmt yuv420p -movflags +faststart tests/fixtures/timestamp-video.mp4
+```
