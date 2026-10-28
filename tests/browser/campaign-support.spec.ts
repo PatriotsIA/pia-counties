@@ -14,7 +14,6 @@ for (const candidate of [{ id: "greg-abbott", name: "Greg Abbott" }, { id: "ken-
     await page.goto(`/${candidate.id}`);
     await expect(page.locator("h1")).toContainText(candidate.name.split(" ")[1]);
     await expect(page.locator("link[rel=canonical]")).toHaveAttribute("href", `https://patriotsinaction.com/${candidate.id}`);
-    await expect(page.getByText("Unpaid support message created by Patriots in Action.", { exact: true }).first()).toBeVisible();
     const links = await page.locator('a[href^="https://"]').evaluateAll(anchors => anchors.map(a => ({ href: (a as HTMLAnchorElement).href, target: (a as HTMLAnchorElement).target, rel: (a as HTMLAnchorElement).rel })));
     expect(links.length).toBeGreaterThan(10);
     for (const link of links) {
@@ -84,13 +83,46 @@ test("PIA support candidates stay pinned above the directory and honor filters",
   await expect(page).toHaveURL(/\/greg-abbott\?pia_source=candidate_directory/);
 });
 
+// The supporter and payer the owner specified on October 28, 2026.
+const notAuthorized = "Not authorized by any candidate or candidate’s campaign or committees.";
+const attribution = {
+  "greg-abbott": { supporter: "Patriots for Action", text: `Paid for by PatriotsForAction.org. ${notAuthorized}` },
+  "ken-paxton": { supporter: "GOP Connect", text: `Paid for by GOP Connect LLC. ${notAuthorized}` },
+};
+const adAlt = {
+  "greg-abbott": `Vote Greg Abbott for Texas Governor. ${attribution["greg-abbott"].text} View campaign information.`,
+  "ken-paxton": `Vote Ken Paxton for U.S. Senate · Texas. ${attribution["ken-paxton"].text} View campaign information.`,
+};
+
+test("candidate pages and directory pins name the supporter and payer, not PIA", async ({ page }) => {
+  const oldWording = page.getByText(/Unpaid support message|Patriots in Action supports|PIA supports/i);
+  for (const [path, id] of [["/greg-abbott", "greg-abbott"], ["/ken-paxton", "ken-paxton"], ["/paxton", "ken-paxton"]] as const) {
+    await page.goto(path);
+    const { supporter, text } = attribution[id];
+    await expect(page.locator(".campaign-kicker").first()).toContainText(`${supporter} supports`);
+    await expect(page.locator(".campaign-attribution")).toHaveText(text);
+    await expect(page.locator(".campaign-footer > p")).toHaveText(text);
+    await expect(oldWording).toHaveCount(0);
+  }
+  await page.goto("/greg-abbott");
+  await expect(page).toHaveTitle("Vote Greg Abbott — Patriots for Action Supports | Patriots in Action");
+  await page.goto("/candidates");
+  const pins = page.locator(".campaign-pin");
+  for (const [i, id] of (["greg-abbott", "ken-paxton"] as const).entries()) {
+    await expect(pins.nth(i).locator(".eyebrow")).toHaveText(`${attribution[id].supporter} supports · Republican`);
+    await expect(pins.nth(i).locator(".campaign-pin-attribution")).toHaveText(attribution[id].text);
+  }
+  await expect(oldWording).toHaveCount(0);
+});
+
 test("square and banner support ads lead to the landing pages without navigation entries", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('#site-navigation a[href="/greg-abbott"], #site-navigation a[href="/ken-paxton"]')).toHaveCount(0);
-  for (const id of ["greg-abbott", "ken-paxton"]) {
+  for (const id of ["greg-abbott", "ken-paxton"] as const) {
     for (const format of ["square", "banner"]) {
       const ad = page.locator(`[data-ad-id="${id}-${format}"]`);
       await expect(ad).toHaveAttribute("href", `/${id}?pia_ad=${id}-${format}`);
+      await expect(ad.locator("img")).toHaveAttribute("alt", adAlt[id]);
       await ad.scrollIntoViewIfNeeded();
       await expect.poll(() => ad.locator("img").evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
     }
@@ -116,8 +148,8 @@ test("original banner ads remain ahead of the candidate banners in shared rotati
       await ad.scrollIntoViewIfNeeded();
       await expect.poll(() => ad.locator("img").evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true);
     }
-    await expect(carousel.getByText("Unpaid support message created by Patriots in Action.", { exact: true })).toHaveCount(0);
+    await expect(carousel.getByText(/Paid for by/)).toHaveCount(0);
   }
   await page.goto("/");
-  await expect(page.locator(".campaign-support-square").getByText("Unpaid support message created by Patriots in Action.", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".campaign-support-square").getByText(/Paid for by/)).toHaveCount(0);
 });
