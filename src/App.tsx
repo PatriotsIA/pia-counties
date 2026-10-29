@@ -24,7 +24,6 @@ import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
 import cbtPartnerImage from "../NewAds/CBT4.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
 import lemcPartnerImage from "../NewAds/LEMC250.jpg";
-import mattressPartnerImage from "../NewAds/matress-ad.jpg";
 import merchPartnerImage from "../NewAds/Merch.jpg";
 import panhandleGreenhouseImage from "../NewAds/PanhandleGreenhouse250.jpg";
 import pastureExchangePartnerImage from "../NewAds/PastureEXCHANGELogo.jpg";
@@ -129,13 +128,6 @@ const countySpecificPartners: Partner[] = [
     description: "Find Amarillo and Canyon area rental homes, apartments, and property management services.",
     href: site.links.lemcRealty,
     image: lemcPartnerImage,
-    countyKeys: panhandleCountySponsorKeys,
-  },
-  {
-    name: "Mattress By Appointment",
-    description: "Shop local mattress deals by appointment.",
-    href: "/partners",
-    image: mattressPartnerImage,
     countyKeys: panhandleCountySponsorKeys,
   },
   {
@@ -1692,7 +1684,7 @@ function CountyNewsSection({ county, page }: { county: CountySite; page: CountyP
             description={`Video news coverage mentioning ${county.displayName}, local communities, and civic updates.`}
             feedUrl={county.feeds.localVideoUrl}
             emptyText="No local video results are available yet."
-            presentedBy={countyPartner(county, "Mattress By Appointment") || preferredPartner("Patriots in Action TV")}
+            presentedBy={preferredPartner("Patriots in Action TV")}
           />
           <VimeoFeed compact />
         </div>
@@ -1861,7 +1853,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
   const [mightyError, setMightyError] = useState(false);
-  const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("piaevents.com");
+  const presentedBy = preferredPartner("piaevents.com");
 
   useEffect(() => {
     let active = true;
