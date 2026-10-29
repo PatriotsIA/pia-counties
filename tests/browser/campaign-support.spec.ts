@@ -132,12 +132,12 @@ test("square and banner support ads lead to the landing pages without navigation
   await expect(page).toHaveURL(/\/greg-abbott\?pia_ad=greg-abbott-square/);
 });
 
-test("original banner ads remain ahead of the candidate banners in shared rotations", async ({ page }) => {
+test("remaining banner ads remain ahead of the candidate banners in shared rotations", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   for (const [path, legacy] of [
-    ["/", ["mattress-banner-2026", "pasture-exchange-2026"]],
-    ["/tx/potter", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "mattress-banner-2026", "pasture-exchange-2026"]],
-    ["/tx/randall", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "mattress-banner-2026", "pasture-exchange-2026"]],
+    ["/", ["pasture-exchange-2026"]],
+    ["/tx/potter", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "pasture-exchange-2026"]],
+    ["/tx/randall", ["parallel-builders-banner-2026", "parallel-roofing-banner-2026", "lemc-2026", "pasture-exchange-2026"]],
   ] as const) {
     await page.goto(path);
     const carousel = page.locator(".sponsor-banner-carousel");

@@ -39,8 +39,6 @@ import asset36 from "../../src/assets/optimized/gopconnect-be-informed-318da790d
 import asset37 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-300.webp";
 import asset38 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-600.webp";
 import asset39 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-900.webp";
-import asset40 from "../../NewAds/matress-ad.jpg";
-import asset41 from "../../src/assets/optimized/matress-ad-4135568b2a19-300.webp";
 import asset42 from "../../NewAds/parallel-builders.png";
 import asset43 from "../../src/assets/optimized/parallel-builders-49a954e266ce.webp";
 import asset44 from "../../src/assets/optimized/parallel-builders-49a954e266ce-300.webp";
@@ -164,7 +162,6 @@ export const imageAssets: Record<string, { src: string; width: number; height: n
   [asset32]: { src: asset32, width: 300, height: 250, srcSet: asset32 + ' 300w' },
   [asset33]: { src: asset33, width: 600, height: 1200, srcSet: asset34 + ' 300w' + ', ' + asset33 + ' 600w' },
   [asset35]: { src: asset36, width: 1254, height: 1254, srcSet: asset37 + ' 300w' + ', ' + asset38 + ' 600w' + ', ' + asset39 + ' 900w' + ', ' + asset36 + ' 1254w' },
-  [asset40]: { src: asset40, width: 851, height: 315, srcSet: asset41 + ' 300w' + ', ' + asset40 + ' 851w' },
   [asset42]: { src: asset43, width: 569, height: 267, srcSet: asset44 + ' 300w' + ', ' + asset43 + ' 569w' },
   [asset45]: { src: asset46, width: 767, height: 435, srcSet: asset47 + ' 300w' + ', ' + asset48 + ' 600w' + ', ' + asset46 + ' 767w' },
   [asset49]: { src: asset49, width: 250, height: 350, srcSet: asset49 + ' 250w' },

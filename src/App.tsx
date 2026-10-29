@@ -43,7 +43,6 @@ import { useCandidateCatalog } from "./lib/candidate-catalog-context";
 import patriotDispatchFallback from "../ads/PatriotDispatch.jpg";
 import dyersPartnerImage from "../NewAds/Dyers250.jpg";
 import lemcPartnerImage from "../NewAds/LEMC250.jpg";
-import mattressPartnerImage from "../NewAds/matress-ad.jpg";
 import merchPartnerImage from "../NewAds/Merch.jpg";
 import panhandleGreenhouseImage from "../NewAds/PanhandleGreenhouse250.jpg";
 import pastureExchangePartnerImage from "../NewAds/PastureEXCHANGELogo.jpg";
@@ -144,13 +143,6 @@ const countySpecificPartners: Partner[] = [
     presentsCountyPages: true,
   },
   {
-    name: "Mattress By Appointment",
-    description: "Shop local mattress deals by appointment.",
-    href: "/partners",
-    image: mattressPartnerImage,
-    countyKeys: panhandleCountySponsorKeys,
-  },
-  {
     name: "Panhandle Greenhouse",
     description: "Connect with Panhandle Greenhouse.",
     href: "/partners",
@@ -248,10 +240,6 @@ function countyKey(county: CountySite) {
 function countyPartners(county: CountySite) {
   const key = countyKey(county);
   return countySpecificPartners.filter((partner) => partner.countyKeys?.includes(key));
-}
-
-function countyPartner(county: CountySite, name: string) {
-  return countyPartners(county).find((partner) => partner.name === name);
 }
 
 function countyWeatherSponsor(county: CountySite) {
@@ -1692,7 +1680,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
   const [mightyError, setMightyError] = useState(false);
-  const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("piaevents.com");
+  const presentedBy = preferredPartner("piaevents.com");
 
   useEffect(() => {
     let active = true;
