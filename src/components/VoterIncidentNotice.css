@@ -1,0 +1,12 @@
+.voter-incident-notice { display: flex; align-items: center; gap: 28px; padding: clamp(20px, 3vw, 32px); margin: 24px 0; background: #edf3f8; color: #162e48; border: 1px solid #cbd8e3; border-left: 5px solid #ba2635; }
+.voter-incident-copy { flex: 1; min-width: 0; }
+.voter-incident-notice .voter-incident-kicker { margin: 0 0 9px; color: #9e2431; font: 700 12px/1.4 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.voter-incident-notice h2 { margin: 0 0 14px; max-width: 65ch; color: #162e48; font: 600 clamp(21px, 2vw, 28px)/1.25 Georgia, serif; letter-spacing: normal; text-transform: none; }
+.voter-incident-notice .voter-incident-instructions { margin: 0; max-width: 100ch; color: #263e54; font: 400 15px/1.65 Arial, sans-serif; }
+.voter-incident-notice .voter-incident-source { margin: 12px 0 0; color: #40576b; font: 400 13px/1.6 Arial, sans-serif; }
+.voter-incident-source a { color: inherit; text-decoration: underline; }
+.voter-incident-notice .voter-incident-download { flex-shrink: 0; display: block; padding: 16px 24px; background: #ba2635; color: #fff; text-align: center; text-decoration: none; font: 700 16px/1.4 Arial, sans-serif; }
+.voter-incident-download span { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; }
+.voter-incident-notice .voter-incident-download:hover { background: #94202c; color: #fff; }
+.voter-incident-download:focus-visible { outline: 3px solid #162e48; outline-offset: 4px; }
+@media (max-width: 780px) { .voter-incident-notice { align-items: stretch; flex-direction: column; gap: 20px; } }

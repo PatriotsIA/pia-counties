@@ -1,3 +1,4 @@
+import { VoterIncidentNotice } from "./components/VoterIncidentNotice";
 import { SiteImage } from "./components/SiteImage";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -2218,6 +2219,8 @@ function Shell({
   suppressAdRails?: boolean;
 }) {
   const showAdRails = false;
+  const { stateSlug } = useParams();
+  const showVoterIncidentNotice = getStateBySlug(stateSlug)?.abbr === "TX" && (route === "state" || route === "county");
 
   return (
     <>
@@ -2226,6 +2229,7 @@ function Shell({
       <main className={showAdRails ? "shell-content-frame" : "container"}>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
         <div className={showAdRails ? "container shell-main-content" : "shell-page-stack"}>
+          {showVoterIncidentNotice && <VoterIncidentNotice />}
           {children}
           <div className="shell-pre-footer">
             {route !== "directory" && route !== "state" && !(route === "county" && page === "candidates") ? (
