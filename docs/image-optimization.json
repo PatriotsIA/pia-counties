@@ -190,6 +190,28 @@
     ]
   },
   {
+    "source": "NewAds/PIAEvents.jpg",
+    "width": 600,
+    "height": 500,
+    "frames": 1,
+    "originalBytes": 63448,
+    "fullBytes": 63448,
+    "losslessVerified": true,
+    "full": "NewAds/PIAEvents.jpg",
+    "variants": []
+  },
+  {
+    "source": "NewAds/PIAEventsLarge.jpg",
+    "width": 600,
+    "height": 1200,
+    "frames": 1,
+    "originalBytes": 127266,
+    "fullBytes": 127266,
+    "losslessVerified": true,
+    "full": "NewAds/PIAEventsLarge.jpg",
+    "variants": []
+  },
+  {
     "source": "NewAds/PIATV2.jpg",
     "width": 300,
     "height": 250,
@@ -267,17 +289,6 @@
     "variants": []
   },
   {
-    "source": "NewAds/PatriotTrailerStore.jpg",
-    "width": 300,
-    "height": 250,
-    "frames": 1,
-    "originalBytes": 60675,
-    "fullBytes": 49352,
-    "losslessVerified": true,
-    "full": "src/assets/optimized/patriottrailerstore-8799545df981.webp",
-    "variants": []
-  },
-  {
     "source": "NewAds/PlainsBank250.jpg",
     "width": 300,
     "height": 250,
@@ -287,23 +298,6 @@
     "losslessVerified": true,
     "full": "NewAds/PlainsBank250.jpg",
     "variants": []
-  },
-  {
-    "source": "NewAds/TrailerLarge.jpg",
-    "width": 600,
-    "height": 1200,
-    "frames": 1,
-    "originalBytes": 751639,
-    "fullBytes": 751639,
-    "losslessVerified": true,
-    "full": "NewAds/TrailerLarge.jpg",
-    "variants": [
-      {
-        "width": 300,
-        "path": "src/assets/optimized/trailerlarge-f4b1ff97d273-300.webp",
-        "bytes": 252606
-      }
-    ]
   },
   {
     "source": "NewAds/gopconnect-be-informed.png",
@@ -514,6 +508,23 @@
     "variants": []
   },
   {
+    "source": "public/ads/PIAEventsSmall.jpg",
+    "width": 762,
+    "height": 1066,
+    "frames": 1,
+    "originalBytes": 147898,
+    "fullBytes": 147898,
+    "losslessVerified": true,
+    "full": "public/ads/PIAEventsSmall.jpg",
+    "variants": [
+      {
+        "width": 300,
+        "path": "src/assets/optimized/piaeventssmall-6701e05d7f02-300.webp",
+        "bytes": 104372
+      }
+    ]
+  },
+  {
     "source": "public/ads/PIATVLarge.jpg",
     "width": 600,
     "height": 1200,
@@ -540,23 +551,6 @@
     "losslessVerified": true,
     "full": "public/ads/PIATVSmall.jpg",
     "variants": []
-  },
-  {
-    "source": "public/ads/TrailerSmall.jpg",
-    "width": 381,
-    "height": 533,
-    "frames": 1,
-    "originalBytes": 252252,
-    "fullBytes": 252252,
-    "losslessVerified": true,
-    "full": "public/ads/TrailerSmall.jpg",
-    "variants": [
-      {
-        "width": 300,
-        "path": "src/assets/optimized/trailersmall-46ebdecfd15a-300.webp",
-        "bytes": 180090
-      }
-    ]
   },
   {
     "source": "public/ads/ad-guerilla-gear.png",

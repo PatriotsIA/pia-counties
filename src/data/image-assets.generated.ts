@@ -21,124 +21,122 @@ import asset18 from "../../NewAds/MonaSalazar.jpg";
 import asset19 from "../../src/assets/optimized/monasalazar-41957276a2b3-300.webp";
 import asset20 from "../../NewAds/MonaSalazarSm.jpg";
 import asset21 from "../../src/assets/optimized/monasalazarsm-3356ed6ba467-300.webp";
-import asset22 from "../../NewAds/PIATV2.jpg";
-import asset23 from "../../NewAds/PanhandleGreenhouse250.jpg";
-import asset24 from "../../NewAds/PapaMurphys250.jpg";
-import asset25 from "../../NewAds/Pasture-Exchange980.jpg";
-import asset26 from "../../src/assets/optimized/pasture-exchange980-d8c861475933-300.webp";
-import asset27 from "../../src/assets/optimized/pasture-exchange980-d8c861475933-600.webp";
-import asset28 from "../../NewAds/PastureEXCHANGELogo.jpg";
-import asset29 from "../../NewAds/PatriotMessaging 2.jpg";
-import asset30 from "../../NewAds/PatriotTrailerStore.jpg";
-import asset31 from "../../src/assets/optimized/patriottrailerstore-8799545df981.webp";
+import asset22 from "../../NewAds/PIAEvents.jpg";
+import asset23 from "../../NewAds/PIAEventsLarge.jpg";
+import asset24 from "../../NewAds/PIATV2.jpg";
+import asset25 from "../../NewAds/PanhandleGreenhouse250.jpg";
+import asset26 from "../../NewAds/PapaMurphys250.jpg";
+import asset27 from "../../NewAds/Pasture-Exchange980.jpg";
+import asset28 from "../../src/assets/optimized/pasture-exchange980-d8c861475933-300.webp";
+import asset29 from "../../src/assets/optimized/pasture-exchange980-d8c861475933-600.webp";
+import asset30 from "../../NewAds/PastureEXCHANGELogo.jpg";
+import asset31 from "../../NewAds/PatriotMessaging 2.jpg";
 import asset32 from "../../NewAds/PlainsBank250.jpg";
-import asset33 from "../../NewAds/TrailerLarge.jpg";
-import asset34 from "../../src/assets/optimized/trailerlarge-f4b1ff97d273-300.webp";
-import asset35 from "../../NewAds/gopconnect-be-informed.png";
-import asset36 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1.webp";
-import asset37 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-300.webp";
-import asset38 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-600.webp";
-import asset39 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-900.webp";
-import asset40 from "../../NewAds/matress-ad.jpg";
-import asset41 from "../../src/assets/optimized/matress-ad-4135568b2a19-300.webp";
-import asset42 from "../../NewAds/parallel-builders.png";
-import asset43 from "../../src/assets/optimized/parallel-builders-49a954e266ce.webp";
-import asset44 from "../../src/assets/optimized/parallel-builders-49a954e266ce-300.webp";
-import asset45 from "../../NewAds/parallel-roofing.png";
-import asset46 from "../../src/assets/optimized/parallel-roofing-67267af924f6.webp";
-import asset47 from "../../src/assets/optimized/parallel-roofing-67267af924f6-300.webp";
-import asset48 from "../../src/assets/optimized/parallel-roofing-67267af924f6-600.webp";
-import asset49 from "../../PatriotAnimation.gif";
-import asset50 from "../../ads/PatriotDispatch.jpg";
-import asset51 from "../../src/assets/optimized/patriotdispatch-214ff66fa13d.webp";
-import asset52 from "../../ads/ad-itmtrading.JPG";
-import asset53 from "../../src/assets/optimized/ad-itmtrading-362cc686db91.webp";
-import asset54 from "../../assets/source/county-post-any-county.png";
-import asset55 from "../../src/assets/optimized/county-post-any-county-04227768e877.webp";
-import asset56 from "../../src/assets/optimized/county-post-any-county-04227768e877-300.webp";
-import asset57 from "../../src/assets/optimized/county-post-any-county-04227768e877-600.webp";
-import asset58 from "../../src/assets/optimized/county-post-any-county-04227768e877-900.webp";
-import asset59 from "../../assets/source/county-post-no-sweat.png";
-import asset60 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be.webp";
-import asset61 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-300.webp";
-import asset62 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-600.webp";
-import asset63 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-900.webp";
-import asset64 from "../../county-post-final-logo.png";
-import asset65 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a.webp";
-import asset66 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-300.webp";
-import asset67 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-600.webp";
-import asset68 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-900.webp";
-import asset69 from "../../src/assets/optimized/piatvlarge-b75cc1da2684-300.webp";
-import asset70 from "../../src/assets/optimized/trailersmall-46ebdecfd15a-300.webp";
-import asset71 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024.webp";
-import asset72 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024-300.webp";
-import asset73 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024-600.webp";
-import asset74 from "../../src/assets/optimized/piafooterlogo-3bf10f0589c4.webp";
-import asset75 from "../../src/assets/optimized/piafooterlogo-3bf10f0589c4-300.webp";
-import asset76 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef.webp";
-import asset77 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-300.webp";
-import asset78 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-600.webp";
-import asset79 from "../../src/assets/optimized/piapatriot-0aa8ea00f176.webp";
-import asset80 from "../../src/assets/optimized/piapatriot-0aa8ea00f176-300.webp";
-import asset81 from "../../src/assets/optimized/socialicon-e75d58e9e95b.webp";
-import asset82 from "../../src/assets/optimized/socialicon-e75d58e9e95b-300.webp";
-import asset83 from "../../src/assets/optimized/abraham-george-60e4b1830f00-300.webp";
-import asset84 from "../../src/assets/optimized/aj-casias-407d85465830-300.webp";
-import asset85 from "../../src/assets/optimized/al-lujan-2fc9471f0b4e-300.webp";
-import asset86 from "../../src/assets/optimized/alan-paige-ba04e48a37e0.webp";
-import asset87 from "../../src/assets/optimized/amanda-mayfield-1b4e8a0993fb.webp";
-import asset88 from "../../src/assets/optimized/apollo-hernandez-465753b79b54.webp";
-import asset89 from "../../src/assets/optimized/blair-schaffer-fb55d8133a9d-300.webp";
-import asset90 from "../../src/assets/optimized/brett-ferguson-fca41c6ef713.webp";
-import asset91 from "../../src/assets/optimized/brooks-mckenzie-334ec9f2404c-300.webp";
-import asset92 from "../../src/assets/optimized/cathy-welch-e1cd17b4f780-300.webp";
-import asset93 from "../../src/assets/optimized/chad-seay-557c793744a8-300.webp";
-import asset94 from "../../src/assets/optimized/chad-seay-557c793744a8-600.webp";
-import asset95 from "../../src/assets/optimized/chasity-wedgeworth-823d5544fd75-300.webp";
-import asset96 from "../../src/assets/optimized/daniel-betts-18d373577eb7-300.webp";
-import asset97 from "../../src/assets/optimized/daniel-betts-18d373577eb7-600.webp";
-import asset98 from "../../src/assets/optimized/dc-caldwell-3c733f983e71-300.webp";
-import asset99 from "../../src/assets/optimized/drinda-randall-b8b798843ee2-300.webp";
-import asset100 from "../../src/assets/optimized/drinda-randall-b8b798843ee2-600.webp";
-import asset101 from "../../src/assets/optimized/elizabeth-waters-8898c8688819-300.webp";
-import asset102 from "../../src/assets/optimized/frank-salazar-5f65bfdfe575-300.webp";
-import asset103 from "../../src/assets/optimized/gary-house-9dfbf94be138-300.webp";
-import asset104 from "../../src/assets/optimized/gary-house-9dfbf94be138-600.webp";
-import asset105 from "../../src/assets/optimized/holly-jeffreys-ae434b368c23-300.webp";
-import asset106 from "../../src/assets/optimized/holly-jeffreys-ae434b368c23-600.webp";
-import asset107 from "../../src/assets/optimized/james-matlock-f1e7f53d8665-300.webp";
-import asset108 from "../../src/assets/optimized/james-stewart-e025a4ef1267-300.webp";
-import asset109 from "../../src/assets/optimized/james-stewart-e025a4ef1267-600.webp";
-import asset110 from "../../src/assets/optimized/jamie-haynes-71014de128b4-300.webp";
-import asset111 from "../../src/assets/optimized/jim-baxa-81c14f3939a0-300.webp";
-import asset112 from "../../src/assets/optimized/jim-wright-99c767751810-300.webp";
-import asset113 from "../../src/assets/optimized/joanna-garcia-flores-ca2151b96d64-300.webp";
-import asset114 from "../../src/assets/optimized/john-smithee-ea85b41092ba-300.webp";
-import asset115 from "../../src/assets/optimized/jonathan-mitchell-e42c38cdcca0.webp";
-import asset116 from "../../src/assets/optimized/julie-kellogg-0bbe906a219a-300.webp";
-import asset117 from "../../src/assets/optimized/ken-mathews-192804358c80-300.webp";
-import asset118 from "../../src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-300.webp";
-import asset119 from "../../src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-600.webp";
-import asset120 from "../../src/assets/optimized/mayes-middleton-d4b712174d11.webp";
-import asset121 from "../../src/assets/optimized/michelle-merendino-a7e3f97291fc-300.webp";
-import asset122 from "../../src/assets/optimized/michelle-merendino-a7e3f97291fc-600.webp";
-import asset123 from "../../src/assets/optimized/paul-herrmann-bad475418767-300.webp";
-import asset124 from "../../src/assets/optimized/rashelle-fetty-25a4dff005b1-300.webp";
-import asset125 from "../../src/assets/optimized/robert-taylor-1ab645a039bc-300.webp";
-import asset126 from "../../src/assets/optimized/ryan-zink-271315a14c42-300.webp";
-import asset127 from "../../src/assets/optimized/ryan-zink-271315a14c42-600.webp";
-import asset128 from "../../src/assets/optimized/shandi-williams-e0af6e36f086-300.webp";
-import asset129 from "../../src/assets/optimized/sid-miller-2b6c22bd73cf-300.webp";
-import asset130 from "../../src/assets/optimized/sid-miller-2b6c22bd73cf-600.webp";
-import asset131 from "../../src/assets/optimized/sylvester-vanerson-e49d3aafc020-300.webp";
-import asset132 from "../../src/assets/optimized/tammie-smith-9860f89a5377-300.webp";
-import asset133 from "../../src/assets/optimized/tammie-smith-9860f89a5377-600.webp";
-import asset134 from "../../src/assets/optimized/tanya-lovenburg-003d03a01955-300.webp";
-import asset135 from "../../src/assets/optimized/thomas-smith-c60d824f2c03-300.webp";
-import asset136 from "../../src/assets/optimized/traci-baxa-9aedaca11856.webp";
-import asset137 from "../../src/assets/optimized/zachary-price-9415c8189264.webp";
-import asset138 from "../../src/assets/optimized/zachary-price-9415c8189264-300.webp";
-import asset139 from "../../src/assets/optimized/patriot-dispatch-214ff66fa13d.webp";
+import asset33 from "../../NewAds/gopconnect-be-informed.png";
+import asset34 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1.webp";
+import asset35 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-300.webp";
+import asset36 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-600.webp";
+import asset37 from "../../src/assets/optimized/gopconnect-be-informed-318da790d5e1-900.webp";
+import asset38 from "../../NewAds/matress-ad.jpg";
+import asset39 from "../../src/assets/optimized/matress-ad-4135568b2a19-300.webp";
+import asset40 from "../../NewAds/parallel-builders.png";
+import asset41 from "../../src/assets/optimized/parallel-builders-49a954e266ce.webp";
+import asset42 from "../../src/assets/optimized/parallel-builders-49a954e266ce-300.webp";
+import asset43 from "../../NewAds/parallel-roofing.png";
+import asset44 from "../../src/assets/optimized/parallel-roofing-67267af924f6.webp";
+import asset45 from "../../src/assets/optimized/parallel-roofing-67267af924f6-300.webp";
+import asset46 from "../../src/assets/optimized/parallel-roofing-67267af924f6-600.webp";
+import asset47 from "../../PatriotAnimation.gif";
+import asset48 from "../../ads/PatriotDispatch.jpg";
+import asset49 from "../../src/assets/optimized/patriotdispatch-214ff66fa13d.webp";
+import asset50 from "../../ads/ad-itmtrading.JPG";
+import asset51 from "../../src/assets/optimized/ad-itmtrading-362cc686db91.webp";
+import asset52 from "../../assets/source/county-post-any-county.png";
+import asset53 from "../../src/assets/optimized/county-post-any-county-04227768e877.webp";
+import asset54 from "../../src/assets/optimized/county-post-any-county-04227768e877-300.webp";
+import asset55 from "../../src/assets/optimized/county-post-any-county-04227768e877-600.webp";
+import asset56 from "../../src/assets/optimized/county-post-any-county-04227768e877-900.webp";
+import asset57 from "../../assets/source/county-post-no-sweat.png";
+import asset58 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be.webp";
+import asset59 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-300.webp";
+import asset60 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-600.webp";
+import asset61 from "../../src/assets/optimized/county-post-no-sweat-54d4b81898be-900.webp";
+import asset62 from "../../county-post-final-logo.png";
+import asset63 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a.webp";
+import asset64 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-300.webp";
+import asset65 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-600.webp";
+import asset66 from "../../src/assets/optimized/county-post-final-logo-49680773ba6a-900.webp";
+import asset67 from "../../src/assets/optimized/piaeventssmall-6701e05d7f02-300.webp";
+import asset68 from "../../src/assets/optimized/piatvlarge-b75cc1da2684-300.webp";
+import asset69 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024.webp";
+import asset70 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024-300.webp";
+import asset71 from "../../src/assets/optimized/ad-guerilla-gear-667285ecb024-600.webp";
+import asset72 from "../../src/assets/optimized/piafooterlogo-3bf10f0589c4.webp";
+import asset73 from "../../src/assets/optimized/piafooterlogo-3bf10f0589c4-300.webp";
+import asset74 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef.webp";
+import asset75 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-300.webp";
+import asset76 from "../../src/assets/optimized/piafulltextlogoredwhite-e498039b99ef-600.webp";
+import asset77 from "../../src/assets/optimized/piapatriot-0aa8ea00f176.webp";
+import asset78 from "../../src/assets/optimized/piapatriot-0aa8ea00f176-300.webp";
+import asset79 from "../../src/assets/optimized/socialicon-e75d58e9e95b.webp";
+import asset80 from "../../src/assets/optimized/socialicon-e75d58e9e95b-300.webp";
+import asset81 from "../../src/assets/optimized/abraham-george-60e4b1830f00-300.webp";
+import asset82 from "../../src/assets/optimized/aj-casias-407d85465830-300.webp";
+import asset83 from "../../src/assets/optimized/al-lujan-2fc9471f0b4e-300.webp";
+import asset84 from "../../src/assets/optimized/alan-paige-ba04e48a37e0.webp";
+import asset85 from "../../src/assets/optimized/amanda-mayfield-1b4e8a0993fb.webp";
+import asset86 from "../../src/assets/optimized/apollo-hernandez-465753b79b54.webp";
+import asset87 from "../../src/assets/optimized/blair-schaffer-fb55d8133a9d-300.webp";
+import asset88 from "../../src/assets/optimized/brett-ferguson-fca41c6ef713.webp";
+import asset89 from "../../src/assets/optimized/brooks-mckenzie-334ec9f2404c-300.webp";
+import asset90 from "../../src/assets/optimized/cathy-welch-e1cd17b4f780-300.webp";
+import asset91 from "../../src/assets/optimized/chad-seay-557c793744a8-300.webp";
+import asset92 from "../../src/assets/optimized/chad-seay-557c793744a8-600.webp";
+import asset93 from "../../src/assets/optimized/chasity-wedgeworth-823d5544fd75-300.webp";
+import asset94 from "../../src/assets/optimized/daniel-betts-18d373577eb7-300.webp";
+import asset95 from "../../src/assets/optimized/daniel-betts-18d373577eb7-600.webp";
+import asset96 from "../../src/assets/optimized/dc-caldwell-3c733f983e71-300.webp";
+import asset97 from "../../src/assets/optimized/drinda-randall-b8b798843ee2-300.webp";
+import asset98 from "../../src/assets/optimized/drinda-randall-b8b798843ee2-600.webp";
+import asset99 from "../../src/assets/optimized/elizabeth-waters-8898c8688819-300.webp";
+import asset100 from "../../src/assets/optimized/frank-salazar-5f65bfdfe575-300.webp";
+import asset101 from "../../src/assets/optimized/gary-house-9dfbf94be138-300.webp";
+import asset102 from "../../src/assets/optimized/gary-house-9dfbf94be138-600.webp";
+import asset103 from "../../src/assets/optimized/holly-jeffreys-ae434b368c23-300.webp";
+import asset104 from "../../src/assets/optimized/holly-jeffreys-ae434b368c23-600.webp";
+import asset105 from "../../src/assets/optimized/james-matlock-f1e7f53d8665-300.webp";
+import asset106 from "../../src/assets/optimized/james-stewart-e025a4ef1267-300.webp";
+import asset107 from "../../src/assets/optimized/james-stewart-e025a4ef1267-600.webp";
+import asset108 from "../../src/assets/optimized/jamie-haynes-71014de128b4-300.webp";
+import asset109 from "../../src/assets/optimized/jim-baxa-81c14f3939a0-300.webp";
+import asset110 from "../../src/assets/optimized/jim-wright-99c767751810-300.webp";
+import asset111 from "../../src/assets/optimized/joanna-garcia-flores-ca2151b96d64-300.webp";
+import asset112 from "../../src/assets/optimized/john-smithee-ea85b41092ba-300.webp";
+import asset113 from "../../src/assets/optimized/jonathan-mitchell-e42c38cdcca0.webp";
+import asset114 from "../../src/assets/optimized/julie-kellogg-0bbe906a219a-300.webp";
+import asset115 from "../../src/assets/optimized/ken-mathews-192804358c80-300.webp";
+import asset116 from "../../src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-300.webp";
+import asset117 from "../../src/assets/optimized/lesli-fitzpatrick-b64c18a6940d-600.webp";
+import asset118 from "../../src/assets/optimized/mayes-middleton-d4b712174d11.webp";
+import asset119 from "../../src/assets/optimized/michelle-merendino-a7e3f97291fc-300.webp";
+import asset120 from "../../src/assets/optimized/michelle-merendino-a7e3f97291fc-600.webp";
+import asset121 from "../../src/assets/optimized/paul-herrmann-bad475418767-300.webp";
+import asset122 from "../../src/assets/optimized/rashelle-fetty-25a4dff005b1-300.webp";
+import asset123 from "../../src/assets/optimized/robert-taylor-1ab645a039bc-300.webp";
+import asset124 from "../../src/assets/optimized/ryan-zink-271315a14c42-300.webp";
+import asset125 from "../../src/assets/optimized/ryan-zink-271315a14c42-600.webp";
+import asset126 from "../../src/assets/optimized/shandi-williams-e0af6e36f086-300.webp";
+import asset127 from "../../src/assets/optimized/sid-miller-2b6c22bd73cf-300.webp";
+import asset128 from "../../src/assets/optimized/sid-miller-2b6c22bd73cf-600.webp";
+import asset129 from "../../src/assets/optimized/sylvester-vanerson-e49d3aafc020-300.webp";
+import asset130 from "../../src/assets/optimized/tammie-smith-9860f89a5377-300.webp";
+import asset131 from "../../src/assets/optimized/tammie-smith-9860f89a5377-600.webp";
+import asset132 from "../../src/assets/optimized/tanya-lovenburg-003d03a01955-300.webp";
+import asset133 from "../../src/assets/optimized/thomas-smith-c60d824f2c03-300.webp";
+import asset134 from "../../src/assets/optimized/traci-baxa-9aedaca11856.webp";
+import asset135 from "../../src/assets/optimized/zachary-price-9415c8189264.webp";
+import asset136 from "../../src/assets/optimized/zachary-price-9415c8189264-300.webp";
+import asset137 from "../../src/assets/optimized/patriot-dispatch-214ff66fa13d.webp";
 
 export const imageAssets: Record<string, { src: string; width: number; height: number; srcSet: string }> = {
   [asset0]: { src: asset0, width: 600, height: 1200, srcSet: asset1 + ' 300w' + ', ' + asset0 + ' 600w' },
@@ -154,90 +152,90 @@ export const imageAssets: Record<string, { src: string; width: number; height: n
   [asset16]: { src: asset17, width: 300, height: 250, srcSet: asset17 + ' 300w' },
   [asset18]: { src: asset18, width: 600, height: 1200, srcSet: asset19 + ' 300w' + ', ' + asset18 + ' 600w' },
   [asset20]: { src: asset20, width: 381, height: 533, srcSet: asset21 + ' 300w' + ', ' + asset20 + ' 381w' },
-  [asset22]: { src: asset22, width: 300, height: 250, srcSet: asset22 + ' 300w' },
-  [asset23]: { src: asset23, width: 300, height: 250, srcSet: asset23 + ' 300w' },
+  [asset22]: { src: asset22, width: 600, height: 500, srcSet: asset22 + ' 600w' },
+  [asset23]: { src: asset23, width: 600, height: 1200, srcSet: asset23 + ' 600w' },
   [asset24]: { src: asset24, width: 300, height: 250, srcSet: asset24 + ' 300w' },
-  [asset25]: { src: asset25, width: 980, height: 300, srcSet: asset26 + ' 300w' + ', ' + asset27 + ' 600w' + ', ' + asset25 + ' 980w' },
-  [asset28]: { src: asset28, width: 300, height: 250, srcSet: asset28 + ' 300w' },
-  [asset29]: { src: asset29, width: 300, height: 250, srcSet: asset29 + ' 300w' },
-  [asset30]: { src: asset31, width: 300, height: 250, srcSet: asset31 + ' 300w' },
+  [asset25]: { src: asset25, width: 300, height: 250, srcSet: asset25 + ' 300w' },
+  [asset26]: { src: asset26, width: 300, height: 250, srcSet: asset26 + ' 300w' },
+  [asset27]: { src: asset27, width: 980, height: 300, srcSet: asset28 + ' 300w' + ', ' + asset29 + ' 600w' + ', ' + asset27 + ' 980w' },
+  [asset30]: { src: asset30, width: 300, height: 250, srcSet: asset30 + ' 300w' },
+  [asset31]: { src: asset31, width: 300, height: 250, srcSet: asset31 + ' 300w' },
   [asset32]: { src: asset32, width: 300, height: 250, srcSet: asset32 + ' 300w' },
-  [asset33]: { src: asset33, width: 600, height: 1200, srcSet: asset34 + ' 300w' + ', ' + asset33 + ' 600w' },
-  [asset35]: { src: asset36, width: 1254, height: 1254, srcSet: asset37 + ' 300w' + ', ' + asset38 + ' 600w' + ', ' + asset39 + ' 900w' + ', ' + asset36 + ' 1254w' },
-  [asset40]: { src: asset40, width: 851, height: 315, srcSet: asset41 + ' 300w' + ', ' + asset40 + ' 851w' },
-  [asset42]: { src: asset43, width: 569, height: 267, srcSet: asset44 + ' 300w' + ', ' + asset43 + ' 569w' },
-  [asset45]: { src: asset46, width: 767, height: 435, srcSet: asset47 + ' 300w' + ', ' + asset48 + ' 600w' + ', ' + asset46 + ' 767w' },
-  [asset49]: { src: asset49, width: 250, height: 350, srcSet: asset49 + ' 250w' },
-  [asset50]: { src: asset51, width: 300, height: 250, srcSet: asset51 + ' 300w' },
-  [asset52]: { src: asset53, width: 167, height: 103, srcSet: asset53 + ' 167w' },
-  [asset54]: { src: asset55, width: 1672, height: 941, srcSet: asset56 + ' 300w' + ', ' + asset57 + ' 600w' + ', ' + asset58 + ' 900w' + ', ' + asset55 + ' 1672w' },
-  [asset59]: { src: asset60, width: 1672, height: 941, srcSet: asset61 + ' 300w' + ', ' + asset62 + ' 600w' + ', ' + asset63 + ' 900w' + ', ' + asset60 + ' 1672w' },
-  [asset64]: { src: asset65, width: 1536, height: 1024, srcSet: asset66 + ' 300w' + ', ' + asset67 + ' 600w' + ', ' + asset68 + ' 900w' + ', ' + asset65 + ' 1536w' },
+  [asset33]: { src: asset34, width: 1254, height: 1254, srcSet: asset35 + ' 300w' + ', ' + asset36 + ' 600w' + ', ' + asset37 + ' 900w' + ', ' + asset34 + ' 1254w' },
+  [asset38]: { src: asset38, width: 851, height: 315, srcSet: asset39 + ' 300w' + ', ' + asset38 + ' 851w' },
+  [asset40]: { src: asset41, width: 569, height: 267, srcSet: asset42 + ' 300w' + ', ' + asset41 + ' 569w' },
+  [asset43]: { src: asset44, width: 767, height: 435, srcSet: asset45 + ' 300w' + ', ' + asset46 + ' 600w' + ', ' + asset44 + ' 767w' },
+  [asset47]: { src: asset47, width: 250, height: 350, srcSet: asset47 + ' 250w' },
+  [asset48]: { src: asset49, width: 300, height: 250, srcSet: asset49 + ' 300w' },
+  [asset50]: { src: asset51, width: 167, height: 103, srcSet: asset51 + ' 167w' },
+  [asset52]: { src: asset53, width: 1672, height: 941, srcSet: asset54 + ' 300w' + ', ' + asset55 + ' 600w' + ', ' + asset56 + ' 900w' + ', ' + asset53 + ' 1672w' },
+  [asset57]: { src: asset58, width: 1672, height: 941, srcSet: asset59 + ' 300w' + ', ' + asset60 + ' 600w' + ', ' + asset61 + ' 900w' + ', ' + asset58 + ' 1672w' },
+  [asset62]: { src: asset63, width: 1536, height: 1024, srcSet: asset64 + ' 300w' + ', ' + asset65 + ' 600w' + ', ' + asset66 + ' 900w' + ', ' + asset63 + ' 1536w' },
   ["/ads/PATRIOTREWARDS.jpg"]: { src: "/ads/PATRIOTREWARDS.jpg", width: 300, height: 250, srcSet: "/ads/PATRIOTREWARDS.jpg" + ' 300w' },
-  ["/ads/PIATVLarge.jpg"]: { src: "/ads/PIATVLarge.jpg", width: 600, height: 1200, srcSet: asset69 + ' 300w' + ', ' + "/ads/PIATVLarge.jpg" + ' 600w' },
+  ["/ads/PIAEventsSmall.jpg"]: { src: "/ads/PIAEventsSmall.jpg", width: 762, height: 1066, srcSet: asset67 + ' 300w' + ', ' + "/ads/PIAEventsSmall.jpg" + ' 762w' },
+  ["/ads/PIATVLarge.jpg"]: { src: "/ads/PIATVLarge.jpg", width: 600, height: 1200, srcSet: asset68 + ' 300w' + ', ' + "/ads/PIATVLarge.jpg" + ' 600w' },
   ["/ads/PIATVSmall.jpg"]: { src: "/ads/PIATVSmall.jpg", width: 381, height: 533, srcSet: "/ads/PIATVSmall.jpg" + ' 381w' },
-  ["/ads/TrailerSmall.jpg"]: { src: "/ads/TrailerSmall.jpg", width: 381, height: 533, srcSet: asset70 + ' 300w' + ', ' + "/ads/TrailerSmall.jpg" + ' 381w' },
-  ["/ads/ad-guerilla-gear.png"]: { src: asset71, width: 1922, height: 2609, srcSet: asset72 + ' 300w' + ', ' + asset73 + ' 600w' + ', ' + asset71 + ' 1922w' },
+  ["/ads/ad-guerilla-gear.png"]: { src: asset69, width: 1922, height: 2609, srcSet: asset70 + ' 300w' + ', ' + asset71 + ' 600w' + ', ' + asset69 + ' 1922w' },
   ["/brand/AmericanHeader-600x601.jpg"]: { src: "/brand/AmericanHeader-600x601.jpg", width: 600, height: 601, srcSet: "/brand/AmericanHeader-600x601.jpg" + ' 600w' },
-  ["/brand/PIAFooterLogo.png"]: { src: asset74, width: 1130, height: 242, srcSet: asset75 + ' 300w' + ', ' + asset74 + ' 1130w' },
-  ["/brand/PIAFullTextLogoRedWhite.png"]: { src: asset76, width: 1024, height: 219, srcSet: asset77 + ' 300w' + ', ' + asset78 + ' 600w' + ', ' + asset76 + ' 1024w' },
-  ["/brand/PIAPatriot.png"]: { src: asset79, width: 632, height: 1024, srcSet: asset80 + ' 300w' + ', ' + asset79 + ' 632w' },
-  ["/brand/SocialIcon.png"]: { src: asset81, width: 800, height: 800, srcSet: asset82 + ' 300w' + ', ' + asset81 + ' 800w' },
+  ["/brand/PIAFooterLogo.png"]: { src: asset72, width: 1130, height: 242, srcSet: asset73 + ' 300w' + ', ' + asset72 + ' 1130w' },
+  ["/brand/PIAFullTextLogoRedWhite.png"]: { src: asset74, width: 1024, height: 219, srcSet: asset75 + ' 300w' + ', ' + asset76 + ' 600w' + ', ' + asset74 + ' 1024w' },
+  ["/brand/PIAPatriot.png"]: { src: asset77, width: 632, height: 1024, srcSet: asset78 + ' 300w' + ', ' + asset77 + ' 632w' },
+  ["/brand/SocialIcon.png"]: { src: asset79, width: 800, height: 800, srcSet: asset80 + ' 300w' + ', ' + asset79 + ' 800w' },
   ["/brand/operation-show-up-cover.png"]: { src: "/brand/operation-show-up-cover.png", width: 311, height: 466, srcSet: "/brand/operation-show-up-cover.png" + ' 311w' },
-  ["/candidates/Abraham-George.jpg"]: { src: "/candidates/Abraham-George.jpg", width: 1140, height: 758, srcSet: asset83 + ' 300w' + ', ' + "/candidates/Abraham-George.jpg" + ' 1140w' },
+  ["/candidates/Abraham-George.jpg"]: { src: "/candidates/Abraham-George.jpg", width: 1140, height: 758, srcSet: asset81 + ' 300w' + ', ' + "/candidates/Abraham-George.jpg" + ' 1140w' },
   ["/candidates/SandraWhitten.jpg"]: { src: "/candidates/SandraWhitten.jpg", width: 1200, height: 1600, srcSet: "/candidates/SandraWhitten.jpg" + ' 1200w' },
-  ["/candidates/aj-casias.jpg"]: { src: "/candidates/aj-casias.jpg", width: 600, height: 503, srcSet: asset84 + ' 300w' + ', ' + "/candidates/aj-casias.jpg" + ' 600w' },
-  ["/candidates/al-lujan.jpg"]: { src: "/candidates/al-lujan.jpg", width: 600, height: 793, srcSet: asset85 + ' 300w' + ', ' + "/candidates/al-lujan.jpg" + ' 600w' },
-  ["/candidates/alan-paige.png"]: { src: asset86, width: 264, height: 300, srcSet: asset86 + ' 264w' },
-  ["/candidates/amanda-mayfield.jpg"]: { src: asset87, width: 276, height: 300, srcSet: asset87 + ' 276w' },
+  ["/candidates/aj-casias.jpg"]: { src: "/candidates/aj-casias.jpg", width: 600, height: 503, srcSet: asset82 + ' 300w' + ', ' + "/candidates/aj-casias.jpg" + ' 600w' },
+  ["/candidates/al-lujan.jpg"]: { src: "/candidates/al-lujan.jpg", width: 600, height: 793, srcSet: asset83 + ' 300w' + ', ' + "/candidates/al-lujan.jpg" + ' 600w' },
+  ["/candidates/alan-paige.png"]: { src: asset84, width: 264, height: 300, srcSet: asset84 + ' 264w' },
+  ["/candidates/amanda-mayfield.jpg"]: { src: asset85, width: 276, height: 300, srcSet: asset85 + ' 276w' },
   ["/candidates/andrew-smith.webp"]: { src: "/candidates/andrew-smith.webp", width: 200, height: 200, srcSet: "/candidates/andrew-smith.webp" + ' 200w' },
-  ["/candidates/apollo-hernandez.png"]: { src: asset88, width: 293, height: 300, srcSet: asset88 + ' 293w' },
+  ["/candidates/apollo-hernandez.png"]: { src: asset86, width: 293, height: 300, srcSet: asset86 + ' 293w' },
   ["/candidates/bill-eastland.webp"]: { src: "/candidates/bill-eastland.webp", width: 300, height: 300, srcSet: "/candidates/bill-eastland.webp" + ' 300w' },
-  ["/candidates/blair-schaffer.jpg"]: { src: "/candidates/blair-schaffer.jpg", width: 600, height: 600, srcSet: asset89 + ' 300w' + ', ' + "/candidates/blair-schaffer.jpg" + ' 600w' },
-  ["/candidates/brett-ferguson.jpg"]: { src: asset90, width: 231, height: 300, srcSet: asset90 + ' 231w' },
-  ["/candidates/brooks-mckenzie.jpg"]: { src: "/candidates/brooks-mckenzie.jpg", width: 960, height: 540, srcSet: asset91 + ' 300w' + ', ' + "/candidates/brooks-mckenzie.jpg" + ' 960w' },
+  ["/candidates/blair-schaffer.jpg"]: { src: "/candidates/blair-schaffer.jpg", width: 600, height: 600, srcSet: asset87 + ' 300w' + ', ' + "/candidates/blair-schaffer.jpg" + ' 600w' },
+  ["/candidates/brett-ferguson.jpg"]: { src: asset88, width: 231, height: 300, srcSet: asset88 + ' 231w' },
+  ["/candidates/brooks-mckenzie.jpg"]: { src: "/candidates/brooks-mckenzie.jpg", width: 960, height: 540, srcSet: asset89 + ' 300w' + ', ' + "/candidates/brooks-mckenzie.jpg" + ' 960w' },
   ["/candidates/bryan-tackett.webp"]: { src: "/candidates/bryan-tackett.webp", width: 150, height: 150, srcSet: "/candidates/bryan-tackett.webp" + ' 150w' },
-  ["/candidates/cathy-welch.jpg"]: { src: "/candidates/cathy-welch.jpg", width: 600, height: 400, srcSet: asset92 + ' 300w' + ', ' + "/candidates/cathy-welch.jpg" + ' 600w' },
-  ["/candidates/chad-seay.webp"]: { src: "/candidates/chad-seay.webp", width: 1024, height: 576, srcSet: asset93 + ' 300w' + ', ' + asset94 + ' 600w' + ', ' + "/candidates/chad-seay.webp" + ' 1024w' },
-  ["/candidates/chasity-wedgeworth.jpg"]: { src: "/candidates/chasity-wedgeworth.jpg", width: 600, height: 597, srcSet: asset95 + ' 300w' + ', ' + "/candidates/chasity-wedgeworth.jpg" + ' 600w' },
-  ["/candidates/daniel-betts.webp"]: { src: "/candidates/daniel-betts.webp", width: 1010, height: 1020, srcSet: asset96 + ' 300w' + ', ' + asset97 + ' 600w' + ', ' + "/candidates/daniel-betts.webp" + ' 1010w' },
-  ["/candidates/dc-caldwell.jpg"]: { src: "/candidates/dc-caldwell.jpg", width: 600, height: 600, srcSet: asset98 + ' 300w' + ', ' + "/candidates/dc-caldwell.jpg" + ' 600w' },
-  ["/candidates/drinda-randall.jpg"]: { src: "/candidates/drinda-randall.jpg", width: 988, height: 578, srcSet: asset99 + ' 300w' + ', ' + asset100 + ' 600w' + ', ' + "/candidates/drinda-randall.jpg" + ' 988w' },
-  ["/candidates/elizabeth-waters.jpg"]: { src: "/candidates/elizabeth-waters.jpg", width: 600, height: 495, srcSet: asset101 + ' 300w' + ', ' + "/candidates/elizabeth-waters.jpg" + ' 600w' },
+  ["/candidates/cathy-welch.jpg"]: { src: "/candidates/cathy-welch.jpg", width: 600, height: 400, srcSet: asset90 + ' 300w' + ', ' + "/candidates/cathy-welch.jpg" + ' 600w' },
+  ["/candidates/chad-seay.webp"]: { src: "/candidates/chad-seay.webp", width: 1024, height: 576, srcSet: asset91 + ' 300w' + ', ' + asset92 + ' 600w' + ', ' + "/candidates/chad-seay.webp" + ' 1024w' },
+  ["/candidates/chasity-wedgeworth.jpg"]: { src: "/candidates/chasity-wedgeworth.jpg", width: 600, height: 597, srcSet: asset93 + ' 300w' + ', ' + "/candidates/chasity-wedgeworth.jpg" + ' 600w' },
+  ["/candidates/daniel-betts.webp"]: { src: "/candidates/daniel-betts.webp", width: 1010, height: 1020, srcSet: asset94 + ' 300w' + ', ' + asset95 + ' 600w' + ', ' + "/candidates/daniel-betts.webp" + ' 1010w' },
+  ["/candidates/dc-caldwell.jpg"]: { src: "/candidates/dc-caldwell.jpg", width: 600, height: 600, srcSet: asset96 + ' 300w' + ', ' + "/candidates/dc-caldwell.jpg" + ' 600w' },
+  ["/candidates/drinda-randall.jpg"]: { src: "/candidates/drinda-randall.jpg", width: 988, height: 578, srcSet: asset97 + ' 300w' + ', ' + asset98 + ' 600w' + ', ' + "/candidates/drinda-randall.jpg" + ' 988w' },
+  ["/candidates/elizabeth-waters.jpg"]: { src: "/candidates/elizabeth-waters.jpg", width: 600, height: 495, srcSet: asset99 + ' 300w' + ', ' + "/candidates/elizabeth-waters.jpg" + ' 600w' },
   ["/candidates/ethan-libby.jpg"]: { src: "/candidates/ethan-libby.jpg", width: 400, height: 400, srcSet: "/candidates/ethan-libby.jpg" + ' 400w' },
-  ["/candidates/frank-salazar.jpg"]: { src: "/candidates/frank-salazar.jpg", width: 500, height: 437, srcSet: asset102 + ' 300w' + ', ' + "/candidates/frank-salazar.jpg" + ' 500w' },
-  ["/candidates/gary-house.jpg"]: { src: "/candidates/gary-house.jpg", width: 819, height: 1024, srcSet: asset103 + ' 300w' + ', ' + asset104 + ' 600w' + ', ' + "/candidates/gary-house.jpg" + ' 819w' },
+  ["/candidates/frank-salazar.jpg"]: { src: "/candidates/frank-salazar.jpg", width: 500, height: 437, srcSet: asset100 + ' 300w' + ', ' + "/candidates/frank-salazar.jpg" + ' 500w' },
+  ["/candidates/gary-house.jpg"]: { src: "/candidates/gary-house.jpg", width: 819, height: 1024, srcSet: asset101 + ' 300w' + ', ' + asset102 + ' 600w' + ', ' + "/candidates/gary-house.jpg" + ' 819w' },
   ["/candidates/gary-jackson.webp"]: { src: "/candidates/gary-jackson.webp", width: 226, height: 267, srcSet: "/candidates/gary-jackson.webp" + ' 226w' },
   ["/candidates/gulrez-khan.webp"]: { src: "/candidates/gulrez-khan.webp", width: 200, height: 300, srcSet: "/candidates/gulrez-khan.webp" + ' 200w' },
-  ["/candidates/holly-jeffreys.webp"]: { src: "/candidates/holly-jeffreys.webp", width: 1024, height: 683, srcSet: asset105 + ' 300w' + ', ' + asset106 + ' 600w' + ', ' + "/candidates/holly-jeffreys.webp" + ' 1024w' },
-  ["/candidates/james-matlock.jpg"]: { src: "/candidates/james-matlock.jpg", width: 600, height: 665, srcSet: asset107 + ' 300w' + ', ' + "/candidates/james-matlock.jpg" + ' 600w' },
-  ["/candidates/james-stewart.webp"]: { src: "/candidates/james-stewart.webp", width: 1024, height: 684, srcSet: asset108 + ' 300w' + ', ' + asset109 + ' 600w' + ', ' + "/candidates/james-stewart.webp" + ' 1024w' },
-  ["/candidates/jamie-haynes.webp"]: { src: "/candidates/jamie-haynes.webp", width: 474, height: 474, srcSet: asset110 + ' 300w' + ', ' + "/candidates/jamie-haynes.webp" + ' 474w' },
+  ["/candidates/holly-jeffreys.webp"]: { src: "/candidates/holly-jeffreys.webp", width: 1024, height: 683, srcSet: asset103 + ' 300w' + ', ' + asset104 + ' 600w' + ', ' + "/candidates/holly-jeffreys.webp" + ' 1024w' },
+  ["/candidates/james-matlock.jpg"]: { src: "/candidates/james-matlock.jpg", width: 600, height: 665, srcSet: asset105 + ' 300w' + ', ' + "/candidates/james-matlock.jpg" + ' 600w' },
+  ["/candidates/james-stewart.webp"]: { src: "/candidates/james-stewart.webp", width: 1024, height: 684, srcSet: asset106 + ' 300w' + ', ' + asset107 + ' 600w' + ', ' + "/candidates/james-stewart.webp" + ' 1024w' },
+  ["/candidates/jamie-haynes.webp"]: { src: "/candidates/jamie-haynes.webp", width: 474, height: 474, srcSet: asset108 + ' 300w' + ', ' + "/candidates/jamie-haynes.webp" + ' 474w' },
   ["/candidates/jeff-raef.webp"]: { src: "/candidates/jeff-raef.webp", width: 150, height: 150, srcSet: "/candidates/jeff-raef.webp" + ' 150w' },
-  ["/candidates/jim-baxa.jpg"]: { src: "/candidates/jim-baxa.jpg", width: 600, height: 398, srcSet: asset111 + ' 300w' + ', ' + "/candidates/jim-baxa.jpg" + ' 600w' },
-  ["/candidates/jim-wright.webp"]: { src: "/candidates/jim-wright.webp", width: 529, height: 528, srcSet: asset112 + ' 300w' + ', ' + "/candidates/jim-wright.webp" + ' 529w' },
-  ["/candidates/joanna-garcia-flores.jpg"]: { src: "/candidates/joanna-garcia-flores.jpg", width: 600, height: 594, srcSet: asset113 + ' 300w' + ', ' + "/candidates/joanna-garcia-flores.jpg" + ' 600w' },
-  ["/candidates/john-smithee.webp"]: { src: "/candidates/john-smithee.webp", width: 474, height: 543, srcSet: asset114 + ' 300w' + ', ' + "/candidates/john-smithee.webp" + ' 474w' },
-  ["/candidates/jonathan-mitchell.jpg"]: { src: asset115, width: 300, height: 157, srcSet: asset115 + ' 300w' },
-  ["/candidates/julie-kellogg.jpg"]: { src: "/candidates/julie-kellogg.jpg", width: 960, height: 720, srcSet: asset116 + ' 300w' + ', ' + "/candidates/julie-kellogg.jpg" + ' 960w' },
-  ["/candidates/ken-mathews.png"]: { src: "/candidates/ken-mathews.png", width: 600, height: 549, srcSet: asset117 + ' 300w' + ', ' + "/candidates/ken-mathews.png" + ' 600w' },
-  ["/candidates/lesli-fitzpatrick.webp"]: { src: "/candidates/lesli-fitzpatrick.webp", width: 782, height: 1024, srcSet: asset118 + ' 300w' + ', ' + asset119 + ' 600w' + ', ' + "/candidates/lesli-fitzpatrick.webp" + ' 782w' },
-  ["/candidates/mayes-middleton.png"]: { src: asset120, width: 300, height: 295, srcSet: asset120 + ' 300w' },
-  ["/candidates/michelle-merendino.webp"]: { src: "/candidates/michelle-merendino.webp", width: 1024, height: 828, srcSet: asset121 + ' 300w' + ', ' + asset122 + ' 600w' + ', ' + "/candidates/michelle-merendino.webp" + ' 1024w' },
-  ["/candidates/paul-herrmann.jpg"]: { src: "/candidates/paul-herrmann.jpg", width: 600, height: 615, srcSet: asset123 + ' 300w' + ', ' + "/candidates/paul-herrmann.jpg" + ' 600w' },
+  ["/candidates/jim-baxa.jpg"]: { src: "/candidates/jim-baxa.jpg", width: 600, height: 398, srcSet: asset109 + ' 300w' + ', ' + "/candidates/jim-baxa.jpg" + ' 600w' },
+  ["/candidates/jim-wright.webp"]: { src: "/candidates/jim-wright.webp", width: 529, height: 528, srcSet: asset110 + ' 300w' + ', ' + "/candidates/jim-wright.webp" + ' 529w' },
+  ["/candidates/joanna-garcia-flores.jpg"]: { src: "/candidates/joanna-garcia-flores.jpg", width: 600, height: 594, srcSet: asset111 + ' 300w' + ', ' + "/candidates/joanna-garcia-flores.jpg" + ' 600w' },
+  ["/candidates/john-smithee.webp"]: { src: "/candidates/john-smithee.webp", width: 474, height: 543, srcSet: asset112 + ' 300w' + ', ' + "/candidates/john-smithee.webp" + ' 474w' },
+  ["/candidates/jonathan-mitchell.jpg"]: { src: asset113, width: 300, height: 157, srcSet: asset113 + ' 300w' },
+  ["/candidates/julie-kellogg.jpg"]: { src: "/candidates/julie-kellogg.jpg", width: 960, height: 720, srcSet: asset114 + ' 300w' + ', ' + "/candidates/julie-kellogg.jpg" + ' 960w' },
+  ["/candidates/ken-mathews.png"]: { src: "/candidates/ken-mathews.png", width: 600, height: 549, srcSet: asset115 + ' 300w' + ', ' + "/candidates/ken-mathews.png" + ' 600w' },
+  ["/candidates/lesli-fitzpatrick.webp"]: { src: "/candidates/lesli-fitzpatrick.webp", width: 782, height: 1024, srcSet: asset116 + ' 300w' + ', ' + asset117 + ' 600w' + ', ' + "/candidates/lesli-fitzpatrick.webp" + ' 782w' },
+  ["/candidates/mayes-middleton.png"]: { src: asset118, width: 300, height: 295, srcSet: asset118 + ' 300w' },
+  ["/candidates/michelle-merendino.webp"]: { src: "/candidates/michelle-merendino.webp", width: 1024, height: 828, srcSet: asset119 + ' 300w' + ', ' + asset120 + ' 600w' + ', ' + "/candidates/michelle-merendino.webp" + ' 1024w' },
+  ["/candidates/paul-herrmann.jpg"]: { src: "/candidates/paul-herrmann.jpg", width: 600, height: 615, srcSet: asset121 + ' 300w' + ', ' + "/candidates/paul-herrmann.jpg" + ' 600w' },
   ["/candidates/quenton-todd-hatter.jpg"]: { src: "/candidates/quenton-todd-hatter.jpg", width: 150, height: 150, srcSet: "/candidates/quenton-todd-hatter.jpg" + ' 150w' },
-  ["/candidates/rashelle-fetty.jpg"]: { src: "/candidates/rashelle-fetty.jpg", width: 500, height: 499, srcSet: asset124 + ' 300w' + ', ' + "/candidates/rashelle-fetty.jpg" + ' 500w' },
-  ["/candidates/robert-taylor.jpg"]: { src: "/candidates/robert-taylor.jpg", width: 600, height: 736, srcSet: asset125 + ' 300w' + ', ' + "/candidates/robert-taylor.jpg" + ' 600w' },
-  ["/candidates/ryan-zink.webp"]: { src: "/candidates/ryan-zink.webp", width: 1024, height: 683, srcSet: asset126 + ' 300w' + ', ' + asset127 + ' 600w' + ', ' + "/candidates/ryan-zink.webp" + ' 1024w' },
-  ["/candidates/shandi-williams.jpg"]: { src: "/candidates/shandi-williams.jpg", width: 600, height: 653, srcSet: asset128 + ' 300w' + ', ' + "/candidates/shandi-williams.jpg" + ' 600w' },
-  ["/candidates/sid-miller.jpg"]: { src: "/candidates/sid-miller.jpg", width: 819, height: 1024, srcSet: asset129 + ' 300w' + ', ' + asset130 + ' 600w' + ', ' + "/candidates/sid-miller.jpg" + ' 819w' },
-  ["/candidates/sylvester-vanerson.jpg"]: { src: "/candidates/sylvester-vanerson.jpg", width: 500, height: 499, srcSet: asset131 + ' 300w' + ', ' + "/candidates/sylvester-vanerson.jpg" + ' 500w' },
-  ["/candidates/tammie-smith.jpg"]: { src: "/candidates/tammie-smith.jpg", width: 2048, height: 2048, srcSet: asset132 + ' 300w' + ', ' + asset133 + ' 600w' + ', ' + "/candidates/tammie-smith.jpg" + ' 2048w' },
-  ["/candidates/tanya-lovenburg.jpg"]: { src: "/candidates/tanya-lovenburg.jpg", width: 600, height: 450, srcSet: asset134 + ' 300w' + ', ' + "/candidates/tanya-lovenburg.jpg" + ' 600w' },
-  ["/candidates/thomas-smith.webp"]: { src: "/candidates/thomas-smith.webp", width: 458, height: 458, srcSet: asset135 + ' 300w' + ', ' + "/candidates/thomas-smith.webp" + ' 458w' },
-  ["/candidates/traci-baxa.jpg"]: { src: asset136, width: 187, height: 280, srcSet: asset136 + ' 187w' },
+  ["/candidates/rashelle-fetty.jpg"]: { src: "/candidates/rashelle-fetty.jpg", width: 500, height: 499, srcSet: asset122 + ' 300w' + ', ' + "/candidates/rashelle-fetty.jpg" + ' 500w' },
+  ["/candidates/robert-taylor.jpg"]: { src: "/candidates/robert-taylor.jpg", width: 600, height: 736, srcSet: asset123 + ' 300w' + ', ' + "/candidates/robert-taylor.jpg" + ' 600w' },
+  ["/candidates/ryan-zink.webp"]: { src: "/candidates/ryan-zink.webp", width: 1024, height: 683, srcSet: asset124 + ' 300w' + ', ' + asset125 + ' 600w' + ', ' + "/candidates/ryan-zink.webp" + ' 1024w' },
+  ["/candidates/shandi-williams.jpg"]: { src: "/candidates/shandi-williams.jpg", width: 600, height: 653, srcSet: asset126 + ' 300w' + ', ' + "/candidates/shandi-williams.jpg" + ' 600w' },
+  ["/candidates/sid-miller.jpg"]: { src: "/candidates/sid-miller.jpg", width: 819, height: 1024, srcSet: asset127 + ' 300w' + ', ' + asset128 + ' 600w' + ', ' + "/candidates/sid-miller.jpg" + ' 819w' },
+  ["/candidates/sylvester-vanerson.jpg"]: { src: "/candidates/sylvester-vanerson.jpg", width: 500, height: 499, srcSet: asset129 + ' 300w' + ', ' + "/candidates/sylvester-vanerson.jpg" + ' 500w' },
+  ["/candidates/tammie-smith.jpg"]: { src: "/candidates/tammie-smith.jpg", width: 2048, height: 2048, srcSet: asset130 + ' 300w' + ', ' + asset131 + ' 600w' + ', ' + "/candidates/tammie-smith.jpg" + ' 2048w' },
+  ["/candidates/tanya-lovenburg.jpg"]: { src: "/candidates/tanya-lovenburg.jpg", width: 600, height: 450, srcSet: asset132 + ' 300w' + ', ' + "/candidates/tanya-lovenburg.jpg" + ' 600w' },
+  ["/candidates/thomas-smith.webp"]: { src: "/candidates/thomas-smith.webp", width: 458, height: 458, srcSet: asset133 + ' 300w' + ', ' + "/candidates/thomas-smith.webp" + ' 458w' },
+  ["/candidates/traci-baxa.jpg"]: { src: asset134, width: 187, height: 280, srcSet: asset134 + ' 187w' },
   ["/candidates/zach-harvey.webp"]: { src: "/candidates/zach-harvey.webp", width: 150, height: 150, srcSet: "/candidates/zach-harvey.webp" + ' 150w' },
-  ["/candidates/zachary-price.png"]: { src: asset137, width: 407, height: 320, srcSet: asset138 + ' 300w' + ', ' + asset137 + ' 407w' },
-  ["/sponsors/patriot-dispatch.jpg"]: { src: asset139, width: 300, height: 250, srcSet: asset139 + ' 300w' },
+  ["/candidates/zachary-price.png"]: { src: asset135, width: 407, height: 320, srcSet: asset136 + ' 300w' + ', ' + asset135 + ' 407w' },
+  ["/sponsors/patriot-dispatch.jpg"]: { src: asset137, width: 300, height: 250, srcSet: asset137 + ' 300w' },
   ["/sponsors/pia-tv-small.jpg"]: { src: "/sponsors/pia-tv-small.jpg", width: 381, height: 533, srcSet: "/sponsors/pia-tv-small.jpg" + ' 381w' },
 };

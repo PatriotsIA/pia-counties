@@ -49,7 +49,7 @@ import merchPartnerImage from "../NewAds/Merch.jpg";
 import panhandleGreenhouseImage from "../NewAds/PanhandleGreenhouse250.jpg";
 import pastureExchangePartnerImage from "../NewAds/PastureEXCHANGELogo.jpg";
 import patriotMessagingPartnerImage from "../NewAds/PatriotMessaging 2.jpg";
-import patriotTrailerPartnerImage from "../NewAds/PatriotTrailerStore.jpg";
+import piaEventsPartnerImage from "../NewAds/PIAEvents.jpg";
 import piaTvPartnerImage from "../NewAds/PIATV2.jpg";
 import plainsBankPartnerImage from "../NewAds/PlainsBank250.jpg";
 
@@ -109,16 +109,10 @@ const nationwidePartners: Partner[] = [
     image: piaTvPartnerImage,
   },
   {
-    name: "piaevents.com",
+    name: "PIA Events",
     description: "Find upcoming Patriots in Action events and places to show up.",
     href: site.links.piaEvents,
-    image: patriotTrailerPartnerImage,
-  },
-  {
-    name: "The Patriots in Action Trailer Store",
-    description: "Shop and connect with Patriots in Action at live events.",
-    href: site.links.piaEvents,
-    image: patriotTrailerPartnerImage,
+    image: piaEventsPartnerImage,
   },
   {
     name: "The Patriot Merch Store",
@@ -210,7 +204,7 @@ function patriotsForActionPresentedBy() {
 }
 
 function piaEventsPresentedBy() {
-  const partner = preferredPartner("piaevents.com");
+  const partner = preferredPartner("PIA Events");
   if (!partner) return null;
 
   return {
@@ -1691,7 +1685,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
   const [mightyError, setMightyError] = useState(false);
-  const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("piaevents.com");
+  const presentedBy = countyPartner(county, "Mattress By Appointment") || preferredPartner("PIA Events");
 
   useEffect(() => {
     let active = true;
