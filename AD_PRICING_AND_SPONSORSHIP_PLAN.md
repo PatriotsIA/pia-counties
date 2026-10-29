@@ -134,13 +134,13 @@ Counts include sellable sponsorship labels, carousel slots, partner cards, and b
 | Page | Inventory Type | Current Count | Notes |
 | --- | --- | ---: | --- |
 | Homepage `/` | Square sponsor carousel | 6 loaded | Appears below “From Awareness to Action.” |
-| Homepage `/` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange currently qualify. |
-| `/counties` | Bottom banner carousel | 3 banners | America 250, Mattress By Appointment, Pasture Exchange. |
-| `/tv` | Bottom banner carousel | 3 banners | PIA TV, Mattress By Appointment, Pasture Exchange. |
-| `/rewards` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange. |
+| Homepage `/` | Bottom banner carousel | 1 banner | Pasture Exchange currently qualifies. |
+| `/counties` | Bottom banner carousel | 2 banners | America 250, Pasture Exchange. |
+| `/tv` | Bottom banner carousel | 2 banners | PIA TV, Pasture Exchange. |
+| `/rewards` | Bottom banner carousel | 1 banner | Pasture Exchange. |
 | `/partners` | Partner cards | 13 cards | Nationwide partners plus county-specific sponsor cards. |
-| `/partners` | Bottom banner carousel | 3 banners | America 250, Mattress By Appointment, Pasture Exchange. |
-| `/contact` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange. |
+| `/partners` | Bottom banner carousel | 2 banners | America 250, Pasture Exchange. |
+| `/contact` | Bottom banner carousel | 1 banner | Pasture Exchange. |
 | Legal/static pages | Bottom banner carousel | 0 banners | No current static-page banner inventory. |
 | State pages | Bottom banner carousel | 0 banners | Current state-page ad candidates are non-banner, so banner carousel renders none. |
 | State candidate pages | Ads | 0 | Suppressed by layout. |
@@ -512,13 +512,13 @@ Counts below include sellable sponsorship labels, carousel slots, partner cards,
 | Page | Inventory type | Current count | Notes |
 | --- | --- | ---: | --- |
 | Homepage `/` | Square sponsor carousel | 6 loaded | Appears below “From Awareness To Action.” |
-| Homepage `/` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange currently qualify. |
-| `/counties` | Bottom banner carousel | 3 banners | America 250, Mattress By Appointment, Pasture Exchange. |
-| `/tv` | Bottom banner carousel | 3 banners | PIA TV, Mattress By Appointment, Pasture Exchange. |
-| `/rewards` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange. |
+| Homepage `/` | Bottom banner carousel | 1 banner | Pasture Exchange currently qualifies. |
+| `/counties` | Bottom banner carousel | 2 banners | America 250, Pasture Exchange. |
+| `/tv` | Bottom banner carousel | 2 banners | PIA TV, Pasture Exchange. |
+| `/rewards` | Bottom banner carousel | 1 banner | Pasture Exchange. |
 | `/partners` | Partner cards | 13 cards | Nationwide partners plus county-specific sponsor cards. |
-| `/partners` | Bottom banner carousel | 3 banners | America 250, Mattress By Appointment, Pasture Exchange. |
-| `/contact` | Bottom banner carousel | 2 banners | Mattress By Appointment and Pasture Exchange. |
+| `/partners` | Bottom banner carousel | 2 banners | America 250, Pasture Exchange. |
+| `/contact` | Bottom banner carousel | 1 banner | Pasture Exchange. |
 | Legal/static pages | Bottom banner carousel | 0 banners | No current static-page banner inventory. |
 | State pages | Bottom banner carousel | 0 banners | Current state-page ad candidates are non-banner, so banner carousel renders none. |
 | State candidate pages | Ads | 0 ads | Suppressed by layout. |

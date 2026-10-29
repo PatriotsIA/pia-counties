@@ -10,7 +10,6 @@ import joinPiaAdImage from "../../NewAds/JoinPIALarge.jpg";
 import joinPiaAdImageSmall from "../../NewAds/JoinPIASm.jpg";
 import lemc250AdImage from "../../NewAds/LEMC250.jpg";
 import lemcAdImage from "../../NewAds/LEMC980.jpg";
-import mattressBannerAdImage from "../../NewAds/matress-ad.jpg";
 import merchAdImage from "../../NewAds/Merch.jpg";
 import monaSalazarAdImage from "../../NewAds/MonaSalazar.jpg";
 import monaSalazarAdImageSmall from "../../NewAds/MonaSalazarSm.jpg";
@@ -549,29 +548,6 @@ export const ads: AdCreative[] = [
       slots: ["county-page-footer"],
       routes: ["county"],
       countyKeys: ["texas/potter", "texas/randall"],
-      pages: ["home", "about", "events", "news", "tv", "contact", "partners"],
-    },
-  },
-  {
-    id: "mattress-banner-2026",
-    campaignId: "pia-community-partners",
-    sponsor: "Mattress By Appointment",
-    title: "Mattress By Appointment",
-    body: "Shop local mattress deals by appointment.",
-    cta: "View Partner",
-    href: "/partners",
-    placement: "leaderboard",
-    display: "image-only",
-    image: {
-      desktop: mattressBannerAdImage,
-      mobile: mattressBannerAdImage,
-      alt: "Mattress By Appointment",
-    },
-    priority: 94,
-    active: true,
-    targeting: {
-      slots: ["county-page-footer", "site-footer"],
-      routes: ["county", "home", "directory", "tv", "rewards", "partners", "contact"],
       pages: ["home", "about", "events", "news", "tv", "contact", "partners"],
     },
   },
