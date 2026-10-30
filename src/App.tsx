@@ -2226,8 +2226,7 @@ function Shell({
   suppressAdRails?: boolean;
 }) {
   const showAdRails = false;
-  const { stateSlug } = useParams();
-  const showVoterIncidentNotice = getStateBySlug(stateSlug)?.abbr === "TX" && (route === "state" || route === "county");
+  const showVoterIncidentNotice = route === "home" || route === "state" || route === "county";
 
   return (
     <>
