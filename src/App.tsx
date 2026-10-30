@@ -2165,9 +2165,9 @@ function SiteHeader({ campaign }: { campaign?: SupportCampaign }) {
   return <>
       <header className="topbar">
         <div className="container topbar-inner">
-          <span>Meet Your Neighbors!</span>
-          <a href={`tel:${site.contact.phoneDial}`}>{site.contact.phone}</a>
-          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+          <a className="topbar-action" href={outbound(site.links.community, "topbar_community")} target={campaign ? "_blank" : undefined} rel={campaign ? "noopener noreferrer" : undefined}>Meet Your Neighbors!</a>
+          <a className="topbar-action" href={`tel:${site.contact.phoneDial}`}>{site.contact.phone}</a>
+          <a className="topbar-action" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
         </div>
       </header>
       <header className="site-header">
