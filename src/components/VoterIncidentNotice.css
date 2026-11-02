@@ -12,4 +12,9 @@
 .voter-incident-download span { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; }
 .voter-incident-notice .voter-incident-download:hover { background: #94202c; color: #fff; }
 .voter-incident-download:focus-visible { outline: 3px solid #162e48; outline-offset: 4px; }
+.voter-incident-notice.lawsuit-notice { border-left-color: #005bb5; }
+.voter-incident-notice.lawsuit-notice h2 { margin-bottom: 0; }
+.voter-incident-notice .lawsuit-notice-button { flex-shrink: 0; display: block; padding: 16px 24px; background: #005bb5; color: #fff; text-align: center; text-decoration: none; font: 700 16px/1.4 Arial, sans-serif; }
+.voter-incident-notice .lawsuit-notice-button:hover { background: #004a94; color: #fff; }
+.lawsuit-notice-button:focus-visible { outline: 3px solid #162e48; outline-offset: 4px; }
 @media (max-width: 780px) { .voter-incident-notice { align-items: stretch; flex-direction: column; gap: 20px; } }
