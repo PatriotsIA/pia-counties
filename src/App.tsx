@@ -1,4 +1,6 @@
 import { VoterIncidentNotice } from "./components/VoterIncidentNotice";
+import { MidtermsPressRelease } from "./components/MidtermsPressRelease";
+import { midtermsPressRelease } from "./data/midterms-press-release";
 import { SiteImage } from "./components/SiteImage";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode, type UIEvent } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -373,6 +375,12 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
 }
 
 function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
+  if (pathname.replace(/\/+$/, "") === "/tx/potter/2026-midterms") return {
+    title: midtermsPressRelease.title,
+    description: midtermsPressRelease.description,
+    canonicalPath: "/tx/potter/2026-midterms",
+    type: "article",
+  };
   if (pathname === "/paxton") return { title: "Ken Paxton — Big Texan Video & Accomplishments", description: "Watch the opening 7:33 of Ken Paxton’s Come and Take It event at The Big Texan and explore sourced accomplishments from his service as Texas attorney general.", canonicalPath: "/paxton" };
   const campaign = supportCampaigns.find(c => c.path === pathname);
   if (campaign) return { title: `Vote ${campaign.name} — ${campaign.supporter} Supports`, description: campaign.summary, canonicalPath: campaign.path };
@@ -569,6 +577,9 @@ function App() {
       <ScrollToTop />
       <AnalyticsTracker />
       <Routes>
+        <Route path="/2026-midterms" element={<Navigate to="/tx/potter/2026-midterms" replace />} />
+        <Route path="/texas/potter/2026-midterms" element={<Navigate to="/tx/potter/2026-midterms" replace />} />
+        <Route path="/tx/potter/2026-midterms" element={<Shell county={getCounty("tx", "potter")} route="static" suppressAdRails><MidtermsPressRelease /></Shell>} />
         <Route path="/" element={<HomePage />} />
         <Route path="/counties" element={<DirectoryPage />} />
         <Route path="/tv" element={<MainTvPage />} />
@@ -2228,7 +2239,7 @@ function Shell({
       <main className={showAdRails ? "shell-content-frame" : "container"}>
         {showAdRails ? <AdSlot county={county} page={page} route={route} slot="site-left-rail" /> : null}
         <div className={showAdRails ? "container shell-main-content" : "shell-page-stack"}>
-          {showVoterIncidentNotice && <VoterIncidentNotice />}
+          {showVoterIncidentNotice && <VoterIncidentNotice showMidterms={county?.state.abbr === "TX" && county.slug === "potter"} />}
           {children}
           <div className="shell-pre-footer">
             {route !== "directory" && route !== "state" && !(route === "county" && page === "candidates") ? (

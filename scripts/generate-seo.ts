@@ -70,6 +70,7 @@ function urlEntry(pathname: string, changefreq: UrlEntry["changefreq"], priority
 }
 
 const staticUrls: UrlEntry[] = [
+  urlEntry("/tx/potter/2026-midterms", "monthly", "0.8"),
   urlEntry("/", "weekly", "1.0"),
   urlEntry("/counties", "weekly", "0.95"),
   urlEntry("/candidates", "weekly", "0.9"),

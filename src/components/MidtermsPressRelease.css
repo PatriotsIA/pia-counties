@@ -1,0 +1,11 @@
+.midterms-release { max-width: 860px; margin: 32px auto; padding: clamp(22px, 5vw, 64px); background: #fff; color: #162e48; border: 1px solid #cbd8e3; border-top: 5px solid #ba2635; }
+.midterms-release-header { padding-bottom: 26px; border-bottom: 1px solid #cbd8e3; }
+.midterms-release .midterms-release-kicker { margin: 0 0 18px; color: #9e2431; font: 700 12px/1.6 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; }
+.midterms-release h1 { margin: 0 0 24px; color: #162e48; font: 600 clamp(32px, 5vw, 52px)/1.12 Georgia, serif; letter-spacing: -.02em; text-transform: none; }
+.midterms-release .midterms-release-date, .midterms-release .midterms-release-contact { font: 400 14px/1.7 Arial, sans-serif; }
+.midterms-release a { color: #005bb5; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.midterms-release a:focus-visible { outline: 3px solid #162e48; outline-offset: 4px; }
+.midterms-release-body { padding-top: 12px; }
+.midterms-release-body p { margin: 22px 0; font: 400 18px/1.85 Georgia, serif; }
+.midterms-release-body h2 { margin: 34px 0 16px; font: 700 clamp(23px, 3vw, 29px)/1.35 Georgia, serif; color: #162e48; text-transform: none; letter-spacing: normal; }
+.midterms-release-footer { display: flex; flex-wrap: wrap; gap: 18px 28px; border-top: 1px solid #cbd8e3; padding-top: 24px; margin-top: 32px; font: 700 14px/1.6 Arial, sans-serif; }
