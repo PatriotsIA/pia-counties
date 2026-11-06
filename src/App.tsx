@@ -1685,6 +1685,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [status, setStatus] = useState("Loading community events...");
   const [mightyError, setMightyError] = useState(false);
+  const [calendarRefresh, setCalendarRefresh] = useState(0);
   const presentedBy = preferredPartner("PIA Events");
 
   useEffect(() => {
@@ -1760,7 +1761,7 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
       window.clearInterval(refreshInterval);
       document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
-  }, [calendarProxyUrl, feedUrl, hasMightyApi, mightySpaceId]);
+  }, [calendarProxyUrl, feedUrl, hasMightyApi, mightySpaceId, calendarRefresh]);
 
   const visible = compact ? events.slice(0, 3) : events.slice(0, 12);
   const displayedStatus = status;
@@ -1778,8 +1779,14 @@ function EventCalendar({ county, compact = false, page = "events" }: { county: C
           </a>
         ) : null}
       </div>
-      {mightyError ? (
+      {mightyError && !mightySpaceId && !feedUrl ? (
         <CountyMightySetupCallout county={county} />
+      ) : null}
+      {mightyError && (mightySpaceId || feedUrl) && status.includes("could not be loaded") ? (
+        <div className="actions">
+          <button className="button primary" onClick={() => setCalendarRefresh((value) => value + 1)}>Retry calendar</button>
+          <a className="button" href={county.links.community}>Open county community</a>
+        </div>
       ) : null}
       {displayedStatus.startsWith("Loading")
         ? <LoadingIndicator label={displayedStatus} />
@@ -1817,6 +1824,7 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
   const [status, setStatus] = useState(hasMightyApi ? "Loading Patriot Network feed..." : "");
   const [fetchError, setFetchError] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
+  const [feedRefresh, setFeedRefresh] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -1851,7 +1859,7 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
     return () => {
       active = false;
     };
-  }, [hasMightyApi, mightySpaceId]);
+  }, [hasMightyApi, mightySpaceId, feedRefresh]);
 
   const visible = posts.slice(0, visibleCount);
   const hasMore = visibleCount < posts.length;
@@ -1879,8 +1887,17 @@ function CountyCommunityFeed({ county }: { county: CountySite }) {
       {status.startsWith("Loading")
         ? <LoadingIndicator label={status} />
         : status ? <p className="status">{status}</p> : null}
-      {fetchError ? (
+      {fetchError && !mightySpaceId ? (
         <CountyMightySetupCallout county={county} />
+      ) : null}
+      {fetchError && mightySpaceId ? (
+        <div className="panel">
+          <p>The community feed is temporarily unavailable. Please try again.</p>
+          <div className="actions">
+            <button className="button primary" onClick={() => setFeedRefresh((value) => value + 1)}>Retry community feed</button>
+            <a className="button" href={county.links.community}>Open county community</a>
+          </div>
+        </div>
       ) : null}
       {!fetchError ? (
         <>
