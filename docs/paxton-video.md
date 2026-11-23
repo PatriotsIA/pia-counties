@@ -1,5 +1,7 @@
 # Paxton event and accomplishments
 
+Archived November 23, 2026. The campaign pages and advertising described below have been retired. The full rally recording accompanies the County Post opinion article.
+
 `/paxton` is a separate support landing page from `/ken-paxton`. It contains the
 first **453 seconds (7:33)** of the supplied Facebook recording, the existing
 Vote Ken Paxton square ad, and six dated accomplishments linked to primary OAG

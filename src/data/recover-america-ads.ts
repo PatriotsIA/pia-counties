@@ -1,7 +1,6 @@
 import type { AdCreative } from "./ads";
-import { campaignBannerAdIds } from "./campaigns";
 
-export const featuredBannerAdIds = [...campaignBannerAdIds, "recover-america-banner"];
+export const featuredBannerAdIds = ["recover-america-banner"];
 
 // Explicit placements append this partner message without changing paid inventory.
 export const recoverAmericaAds: AdCreative[] = (["square", "banner"] as const).map(format => ({
