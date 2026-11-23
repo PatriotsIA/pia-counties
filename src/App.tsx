@@ -26,12 +26,7 @@ import { recoverAmerica, recoverAmericaPartner } from "./data/recover-america";
 import { RecoverAmericaPage } from "./components/RecoverAmericaPage";
 import { VimeoEmbed, type VimeoVideo } from "./components/VimeoEmbed";
 import { IssuesPage } from "./components/IssuesPage";
-import { CampaignLandingPage } from "./components/CampaignLandingPage";
-import { PaxtonPage } from "./components/PaxtonPage";
-import { paxtonCampaign } from "./data/paxton";
-import { CampaignSupportAds, PinnedSupportCandidates } from "./components/CampaignSupport";
 import { featuredBannerAdIds } from "./data/recover-america-ads";
-import { campaignLink, supportCampaigns, type SupportCampaign } from "./data/campaigns";
 import { getExactSearchState, searchCounties, searchStates } from "./data/place-search";
 import type { AdRouteType } from "./lib/ads";
 import { initGoogleTagManager, trackPageView } from "./lib/analytics";
@@ -373,9 +368,6 @@ function defaultStructuredData(data: SeoData, canonicalUrl: string) {
 }
 
 function seoDataForPath(pathname: string, candidateCatalog: Candidate[]): SeoData {
-  if (pathname === "/paxton") return { title: "Ken Paxton — Big Texan Video & Accomplishments", description: "Watch the opening 7:33 of Ken Paxton’s Come and Take It event at The Big Texan and explore sourced accomplishments from his service as Texas attorney general.", canonicalPath: "/paxton" };
-  const campaign = supportCampaigns.find(c => c.path === pathname);
-  if (campaign) return { title: `Vote ${campaign.name} — ${campaign.supporter} Supports`, description: campaign.summary, canonicalPath: campaign.path };
   if (pathname === "/") {
     return {
       title: "Nationwide & Local Civic Hub",
@@ -575,8 +567,6 @@ function App() {
         <Route path="/rewards" element={<RewardsPage />} />
         <Route path="/partners" element={<MainPartnersPage />} />
         <Route path={recoverAmerica.path} element={<Shell route="partners" suppressAdRails><RecoverAmericaPage /></Shell>} />
-        <Route path="/paxton" element={<PaxtonPage header={<SiteHeader campaign={paxtonCampaign} />} />} />
-        {supportCampaigns.map(c => <Route key={c.id} path={c.path} element={<CampaignLandingPage key={c.id} campaign={c} header={<SiteHeader campaign={c} />} />} />)}
         <Route path="/issues" element={<Shell route="static" suppressAdRails><IssuesPage /></Shell>} />
         <Route path="/contact" element={<SiteContactPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
@@ -631,7 +621,9 @@ function HomePage() {
           <InfoCard title="Move Patriots To Action" body="Follow local news, submit events, watch PIA TV, join the community, discover partners, and turn civic concern into practical action in your county." />
         </div>
       </section>
-      <CampaignSupportAds />
+      <div className="featured-partner-ad">
+        <AdSlot slot="campaign-support-square" route="home" adIds={["recover-america-square"]} />
+      </div>
       <FoundingPartnerCallout />
       <AdSlot route="home" slot="site-inline" limit={3} />
       <section className="section">
@@ -1161,7 +1153,6 @@ function NationalCandidatesPage() {
   const candidates = catalog.filter((candidate) => (state === "all" || getStateBySlug(candidate.stateSlug)?.slug === state) && (level === "all" || getCandidateOfficeLevel(candidate) === level) && `${candidate.name} ${candidate.office} ${candidate.countyName || ""} ${getStateBySlug(candidate.stateSlug)?.name || ""}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
   return <Shell route="directory">
     <PageHero eyebrow="Candidate Directory" title="National candidate directory" subtitle="Explore federal, state, and local candidates across the United States." />
-    <PinnedSupportCandidates search={search} state={state} level={level} />
     <CandidateDirectorySponsors />
     <section className="candidate-filters" aria-label="Filter candidates">
       <label className="field"><span>Search candidates</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
@@ -2159,13 +2150,12 @@ function CountyShell({ county, page, children }: { county: CountySite; page: Cou
   );
 }
 
-function SiteHeader({ campaign }: { campaign?: SupportCampaign }) {
+function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const outbound = (url: string, content: string) => campaign ? campaignLink(campaign, url, content) : url;
   return <>
       <header className="topbar">
         <div className="container topbar-inner">
-          <a className="topbar-action" href={outbound(site.links.community, "topbar_community")} target={campaign ? "_blank" : undefined} rel={campaign ? "noopener noreferrer" : undefined}>Meet Your Neighbors!</a>
+          <a className="topbar-action" href={site.links.community}>Meet Your Neighbors!</a>
           <a className="topbar-action" href={`tel:${site.contact.phoneDial}`}>{site.contact.phone}</a>
           <a className="topbar-action" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
         </div>
@@ -2193,12 +2183,12 @@ function SiteHeader({ campaign }: { campaign?: SupportCampaign }) {
             <NavLink to="/rewards">Rewards</NavLink>
             <NavLink to="/partners">Partners</NavLink>
             <NavLink to="/issues">Issues</NavLink>
-            <a href={outbound(site.links.community, "header_community")} target={campaign ? "_blank" : undefined} rel={campaign ? "noopener noreferrer" : undefined}>Community</a>
+            <a href={site.links.community}>Community</a>
             <NavLink to="/candidates">Candidates</NavLink>
-            <a href={outbound("https://www.whitehouse.gov/live/", "header_white_house")} target="_blank" rel="noopener noreferrer">White House News</a>
+            <a href="https://www.whitehouse.gov/live/" target="_blank" rel="noopener noreferrer">White House News</a>
             <NavLink to="/tv">PIA TV</NavLink>
             <NavLink to="/contact">Contact</NavLink>
-            <a href={outbound(site.links.merch, "header_merch")} target="_blank" rel="noopener noreferrer">Merch</a>
+            <a href={site.links.merch} target="_blank" rel="noopener noreferrer">Merch</a>
           </nav>
         </div>
       </header>

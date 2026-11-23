@@ -1,5 +1,7 @@
 # PIA candidate support pages
 
+Archived November 23, 2026. The campaign pages and advertising described below have been retired. The full rally recording accompanies the County Post opinion article.
+
 Published pages: `/greg-abbott`, `/ken-paxton` and the `/paxton` excerpt page.
 Campaign payer statements are attributed separately and link directly to the
 campaigns' disclosure text. These are support landing pages, not candidate-submitted
